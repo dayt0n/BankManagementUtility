@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  bmu-database:
+    restart: always
+    build:
+      context: "./database"
+      dockerfile: "./Dockerfile"
+    ports: 
+      - "5432:5432"
