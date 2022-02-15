@@ -3,7 +3,7 @@ import psycopg2
 
 DB_NAME = "koozvdlv"	#database name column
 DB_USER = "koozvdlv"	#database user column
-DB_PASS = "u7eSvXoCfZR2O__ZbH_AUAlx5b3aWsY8"	#database password column
+DB_PASS = "ycsSyQ-AyqSrjgbWphklijpToSf3Om_r"	#database password column
 DB_HOST = "castor.db.elephantsql.com"	#database server host column
 DB_PORT = "5432"	#database port column
 
@@ -15,15 +15,18 @@ print("Database connected successfully.")
 cur = conn.cursor()
 cur.execute(""" 
 
-
-CREATE TABLE Admin 		#create table
+CREATE TABLE Admin 
 (
-ID INT PRIMARY KEY NOT NULL,	#set fields to not null
+ID INT PRIMARY KEY NOT NULL,	
 NAME TEXT NOT NULL,
 EMAIL TEXT NOT NULL,
 IMAGE_FILE TEXT NOT NULL,
 PASSWORD TEXT NOT NULL,
-RANK TEXT NOT NULL
+RANK TEXT NOT NULL,
+SOCIAL TEXT NOT NULL,
+ADDRESS TEXT NOT NULL,
+PHONE TEXT NOT NULL
+
 
 
 )
