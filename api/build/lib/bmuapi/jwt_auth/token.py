@@ -1,5 +1,9 @@
+import logging
+import os
 import jwt
-from . import jwt_secret
+
+
+def jwt_secret(): return os.getenv('API_SECRET_KEY')
 
 
 def encode_user_auth_token(username, role):
@@ -9,10 +13,10 @@ def encode_user_auth_token(username, role):
     }
     return jwt.encode(
         t,
-        jwt_secret,
+        jwt_secret(),
         algorithm='HS256'
     )
 
 
 def decode_user_auth_token(tok):
-    return jwt.decode(tok, jwt_secret, algorithms=['HS256'])
+    return jwt.decode(tok, jwt_secret(), algorithms=['HS256'])
