@@ -5,17 +5,13 @@ from bmuapi.api.auth import auth
 from bmuapi.api import api
 from dotenv import load_dotenv
 from flask import Flask, abort
-from bmuapi.database.database import init_db, db
+from bmuapi.database.database import init_db
 
 load_dotenv('.env')
 
 logging.basicConfig(level=logging.DEBUG)
 # init db stuff
 init_db()
-
-res = db().execute('SELECT * FROM Admin;')
-for row in res:
-    print(row)
 
 app = Flask(__name__)
 
