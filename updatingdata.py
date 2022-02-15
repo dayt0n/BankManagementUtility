@@ -5,7 +5,7 @@ import psycopg2
 
 DB_NAME = "koozvdlv"	#database name column
 DB_USER = "koozvdlv"	#database user column
-DB_PASS = "u7eSvXoCfZR2O__ZbH_AUAlx5b3aWsY8"	#database password column
+DB_PASS = "ycsSyQ-AyqSrjgbWphklijpToSf3Om_r"	#database password column
 DB_HOST = "castor.db.elephantsql.com"	#database server host column
 DB_PORT = "5432"	#database port column
 

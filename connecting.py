@@ -3,7 +3,7 @@ import psycopg2
 
 DB_NAME = "koozvdlv"	#database name instance
 DB_USER = "koozvdlv"	#database user instance
-DB_PASS = "u7eSvXoCfZR2O__ZbH_AUAlx5b3aWsY8"	#database password instance
+DB_PASS = "ycsSyQ-AyqSrjgbWphklijpToSf3Om_r"	#database password instance
 DB_HOST = "castor.db.elephantsql.com"	#database server host instance
 DB_PORT = "5432"	#database port instance
 
