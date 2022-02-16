@@ -1,30 +1,21 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Login from './components/Login'
-import Profile from './components/Profile'
-import Header from './components/Header'
-import useToken from './components/useToken'
-import './App.css'
+import React, { useEffect } from "react";
+import LoginForm from "./components/LoginForm";
+import "./App.css";
 
 function App() {
-  const { token, removeToken, setToken } = useToken();
+    // useEffect(() => {
+    //   fetch('/movies').then(response =>
+    //     response.json.then(data => {
+    //       console.log(data);
+    //     })
+    //   );
+    // }, [])
 
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <Header token={removeToken}/>
-        {!token && token!=="" &&token!== undefined?  
-        <Login setToken={setToken} />
-        :(
-          <>
-            <Routes>
-              <Route exact path="/profile" element={<Profile token={token} setToken={setToken}/>}></Route>
-            </Routes>
-          </>
-        )}
-      </div>
-    </BrowserRouter>
-  );
+    return (
+        <div className="App">
+            <LoginForm />
+        </div>
+    );
 }
 
 export default App;
-
