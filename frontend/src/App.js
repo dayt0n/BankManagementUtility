@@ -14,6 +14,9 @@ function App() {
     return (
         <div className="App">
             <LoginForm />
+            <div>
+                {process.env.REACT_APP_API_URL}
+            </div>
         </div>
     );
 }
