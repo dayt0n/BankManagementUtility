@@ -15,7 +15,7 @@ function App() {
         <div className="App">
             <LoginForm />
             <div>
-                test
+                {process.env.REACT_APP_API_URL}
             </div>
         </div>
     );

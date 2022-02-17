@@ -11,6 +11,8 @@ services:
   bmu-frontend-production:
     restart: always
     build:
+      args:
+        - REACT_APP_API_URL="test"
       context: "./frontend"
       dockerfile: "./Dockerfile"
       args:

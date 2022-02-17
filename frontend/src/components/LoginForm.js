@@ -34,13 +34,14 @@ export const LoginForm = () => {
                         const response = await fetch("???", {
                             method: "POST",
                             header: {
-                                "Content-type": "Application-JSON",
+                                "Content-type": "application/json",
                             },
                             body: JSON.stringify(loginRequest),
                         });
 
                         if (response.ok) {
                             console.log("response worked!");
+                            console.log(response)
                         }
                     }}
                 >
@@ -52,3 +53,8 @@ export const LoginForm = () => {
 };
 
 export default LoginForm;
+
+// npx create-react-app logintest
+// cd logintest
+// npm install semantic-ui-react
+// npm start
