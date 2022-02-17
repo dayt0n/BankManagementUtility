@@ -8,10 +8,24 @@ services:
       dockerfile: "./Dockerfile"
     ports: 
       - "5432:5432"
-  bmu-frontend:
+  bmu-frontend-production:
     restart: always
     build:
       context: "./frontend"
       dockerfile: "./Dockerfile"
+      args:
+        - REACT_APP_API_URL="test"
     ports: 
       - "8008:3000"
+  bmu-frontend:
+    restart: always
+    build:
+      context: "./frontend"
+      dockerfile: "./Dockerfile.dev"
+      args:
+        - REACT_APP_API_URL="test"
+    ports:
+      - "8008:3000"
+    volumes:
+      - "./frontend:/app"
+      - '/app/node_modules'

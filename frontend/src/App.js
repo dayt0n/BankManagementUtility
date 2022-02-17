@@ -14,6 +14,9 @@ function App() {
     return (
         <div className="App">
             <LoginForm />
+            <div>
+                test
+            </div>
         </div>
     );
 }
