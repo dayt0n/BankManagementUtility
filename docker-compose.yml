@@ -8,6 +8,13 @@ services:
       dockerfile: "./Dockerfile"
     ports: 
       - "5432:5432"
+  bmu-api:
+    restart: always
+    build:
+      context: "./api"
+      dockerfile: "./Dockerfile"
+    ports: 
+      - "5000:5000"
   bmu-frontend:
     restart: always
     build:
