@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, abort, jsonify, request
 from bmuapi.jwt_auth.token import encode_user_auth_token
 
@@ -13,10 +14,11 @@ def auth_home():
 
 @auth.route('/login', methods=['POST'])
 def login():
-    if 'username' not in request.form or 'password' not in request.form:
+    data = request.get_json()
+    if 'username' not in data or 'password' not in data:
         abort(500)
-    username = request.form['username']
-    password = request.form['password']
+    username = data['username']
+    password = data['password']
     # do database verification here with username, password
 
     verifyFailed = False  # just a placeholder
@@ -32,13 +34,14 @@ def login():
 # registration can be a two-step process.
 # this first part can be the initial information processing.
 # once this function finishes, it can send an email to the user to confirm that it is valid.
-@auth.route('/register', methods=['POST'])
+@ auth.route('/register', methods=['POST'])
 def register():
-    if ('username' not in request.form or
-        'password' not in request.form or
-        'firstName' not in request.form or
-        'lastName' not in request.form or
-            'email' not in request.form):
+    data = request.get_json()
+    if ('username' not in data or
+        'password' not in data or
+        'firstName' not in data or
+        'lastName' not in data or
+            'email' not in data):
         abort(500)
 
     # do database entry things here
