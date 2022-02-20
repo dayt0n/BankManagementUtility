@@ -1,3 +1,4 @@
+import functools
 import logging
 from flask import Blueprint, abort, jsonify, request
 from bmuapi.jwt_auth.token import encode_user_auth_token
@@ -49,3 +50,13 @@ def register():
     # try to send verification email here
 
     return jsonify({"status": "success"})
+
+
+def requires_auth(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'x-access-token' not in request.headers:
+            abort(403)
+        # do check here
+        return
+    return wrapper
