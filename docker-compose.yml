@@ -22,6 +22,7 @@ services:
   bmu-frontend:
     restart: always
     build:
+<<<<<<< Updated upstream
       context: "./frontend"
       dockerfile: "./Dockerfile.dev"
       args:
@@ -31,3 +32,13 @@ services:
     volumes:
       - "./frontend:/app"
       - '/app/node_modules'
+=======
+      context: "./nginx"
+      dockerfile: "./Dockerfile"
+    ports: 
+      - "80:80"
+
+volumes:
+  frontend:
+      
+>>>>>>> Stashed changes
