@@ -57,8 +57,3 @@ export const LoginForm = () => {
 };
 
 export default LoginForm;
-
-// npx create-react-app logintest
-// cd logintest
-// npm install semantic-ui-react
-// npm start

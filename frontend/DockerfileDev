@@ -1,0 +1,20 @@
+# pull official base image
+FROM node:latest
+
+# set working directory
+WORKDIR /app
+
+# ARG REACT_APP_API_URL
+# ENV REACT_APP_API_URL $REACT_APP_API_URL
+
+# install app dependencies
+COPY package.json .
+COPY package-lock.json .
+RUN npm install --silent
+
+# add app
+COPY . .
+
+EXPOSE 3000
+# start app
+CMD ["npm", "start"]
