@@ -27,22 +27,26 @@ export const LoginForm = () => {
                         const loginRequest = { username, password };
                         console.log(
                             "Clicked button with username: " +
-                                loginRequest.username +
-                                " and password: " +
-                                loginRequest.password
+                            loginRequest.username +
+                            " and password: " +
+                            loginRequest.password
                         );
-                        const response = await fetch("???", {
+                        const response = await fetch("/api/auth/login", {
                             method: "POST",
-                            header: {
-                                "Content-type": "application/json",
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json",
                             },
                             body: JSON.stringify(loginRequest),
                         });
 
-                        if (response.ok) {
-                            console.log("response worked!");
-                            console.log(response)
+                        if (!response.ok) {
+                            console.log("response failed!");
+                            return;
                         }
+                        let content = await response.json();
+                        // do stuff with response here
+                        console.log(content);
                     }}
                 >
                     Submit
