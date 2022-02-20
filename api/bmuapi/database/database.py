@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 dbObj = None
 
-MySession: sessionmaker()
+MySession = sessionmaker()
 
 sess: MySession
 
@@ -21,7 +21,7 @@ def init_db():
     print(url)
     engine = create_engine(url)
     MySession.configure(bind=engine)
-    sess = MySession().configure()
+    #sess = MySession().configure()
     dbObj = engine.connect()
 
 
