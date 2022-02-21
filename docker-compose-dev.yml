@@ -6,6 +6,8 @@ services:
     build:
       context: "./database"
       dockerfile: "./Dockerfile"
+    networks:
+      - dev-network
     ports: 
       - "5432:5432"
   bmu-api-dev:
@@ -13,11 +15,15 @@ services:
     build:
       context: "./api"
       dockerfile: "./Dockerfile"
+    networks:
+      - dev-network
   bmu-frontend-dev:
     restart: always
     build:
       context: "./frontend"
       dockerfile: "./DockerfileDev"
+    networks:
+      - dev-network
     environment:
       - CHOKIDAR_USEPOLLING=true
     volumes:
@@ -28,5 +34,11 @@ services:
     build:
       context: "./nginx"
       dockerfile: "./DockerfileDev"
+    networks:
+      - dev-network
     ports: 
       - "80:80"
+
+networks:
+  dev-network:
+    name: bmu-dev-network
