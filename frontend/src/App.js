@@ -10,7 +10,7 @@ function App() {
                 {process.env.REACT_APP_API_URL}
             </div> */}
             <div>
-                Hello! Hi!
+                Hello! Hi.ss
             </div>
         </div>
     );
