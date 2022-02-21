@@ -1,5 +1,9 @@
+backup
 node_modules
 build
 .dockerignore
 Dockerfile
+DockerfileDev
+DockerfileDev.prod
 Dockerfile.prod
+README.md

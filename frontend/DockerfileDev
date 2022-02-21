@@ -1,0 +1,16 @@
+# pull official base image
+FROM node:latest
+
+# set working directory
+WORKDIR /app
+# ARG REACT_APP_API_URL
+# ENV REACT_APP_API_URL $REACT_APP_API_URL
+#ENV NODE_ENV development
+# install app dependencies
+COPY package*.json .
+RUN npm install --silent
+RUN npm install -g nodemon
+
+EXPOSE 3000
+# start app
+CMD ["nodemon"]

@@ -3,19 +3,14 @@ import LoginForm from "./components/LoginForm";
 import "./App.css";
 
 function App() {
-    // useEffect(() => {
-    //   fetch('/movies').then(response =>
-    //     response.json.then(data => {
-    //       console.log(data);
-    //     })
-    //   );
-    // }, [])
-
     return (
         <div className="App">
             <LoginForm />
-            <div>
+            {/* <div>
                 {process.env.REACT_APP_API_URL}
+            </div> */}
+            <div>
+                Hello! Hi.ss
             </div>
         </div>
     );
