@@ -3,8 +3,6 @@ import logging
 from flask import Blueprint, abort, jsonify, request
 from bmuapi.jwt_auth.token import encode_user_auth_token, decode_user_auth_token, is_token_expired
 
-from bmuapi.database.database import db
-
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 
