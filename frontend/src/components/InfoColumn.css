@@ -1,0 +1,12 @@
+.InfoItem {
+    box-sizing: border-box;
+    width: 98%;
+    margin-left: 1%;
+    margin-top: 1%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #403f3f;
+    color: #f0f0f0;
+}

@@ -1,0 +1,14 @@
+.Links {
+    box-sizing: border-box;
+    width: 95%;
+    height: 100%;
+    margin-left: 2.5%;
+    margin-top: 2.5%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #403f3f;
+    color: #f0f0f0;
+}

@@ -1,18 +1,15 @@
 import React, { useEffect } from "react";
-import LoginForm from "./components/LoginForm";
+import Navbar from "react-bootstrap/Navbar"
 import "./App.css";
+import { Link } from 'react-router';
+import Main from "./components/Main";
 
 function App() {
     return (
-        <div className="App">
-            <LoginForm />
-            {/* <div>
-                {process.env.REACT_APP_API_URL}
-            </div> */}
-            <div>
-                Hello! Hi!
-            </div>
-        </div>
+      <div className="App">
+        <Navbar />
+        <Main />
+      </div>
     );
 }
 
