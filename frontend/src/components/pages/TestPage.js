@@ -6,10 +6,9 @@ function TestPage() {
     const state = {
         'links': ['Home', '/', 
                   'Test', '/test'],
-        'items': [<TemplateInfoComponent />]
+        'items': [<TemplateInfoComponent />, <TemplateInfoComponent />, <TemplateInfoComponent />, <TemplateInfoComponent />]
     };
 
-    console.log(state)
     return (
         <div>
             <TemplatePage dataParentToChild={state} />

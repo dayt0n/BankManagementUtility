@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import TemplateHeader from "../TemplateHeader"
 import InfoColumn from "../InfoColumn"
 import LinkColumn from "../LinkColumn"

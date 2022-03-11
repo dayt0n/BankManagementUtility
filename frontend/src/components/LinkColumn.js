@@ -10,8 +10,6 @@ function LinkColumn({dataParentToChild}) {
         links.push(<NavLink to={dataParentToChild[i+1]}>{dataParentToChild[i]}</NavLink>)
     }
 
-    console.log(links)
-
     return (
         <div className="LinkColumn">
             <div className="Links">

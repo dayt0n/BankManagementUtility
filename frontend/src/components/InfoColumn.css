@@ -1,12 +1,15 @@
 .InfoItem {
     box-sizing: border-box;
     width: 98%;
-    margin-left: 1%;
-    margin-top: 1%;
+    height: 800px;
+    margin: 0%;
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: flex-start;
-    background-color: #403f3f;
     color: #f0f0f0;
+}
+
+.BottomSpacer {
+    height: 100px;
 }
