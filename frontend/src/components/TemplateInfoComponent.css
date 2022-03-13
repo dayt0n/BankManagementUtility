@@ -1,0 +1,12 @@
+.TemplateInfoComponent {
+    box-sizing: border-box;
+    border: 8px #5f5e5e solid;
+    width: 100%;
+    min-height: 200px;
+    margin: 0% 0% 0% 0%;
+    padding: 1%;
+    display: flex;
+    align-items: flex-start;
+    background-color: #403f3f;
+    color: #f0f0f0;
+}

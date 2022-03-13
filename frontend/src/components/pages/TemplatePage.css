@@ -1,0 +1,76 @@
+body,
+html {
+    height: 100%;
+    background-color: #403f3f;
+}
+
+.Header {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0em;
+    margin-bottom: 1em;
+    background-color: #5f5e5e;
+    color: #fff;
+}
+
+.Header > h1 {
+    color: #f0f0f0;
+    margin-left: 10px;
+    margin-top: 15px;
+}
+
+.Header > Button {
+    color: #403f3f;
+    background-color: #f0f0f0;
+    margin-left: auto;
+    margin-right: 25px;
+}
+
+.Header > .dot {
+    height: 50px;
+    width: 50px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 25px;
+}
+
+.Columns {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #403f3f;
+    color: #fff;
+}
+
+.Columns > .InfoColumn {
+    background-color: #5f5e5e;
+    height: 100%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 30px;
+    margin-left: 20%;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0px;
+    scroll-margin-top: 100px;
+}
+
+.Columns > .LinkColumn {
+    background-color: #5f5e5e;
+    margin-right: 20%;
+    height: 100%;
+    width: 30%;
+}
