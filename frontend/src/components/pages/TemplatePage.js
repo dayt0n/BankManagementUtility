@@ -6,14 +6,12 @@ import './TemplatePage.css';
 
 function TemplatePage(dataParentToChild) {
     return (
-        <div className="Template">
+        <div>
             <TemplateHeader />
-            <body>
-                <div className="Columns">
-                    <InfoColumn dataParentToChild = {dataParentToChild.dataParentToChild.items}/>
-                    <LinkColumn dataParentToChild = {dataParentToChild.dataParentToChild.links}/>
-                </div>
-            </body>
+            <div className="Columns">
+                <InfoColumn dataParentToChild = {dataParentToChild.dataParentToChild.items}/>
+                <LinkColumn dataParentToChild = {dataParentToChild.dataParentToChild.links}/>
+            </div>
         </div>
     );
 }

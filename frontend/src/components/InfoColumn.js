@@ -3,6 +3,7 @@ import './InfoColumn.css';
 
 
 function InfoColumn({dataParentToChild}) {
+
     return (
         <div className="InfoColumn">
             <div className="InfoItem">

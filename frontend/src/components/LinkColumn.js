@@ -7,7 +7,7 @@ function LinkColumn({dataParentToChild}) {
     const links = [];
 
     for (let i = 0; i < dataParentToChild.length; i += 2) {
-        links.push(<NavLink to={dataParentToChild[i+1]}>{dataParentToChild[i]}</NavLink>)
+        links.push(<NavLink key={dataParentToChild[i]} to={dataParentToChild[i+1]}>{dataParentToChild[i]}</NavLink>)
     }
 
     return (
