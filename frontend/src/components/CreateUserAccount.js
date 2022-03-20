@@ -12,6 +12,7 @@ export const CreateUserAccount = () => {
     const [phone, setPhone] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
+    const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
 
     return (
@@ -87,6 +88,7 @@ export const CreateUserAccount = () => {
 
                 <Form.Button
                     fluid
+                    loading={requestLoading}
                     type='submit'
                     onClick={async () => {
                         const createRequest = { username, password, firstName, lastName, address, phone };
@@ -102,6 +104,7 @@ export const CreateUserAccount = () => {
                         }
 
                         if (quit) { return; }
+
 
                         const response = await fetch("/api/auth/register", {
                             method: "POST",
@@ -120,7 +123,9 @@ export const CreateUserAccount = () => {
                             setSuccess(false);
                             return;
                         }
+                        setRequestLoading(true);
                         let content = await response.json();
+                        setRequestLoading(false);
                         
                         if (content.status === 'error') {
                             errorMsg = document.getElementById('Error Message').getElementsByTagName('p')
