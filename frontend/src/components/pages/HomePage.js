@@ -1,7 +1,7 @@
 import logo from '../logo.png';
 import './HomePage.css';
 
-function StaticText() {
+function HomePage() {
   return (
     <div className="App">
       <header className="AppHeader">
