@@ -1,39 +1,39 @@
-.App {
-  text-align: center;
+.HomePage {
+    text-align: center;
 }
 
 .BankLogo {
-  height: 300px;
+    height: 300px;
 }
 
 .AppHeader {
-  background-color: #403f3f;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: left;
-  font-size: 124px;
-  color: #f0f0f0;
-  padding-left: 100px
+    background-color: #403f3f;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    font-size: 124px;
+    color: #f0f0f0;
+    padding-left: 100px;
 }
 
 .LoginText {
-  display: flex;
-  flex-direction: row;
-  list-style: none;
-  font-size: 24px;
-  padding-left: 500px;
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    font-size: 24px;
+    padding-left: 500px;
 }
 
 .LoginText > div {
-  padding: 100px;
+    padding: 100px;
 }
 
 .ExistingUser > p {
-  padding: 10px
+    padding: 10px;
 }
 
-.Button{
-  padding: 5px 10px
+.Button {
+    padding: 5px 10px;
 }
