@@ -1,6 +1,4 @@
-import functools
-import logging
-from flask import Blueprint, abort, jsonify, request
+from flask import Blueprint, abort, request
 from bmuapi.jwt_auth.token import encode_user_auth_token
 from bmuapi.utils import requires_auth, emailDomainRegex
 from bmuapi.database.database import SessionManager
@@ -40,7 +38,7 @@ def login():
 # once this function finishes, it can send an email to the user to confirm that it is valid.
 @auth.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
+    data = dict(request.get_json())
     if ('username' not in data or
         'password' not in data or
         'firstName' not in data or

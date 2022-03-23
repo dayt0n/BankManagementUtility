@@ -32,7 +32,7 @@ def init_db():
     MySession.configure(bind=engine)
     # don't do this until we have User finalized
     # just want to avoid migration at this point in the development process
-    # Base.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
 
     # use this to drop the User table
     # Base.metadata.drop_all(bind=engine, tables=[User.__table__])

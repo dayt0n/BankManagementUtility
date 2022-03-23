@@ -1,15 +1,15 @@
 version: '3.9'
 
 services:
-  bmu-database-dev:
-    restart: always
-    build:
-      context: "./database"
-      dockerfile: "./Dockerfile"
-    networks:
-      - dev-network
-    ports: 
-      - "5432:5432"
+  #bmu-database-dev:
+  #  restart: always
+  #  build:
+  #    context: "./database"
+  #    dockerfile: "./Dockerfile"
+  #  networks:
+  #    - dev-network
+  #  ports: 
+  #    - "5432:5432"
   bmu-api-dev:
     restart: always
     build:

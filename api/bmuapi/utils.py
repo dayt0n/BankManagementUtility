@@ -10,10 +10,19 @@ emailDomainRegex = re.compile(r"^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%
 def requires_auth(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        at = request.headers.get('x-access-token')
+        at = request.cookies.get('session')
         if at and (token := decode_user_auth_token(at)):
-            logging.debug(token)
             if not is_token_expired(token):
-                return func(*args, **kwargs)
+                return func(*args, **kwargs, token=token)
+        abort(403)
+    return wrapper
+
+
+def admin_only(func):
+    @functools.wraps(func)
+    @requires_auth
+    def wrapper(token, *args, **kwargs):
+        if token['role'] == "administrator":
+            return func(*args, **kwargs, token=token)
         abort(403)
     return wrapper
