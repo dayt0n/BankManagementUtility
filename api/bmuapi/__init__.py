@@ -1,6 +1,4 @@
 import logging
-from os import getenv
-import os
 from bmuapi.api.auth import auth
 from bmuapi.api import api
 from dotenv import load_dotenv
