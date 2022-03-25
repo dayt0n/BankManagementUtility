@@ -54,7 +54,9 @@ def register():
     name = data['firstName'].strip() + " " + data['lastName'].strip()
     address = data['address']
     phone = re.sub(r'-|\+|\(|\)|\.', '', data['phone'])
-    if len(phone) == 7:
+    if not phone.isdigit():
+        return error("Invalid phone number")
+    if len(phone) < 10:
         return error("Phone number must have an area code.")
     if len(phone) > 11:
         return error("Invalid phone number")
