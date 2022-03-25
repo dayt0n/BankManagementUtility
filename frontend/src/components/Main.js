@@ -19,7 +19,7 @@ const Main = () => {
             <Route path='/user/edit-account' element={<EditUserAccountPage />}></Route>
             <Route path='/user/open-account' element={<TestPage />}></Route>
             <Route path='/teller/overview' element={<TestPage />}></Route>
-            <Route path='/teller/create-user-account' element={<TestPage />}></Route>
+            <Route path='/teller/user/create-account' element={<TestPage />}></Route>
             <Route path='/teller/user/summary' element={<TestPage />}></Route>
             <Route path='/teller/user/view-account' element={<TestPage />}></Route>
             <Route path='/teller/user/transfer' element={<TestPage />}></Route>
