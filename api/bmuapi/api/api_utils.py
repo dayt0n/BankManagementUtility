@@ -2,9 +2,9 @@ from flask import jsonify
 
 
 def error(msg=None):
-    result = {"status": "failed"}
+    result = {"status": "error"}
     if msg:
-        result['error'] = msg
+        result['data'] = msg
     return jsonify(result)
 
 
