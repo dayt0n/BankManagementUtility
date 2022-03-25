@@ -68,7 +68,7 @@ export const CreateUserAccount = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                
+
                 <Form.Input
                     required
                     fluid
@@ -92,7 +92,7 @@ export const CreateUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { username, password, firstName, lastName, address, phone };
+                        const createRequest = { username, password, firstName, lastName, address, phone, email };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -127,7 +127,7 @@ export const CreateUserAccount = () => {
                         setRequestLoading(true);
                         let content = await response.json();
                         setRequestLoading(false);
-                        
+
                         if (content.status === 'error') {
                             errorMsg = document.getElementById('Error Message').getElementsByTagName('p')
                             errorMsg[0].textContent = content.msg

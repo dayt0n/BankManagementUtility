@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, abort, request
 from bmuapi.jwt_auth.token import encode_user_auth_token
 from bmuapi.utils import requires_auth, emailDomainRegex
@@ -72,10 +73,9 @@ def register():
             return error(f"User with email '{email}' or username '{username}' already exists.")
         # add user to db
         sess.add(User(username=username, name=name,
-                 email=email, password=hashedPW, role='customer', phone=phone, address=address))
+                 email=email, password=hashedPW, role='customer', phone=str(phone), address=address))
     # TODO: try to send verification email here
-    t = encode_user_auth_token(username, 'customer')
-    return success({"token": t})
+    return success()
 
 
 @auth.route('/check', methods=['POST', 'GET'])

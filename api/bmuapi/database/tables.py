@@ -12,9 +12,9 @@ class User(Base):
     email = Column(String)
     username = Column(String)
     password = Column(String)
-    rank = Column(ENUM('customer', 'teller', 'administrator', name='rankEnum'))
+    role = Column(ENUM('customer', 'teller', 'administrator', name='roleEnum'))
     address = Column(String)
-    phone = Column(Integer)
+    phone = Column(String)
     accounts = relationship("UserAccount", back_populates="user")
 
     def __repr__(self):
@@ -31,6 +31,7 @@ class UserAccount(Base):
     accountNum = Column(Integer)
     # transaction history table relationship
     history = relationship("TransactionHistory", back_populates="account")
+    historyID = Column(Integer, ForeignKey("transaction_history.id"))
     # checking/savings table relationship
     checkingSavingAcct = relationship(
         "CheckingSavings", back_populates="userAcct")
@@ -58,7 +59,6 @@ class CheckingSavings(Base):
     accountType = Column(
         ENUM('checking', 'savings', name='checking_savings_type_enum'))
     accountName = Column(Integer)
-    accountID = Column(Integer, ForeignKey("user_accounts.id"))
     balance = Column(MONEY)
     routingNumber = Column(Integer)
     dividendRate = Column(Float)
@@ -72,7 +72,6 @@ class CreditCard(Base):
     id = Column(Integer, primary_key=True)
     userAcct = relationship("UserAccount", back_populates="ccAcct")
     accountName = Column(String)
-    accountID = Column(Integer, ForeignKey("user_accounts.id"))
     balance = Column(MONEY)
     routingNumber = Column(Integer)
     interestRate = Column(Float)
@@ -87,7 +86,6 @@ class Mortgage(Base):
     userAcct = relationship("UserAccount", back_populates="mortgageAcct")
     accountType = Column(String)
     accountName = Column(Integer)
-    accountID = Column(Integer, ForeignKey("user_accounts.id"))
     routingNumber = Column(Integer)
     loanAmount = Column(MONEY)
     currentAmountOwed = Column(MONEY)
@@ -106,7 +104,6 @@ class TransactionHistory(Base):
     __tablename__ = 'transaction_history'
     id = Column(Integer, primary_key=True)
     account = relationship("UserAccount", back_populates="history")
-    accountID = Column(Integer, ForeignKey("user_accounts.id"))
     recipient = Column(String)
     transactionDate = Column(Integer)
     amount = Column(MONEY)
