@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "react-bootstrap/Navbar"
+import { Navbar } from "react-bootstrap"
 import Main from "./components/Main";
 
 function App() {

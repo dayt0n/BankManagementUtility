@@ -18,6 +18,7 @@ export const CreateTellerAccount = () => {
     return (
         <div className="CreateTellerAccount">
             <h1>Create Account</h1>
+            <hr />
             <Form inverted className="UserAccountForm" success={success} error={error} >
                 <Form.Group widths='equal'>
                     <Form.Input

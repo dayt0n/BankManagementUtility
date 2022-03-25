@@ -20,6 +20,7 @@ export const EditUserAccount = () => {
     return (
         <div className="EditUserAccount">
             <h1>Edit Account</h1>
+            <hr />
             <h3>Change Password</h3>
             <Form inverted className="ChangePasswordForm" success={passSuccess} error={passError} >
                 <Form.Input
@@ -106,6 +107,7 @@ export const EditUserAccount = () => {
                     content='Placeholder Error Message.'
                 />
             </Form>
+            <hr />
             <h3>Change User Information</h3>
             <Form inverted className="ChangeAccountInfoForm" success={infoSuccess} error={infoError} >
                 <Form.Group widths='equal'>
