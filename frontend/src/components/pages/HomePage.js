@@ -2,6 +2,7 @@ import logo from '../logo.png';
 import './HomePage.css';
 import { Form, Message } from "semantic-ui-react";
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 
 function HomePage() {
   const [username, setUsername] = useState("");
@@ -27,7 +28,10 @@ function HomePage() {
               Customer
             </li>
             <br></br>
-            <button className="Button">Create Account</button>
+            <Link to="/create-user-account">
+              <button className="Button">Create Account</button>
+            </Link>
+            
           </div>
           <div className="ExistingUser">
             <li>
