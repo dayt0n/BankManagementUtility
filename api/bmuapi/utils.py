@@ -26,3 +26,13 @@ def admin_only(func):
             return func(*args, **kwargs, token=token)
         abort(403)
     return wrapper
+
+
+def admin_or_current_user_only(func):
+    @functools.wraps(func)
+    @requires_auth
+    def wrapper(username, token, *args, **kwargs):
+        if token['role'] != 'administrator' and username != token['user']:
+            return func(*args, **kwargs, token=token)
+        abort(403)
+    return wrapper

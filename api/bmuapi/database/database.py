@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 from os import getenv
+from typing import Iterator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 import logging
@@ -12,7 +13,7 @@ MySession = sessionmaker()
 
 # https://gist.github.com/naufalafif/bb2e238f9f80aa17a16ebd7023afb935
 @contextmanager
-def SessionManager(commit=True):
+def SessionManager(commit=True) -> Iterator[Session]:
     sess: Session = MySession()
     try:
         yield sess
