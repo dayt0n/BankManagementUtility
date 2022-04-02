@@ -2,7 +2,7 @@ import logo from '../logo.png';
 import './HomePage.css';
 import { Form, Message } from "semantic-ui-react";
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 function HomePage() {
   const [username, setUsername] = useState("");
@@ -11,6 +11,8 @@ function HomePage() {
   const [error, setError] = useState(Boolean);
   const [requestLoading, setRequestLoading] = useState(Boolean);
   var errorMsg = 'Placeholder Error Message';
+
+  const navigate = useNavigate();
 
   return (
     <div className="HomePage">
@@ -28,9 +30,11 @@ function HomePage() {
               Customer
             </li>
             <br></br>
-            <Link to="/create-user-account">
-              <button className="Button">Create Account</button>
-            </Link>
+            <Form inverted className="CreateAccount">
+              <Link to="/create-user-account">
+                <Form.Button className="Button">Create Account</Form.Button>
+              </Link>
+            </Form>
             
           </div>
           <div className="ExistingUser">
@@ -41,6 +45,7 @@ function HomePage() {
               Customer
             </li>
             <br></br>
+            <div className="LoginForm">
             <Form inverted className="UserLoginForm" success={success} error={error} >
                 <Form.Group widths='equal'>
                     <Form.Input
@@ -64,6 +69,7 @@ function HomePage() {
                     />
                 </Form.Group>
                 <Form.Button
+                    className="LoginButton"
                     fluid
                     loading={requestLoading}
                     type='submit'
@@ -126,9 +132,10 @@ function HomePage() {
                 <Message id='Error Message'
                     error
                     header='Error!'
-                    content='Placeholder Error Message.'
+                    content='Incorrect Username or Password.'
                 />
             </Form>
+            </div>
             <p>
               Forgot Password?
             </p>
