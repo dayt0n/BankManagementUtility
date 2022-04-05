@@ -1,90 +1,59 @@
 import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
-import "./CreateUserAccount.css"
+import "./PayBillFromAccount.css"
 
-export const CreateUserAccount = () => {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [address, setAddress] = useState("");
-    const [phone, setPhone] = useState("");
+export const PayBillFromAccount = () => {
+    const [billAccount, setBillAccount] = useState("");
+    const [moneyAccount, setMoneyAccount] = useState("");
+    const [amount, setAmount] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
 
+    // GET TRANSFER OPTIONS HERE
+
+    const accountOpt = [
+        {key: 'c', text: 'Checking', value: 1234},
+        {key: 's', text: 'Saving', value: 1234}
+    ]
+
+    const billOpt = [
+        {key: 'm', text: 'Mortgage', value: 1234},
+        {key: 'cc', text: 'Credit Card', value: 1234}
+    ]
+
     return (
-        <div className="CreateUserAccount">
-            <h1>Create Account</h1>
+        <div className="PayBillFromAccount">
+            <h1>Pay Bill</h1>
             <hr />
-            <Form inverted className="UserAccountForm" success={success} error={error} >
-                <Form.Group widths='equal'>
-                    <Form.Input
-                        required
-                        fluid
-                        label='Username'
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <Form.Input
-                        required
-                        fluid
-                        type='password'
-                        label='Password'
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </Form.Group>
-
-                <Form.Group widths='equal'>
-                    <Form.Input
-                        required
-                        fluid
-                        label='First Name'
-                        placeholder="First Name"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                    <Form.Input
-                        required
-                        fluid
-                        label='Last Name'
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                    />
-                </Form.Group>
-
-                <Form.Input
+            <Form inverted className="PayBillForm" success={success} error={error} >
+                <Form.Select
                     required
                     fluid
-                    type='email'
-                    label='Email'
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    label='Bill To Pay'
+                    options={billOpt}
+                    placeholder='Bill'
+                    value={billAccount}
+                    onChange={(e) => setBillAccount(e.target.value)}
+                />
+
+                <Form.Select
+                    required
+                    fluid
+                    label='Account To Pay From'
+                    options={accountOpt}
+                    placeholder='Account'
+                    value={moneyAccount}
+                    onChange={(e) => setMoneyAccount(e.target.value)}
                 />
 
                 <Form.Input
                     required
                     fluid
-                    label='Full Address'
-                    placeholder="Full Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                />
-
-                <Form.Input
-                    required
-                    fluid
-                    label='Phone Number'
-                    placeholder="Phone Number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    label='Amount'
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                 />
 
                 <Form.Button
@@ -92,7 +61,7 @@ export const CreateUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { username, password, firstName, lastName, address, phone, email };
+                        const createRequest = { billAccount, moneyAccount, amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -107,7 +76,7 @@ export const CreateUserAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/auth/register", {
+                        const response = await fetch("/api/money/bills/pay", {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
@@ -145,7 +114,7 @@ export const CreateUserAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='You have successfully created your account! Please log in from the home page.'
+                    content='Payment went through successfully!'
                 />
                 <Message id='Error Message'
                     error

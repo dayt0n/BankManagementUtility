@@ -6,6 +6,8 @@ import TestPage from './pages/TestPage';
 import CreateUserAccountPage from './pages/CreateUserAccountPage';
 import EditUserAccountPage from './pages/EditUserAccountPage';
 import CreateTellerAccountPage from './pages/CreateTellerAccountPage';
+import TransferFundsPage from './pages/TransferFundsPage';
+import PayBillPage from './pages/PayBillPage';
 
 const Main = () => {
   return (
@@ -14,8 +16,8 @@ const Main = () => {
             <Route path='/' element={<HomePage />}></Route>
             <Route path='/create-user-account' element={<CreateUserAccountPage />}></Route>
             <Route path='/user/summary' element={<TestPage />}></Route>
-            <Route path='/user/transfer' element={<TestPage />}></Route>
-            <Route path='/user/pay-bill' element={<TestPage />}></Route>
+            <Route path='/user/transfer' element={<TransferFundsPage />}></Route>
+            <Route path='/user/pay-bill' element={<PayBillPage />}></Route>
             <Route path='/user/edit-account' element={<EditUserAccountPage />}></Route>
             <Route path='/user/open-account' element={<TestPage />}></Route>
             <Route path='/teller/overview' element={<TestPage />}></Route>
