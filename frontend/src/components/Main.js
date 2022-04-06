@@ -8,6 +8,9 @@ import EditUserAccountPage from './pages/EditUserAccountPage';
 import CreateTellerAccountPage from './pages/CreateTellerAccountPage';
 import TransferFundsPage from './pages/TransferFundsPage';
 import PayBillPage from './pages/PayBillPage';
+import TellerTransferFundsPage from './pages/TellerTransferFundsPage';
+import TellerCreateNewAccountPage from './pages/TellerCreateNewAccountPage';
+import OpenAccountPage from './pages/OpenAccountPage';
 
 const Main = () => {
   return (
@@ -19,12 +22,12 @@ const Main = () => {
             <Route path='/user/transfer' element={<TransferFundsPage />}></Route>
             <Route path='/user/pay-bill' element={<PayBillPage />}></Route>
             <Route path='/user/edit-account' element={<EditUserAccountPage />}></Route>
-            <Route path='/user/open-account' element={<TestPage />}></Route>
+            <Route path='/user/open-account' element={<OpenAccountPage />}></Route>
             <Route path='/teller/overview' element={<TestPage />}></Route>
-            <Route path='/teller/user/create-account' element={<TestPage />}></Route>
+            <Route path='/teller/user/create-account' element={<TellerCreateNewAccountPage />}></Route>
             <Route path='/teller/user/summary' element={<TestPage />}></Route>
             <Route path='/teller/user/view-account' element={<TestPage />}></Route>
-            <Route path='/teller/user/transfer' element={<TestPage />}></Route>
+            <Route path='/teller/user/transfer' element={<TellerTransferFundsPage />}></Route>
             <Route path='/teller/user/delete-account' element={<TestPage />}></Route>
             <Route path='/admin/overview' element={<TestPage />}></Route>
             <Route path='/admin/user/view-account' element={<TestPage />}></Route>

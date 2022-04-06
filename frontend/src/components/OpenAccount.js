@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
-import "./TransferAccountToAccount.css"
+import "./OpenAccount.css"
 
-export const TransferAccountToAccount = () => {
-    const [fromAccount, setFromAccount] = useState("");
-    const [toAccount, setToAccount] = useState("");
-    const [amount, setAmount] = useState("");
+export const OpenAccount = () => {
+    const [accountType, setAccountType] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
@@ -13,40 +11,25 @@ export const TransferAccountToAccount = () => {
 
     // GET TRANSFER OPTIONS HERE
 
-    const options = [
-        {key: 'c', text: 'Checking', value: 1234},
-        {key: 's', text: 'Saving', value: 1234}
+    const accountTypeOpt = [
+        {key: 'c', text: 'Checking', value: 1},
+        {key: 's', text: 'Saving', value: 2},
+        {key: 'm', text: 'Mortgage', value: 3},
+        {key: 'cc', text: 'Credit Card', value: 4},
     ]
 
     return (
-        <div className="TransferAccountToAccount">
-            <h1>Transfer Funds</h1>
+        <div className="OpenAccount">
+            <h1>Open New Account</h1>
             <hr />
-            <Form inverted className="TransferA2AForm" success={success} error={error} >
+            <Form inverted className="OpenAccountForm" success={success} error={error} >
                 <Form.Select
                     required
                     fluid
-                    label='Transfer From'
-                    options={options}
-                    placeholder='Account'
-                    onChange={(e) => setFromAccount(e.target.value)}
-                />
-
-                <Form.Select
-                    required
-                    fluid
-                    label='Transfer To'
-                    options={options}
-                    placeholder='Account'
-                    onChange={(e) => setToAccount(e.target.value)}
-                />
-
-                <Form.Input
-                    required
-                    fluid
-                    label='Amount'
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    label='Account Type'
+                    options={accountTypeOpt}
+                    placeholder='Bill'
+                    onChange={(e) => setAccountType(e.target.value)}
                 />
 
                 <Form.Button
@@ -54,7 +37,7 @@ export const TransferAccountToAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { fromAccount, toAccount, amount };
+                        const createRequest = { accountType };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -69,7 +52,7 @@ export const TransferAccountToAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/money/move/transfer", {
+                        const response = await fetch("/api/money/account/create", {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
@@ -107,7 +90,7 @@ export const TransferAccountToAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='Money transfer was successful!'
+                    content='Payment went through successfully!'
                 />
                 <Message id='Error Message'
                     error

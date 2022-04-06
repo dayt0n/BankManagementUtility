@@ -14,13 +14,13 @@ export const PayBillFromAccount = () => {
     // GET TRANSFER OPTIONS HERE
 
     const accountOpt = [
-        {key: 'c', text: 'Checking', value: 1234},
-        {key: 's', text: 'Saving', value: 1234}
+        {key: 'c', text: 'Checking', value: 1},
+        {key: 's', text: 'Saving', value: 2}
     ]
 
     const billOpt = [
-        {key: 'm', text: 'Mortgage', value: 1234},
-        {key: 'cc', text: 'Credit Card', value: 1234}
+        {key: 'm', text: 'Mortgage', value: 1},
+        {key: 'cc', text: 'Credit Card', value: 2}
     ]
 
     return (
@@ -34,7 +34,6 @@ export const PayBillFromAccount = () => {
                     label='Bill To Pay'
                     options={billOpt}
                     placeholder='Bill'
-                    value={billAccount}
                     onChange={(e) => setBillAccount(e.target.value)}
                 />
 
@@ -44,7 +43,6 @@ export const PayBillFromAccount = () => {
                     label='Account To Pay From'
                     options={accountOpt}
                     placeholder='Account'
-                    value={moneyAccount}
                     onChange={(e) => setMoneyAccount(e.target.value)}
                 />
 
