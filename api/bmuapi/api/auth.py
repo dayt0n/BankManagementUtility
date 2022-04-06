@@ -41,13 +41,9 @@ def login():
 @auth.route('/register', methods=['POST'])
 def register():
     data = dict(request.get_json())
-    if ('username' not in data or
-        'password' not in data or
-        'firstName' not in data or
-        'lastName' not in data or
-        'email' not in data or
-        'address' not in data or
-            'phone' not in data):
+    reqKeys = ("username", "password", "firstName",
+               "lastName", "email", "address", "phone")
+    if not all(k in data for k in reqKeys):
         abort(500)
     username = data['username'].strip()
     password = data['password'].strip()

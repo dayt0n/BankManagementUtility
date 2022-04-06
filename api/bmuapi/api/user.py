@@ -1,5 +1,5 @@
 from flask import Blueprint, abort, request
-from bmuapi.utils import admin_or_current_user_only, admin_only, emailDomainRegex
+from bmuapi.utils import admin_or_current_user_only, admin_or_teller_only, admin_only, emailDomainRegex
 from bmuapi.database.database import SessionManager
 from bmuapi.database.tables import User
 from bmuapi.api.api_utils import success, error
@@ -28,6 +28,14 @@ def info(username, token):
         # return everything except the password hash, no reason anyone ever needs to know that
         del usrDict['password']
         return success(usrDict)
+
+
+@user.route('/list', methods=["GET"])
+@admin_or_teller_only
+def list(token):
+    with SessionManager(commit=False) as sess:
+        users = [usr for usr in sess.query(User.username).all()]
+    return success(users)
 
 
 @user.route('/delete/<username>', methods=["GET"])
