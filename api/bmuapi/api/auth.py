@@ -21,7 +21,7 @@ def auth_home():
 @auth.route('/login', methods=['POST'])
 def login():
     data = dict(request.get_json())
-    if 'username' not in data or 'password' not in data:
+    if not all(k in data for k in ('username', 'password')):
         abort(500)
     username = data['username']
     password = data['password']

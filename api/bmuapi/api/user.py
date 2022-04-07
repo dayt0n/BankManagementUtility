@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, request
-from bmuapi.utils import admin_or_current_user_only, admin_or_teller_only, admin_only, emailDomainRegex
-from bmuapi.database.database import SessionManager
-from bmuapi.database.tables import User
+from bmuapi.utils import admin_or_current_user_only, admin_or_teller_only, admin_only, emailDomainRegex, teller_or_current_user_only
+from bmuapi.database.database import SessionManager, get_money_account
+from bmuapi.database.tables import User, UserAccount, CheckingSavings, CreditCard, Mortgage
 from bmuapi.api.api_utils import success, error
 import re
 from passlib.hash import sha512_crypt
@@ -77,3 +77,27 @@ def edit(username, token):
         if 'username' in data:
             usr.username = data['username'].strip()
     return success(f"Updated account details for {username}")
+
+
+@user.route('/accounts/<username>', methods=["POST"])
+@teller_or_current_user_only
+def accounts(username, token):
+    with SessionManager(commit=False) as sess:
+        usr = sess.query(User).filter(User.username == username).first()
+        if not usr:
+            return error(f"User {username} not found")
+        usrId = usr.id
+        accounts = sess.query(UserAccount).filter(
+            UserAccount.userID == usrId).all()
+        if not accounts:
+            return error(f"User {username} has no accounts")
+        realAccounts = []
+        for account in accounts:
+            # find linked accounts in other tables
+            actualAccount = get_money_account(account)
+            if not actualAccount:
+                return error("Error looking up account. Please contact an administrator.")
+            dictAccount = actualAccount._asdict()
+            dictAccount['accountNum'] = account.accountNum
+            realAccounts.append(dictAccount)
+        return success(realAccounts)

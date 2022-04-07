@@ -1,13 +1,15 @@
 from os import getenv
 import arrow
 from flask import Blueprint, abort, request
-from bmuapi.database.database import SessionManager
+from bmuapi.database.database import SessionManager, get_money_account
 from bmuapi.database.tables import User
-from bmuapi.utils import admin_or_teller_only
+from bmuapi.utils import admin_or_teller_only, teller_or_account_owner_only
 from bmuapi.api.api_utils import error, success
 from bmuapi.database.tables import UserAccount
 from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory
 from dateutil.rrule import rrule, MONTHLY
+
+from api.bmuapi.utils import teller_or_current_user_only
 
 account = Blueprint('account', __name__, url_prefix='/account')
 
@@ -38,6 +40,7 @@ def create(token):
     acct = UserAccount(userID=usr.id)
     routingNumber = int(getenv("ROUTING_NUMBER"))
     moneyAcct = None
+    accountNumBase = 123456789
     match data['type']:
         case "checking":
             acct.accountType = "checkingSaving"
@@ -78,6 +81,23 @@ def create(token):
         case _:
             return error(f"No account type with name {data['type']}.")
     with SessionManager() as sess:
+        acct.accountNum = accountNumBase + acct.id
         sess.add(moneyAcct)
         sess.add(acct)
     return success(f"Created account of type {data['type']} for {data['username']}")
+
+
+@account.route('/summary/<accountNum>', methods=["GET"])
+@teller_or_account_owner_only
+def summary(accountNum, token):
+    with SessionManager(commit=False) as sess:
+        acct = sess.query(UserAccount).filter(
+            UserAccount.accountNum == accountNum).first()
+        if not acct:
+            return error("Could not find account with number {accountNum}")
+        actualAccount = get_money_account(acct)
+        if not actualAccount:
+            return error("Error looking up account. Please contact an administrator.")
+        dictAccount = actualAccount._asdict()
+        dictAccount['accountNum'] = acct.accountNum
+        return success(dictAccount)
