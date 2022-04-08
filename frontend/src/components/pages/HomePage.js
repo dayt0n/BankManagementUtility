@@ -126,7 +126,7 @@ function HomePage() {
                             //console.log(decoded);
                             //console.log(decoded["role"]);
 
-                            document.cookie="x-access-token=" + JSON.stringify(content.data).slice(10,-2)
+                            document.cookie="x-access-token=" + JSON.stringify(content.data).slice(10,-2);
 
                             if(decoded["role"]==="customer"){
                               navigate("/user/summary");
@@ -134,8 +134,8 @@ function HomePage() {
                             else if(decoded["role"]==="teller"){
                               navigate("/teller/overview");
                             }
-                            else if(decoded["role"]==="admin"){
-                              navigate("/admin/pverview");
+                            else if(decoded["role"]==="administrator"){
+                              navigate("/admin/overview");
                             }
                         }
                     }}
