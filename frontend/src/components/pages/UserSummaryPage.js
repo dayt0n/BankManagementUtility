@@ -1,7 +1,34 @@
 import React from "react";
 import TemplatePage from './TemplatePage';
 import decode from 'jwt-decode';
-import { Redirect } from 'react-router-dom';
+
+async function getUserAccounts() {
+    const user = decode(document.cookie);
+    console.log(user);
+    console.log(document.cookie);
+
+    const response = await fetch("/api/user/accounts/" + user["user"], {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        console.log("response failed!");
+    }
+    else {
+        console.log("response recieved!");
+    }
+
+    return response;
+}
+
+function parseUserAccounts(accounts) {
+    console.log(accounts);
+    console.log(accounts.value);
+}
 
 function UserSummaryPage() {
     const state = {
@@ -14,30 +41,11 @@ function UserSummaryPage() {
     };
     
     if (document.cookie) {
-        var redirect = <></>
-        const user = decode(document.cookie);
-        console.log(user);
-        console.log(document.cookie);
-
-        const response = fetch("/api/user/accounts/" + user["user"], {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-        });
-    
-        if (!response.ok) {
-            console.log("response failed!");
-        }
-    }
-    else {
-        var redirect = <Redirect to="/" />
+        getUserAccounts().then(response => { parseUserAccounts(response.json()) });
     }
 
     return (
         <div>
-            {redirect}
             <TemplatePage dataParentToChild={state} />
         </div>
     );
