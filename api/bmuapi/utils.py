@@ -56,7 +56,7 @@ def teller_or_current_user_only(func):
     @requires_auth
     def wrapper(username, token, *args, **kwargs):
         if token['role'] == 'teller' or username == token['user']:
-            return func(*args, **kwargs, token=token)
+            return func(*args, **kwargs, username=username, token=token)
         abort(403)
     return wrapper
 
@@ -78,7 +78,7 @@ def teller_or_account_owner_only(func):
     @requires_auth
     def wrapper(accountNum, token, *args, **kwargs):
         if token['role'] == 'teller' or get_account_owner(accountNum) == token['user']:
-            return func(*args, **kwargs, token=token)
+            return func(*args, **kwargs, accountNum=accountNum, token=token)
         abort(403)
     return wrapper
 
@@ -88,6 +88,6 @@ def admin_or_current_user_only(func):
     @requires_auth
     def wrapper(username, token, *args, **kwargs):
         if token['role'] == 'administrator' or username == token['user']:
-            return func(*args, **kwargs, token=token)
+            return func(*args, **kwargs, username=username, token=token)
         abort(403)
     return wrapper

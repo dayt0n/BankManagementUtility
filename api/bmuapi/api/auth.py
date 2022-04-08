@@ -8,6 +8,7 @@ from passlib.hash import sha512_crypt
 from bmuapi.api.api_utils import error, success
 import re
 import phonenumbers
+from sqlalchemy import or_
 
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -65,7 +66,7 @@ def register():
     hashedPW = sha512_crypt.hash(password)  # hash password for storage
     with SessionManager() as sess:
         existingUsr = sess.query(User).filter(
-            User.email == email or User.username == username).count()
+            or_(User.email == email, User.username == username)).count()
         if existingUsr and existingUsr > 0:  # make sure user doesn't already exist
             return error(f"User with email '{email}' or username '{username}' already exists.")
         # add user to db
