@@ -91,8 +91,8 @@ class Mortgage(Base):
     loanTerm = Column(Integer)
     interestRate = Column(Float)
     monthlyPayment = Column(MONEY)
-    paymentDueDate = Column(TIMESTAMP)
-    startDate = Column(TIMESTAMP)
+    paymentDueDate = Column(TIMESTAMP(timezone=True))
+    startDate = Column(TIMESTAMP(timezone=True))
     status = Column(String)
 
     def __repr__(self):
@@ -105,7 +105,7 @@ class TransactionHistory(Base):
     account = relationship("UserAccount", back_populates="history")
     accountID = Column(Integer, ForeignKey("user_accounts.id"))
     recipient = Column(String)
-    transactionDate = Column(TIMESTAMP)
+    transactionDate = Column(TIMESTAMP(timezone=True))
     amount = Column(MONEY)
     internal = Column(Boolean)
 

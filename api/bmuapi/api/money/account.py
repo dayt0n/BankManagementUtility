@@ -3,13 +3,11 @@ import arrow
 from flask import Blueprint, abort, request
 from bmuapi.database.database import SessionManager, get_money_account
 from bmuapi.database.tables import User
-from bmuapi.utils import admin_or_teller_only, teller_or_account_owner_only
+from bmuapi.utils import admin_or_teller_only, teller_or_account_owner_only, teller_or_current_user_only
 from bmuapi.api.api_utils import error, success
 from bmuapi.database.tables import UserAccount
 from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory
 from dateutil.rrule import rrule, MONTHLY
-
-from api.bmuapi.utils import teller_or_current_user_only
 
 account = Blueprint('account', __name__, url_prefix='/account')
 
