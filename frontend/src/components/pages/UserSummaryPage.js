@@ -22,7 +22,7 @@ async function getUserAccounts() {
         console.log("response recieved!");
     }
 
-    return response;
+    return await response.json();
 }
 
 function parseUserAccounts(accounts) {
@@ -33,15 +33,15 @@ function parseUserAccounts(accounts) {
 function UserSummaryPage() {
     const state = {
         'links': ['Summary', '/user/summary',
-                  'Transfer Funds', '/user/transfer',
-                  'Pay A Bill', '/user/pay-bill',
-                  'Edit Account Information', '/user/edit-account',
-                  'Open New Account', '/user/open-account',],
+            'Transfer Funds', '/user/transfer',
+            'Pay A Bill', '/user/pay-bill',
+            'Edit Account Information', '/user/edit-account',
+            'Open New Account', '/user/open-account',],
         'items': []
     };
-    
+
     if (document.cookie) {
-        getUserAccounts().then(response => { parseUserAccounts(response.json()) });
+        getUserAccounts().then(response => { parseUserAccounts(response) });
     }
 
     return (
