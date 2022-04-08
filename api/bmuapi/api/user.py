@@ -79,7 +79,7 @@ def edit(username, token):
     return success(f"Updated account details for {username}")
 
 
-@user.route('/accounts/<username>', methods=["POST"])
+@user.route('/accounts/<username>', methods=["GET"])
 @teller_or_current_user_only
 def accounts(username, token):
     with SessionManager(commit=False) as sess:
