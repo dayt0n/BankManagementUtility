@@ -4,7 +4,11 @@ import { PayBillFromAccount } from "../PayBillFromAccount";
 
 function PayBillPage() {
     const state = {
-        'links': ['Home', '/'],
+        'links': ['Summary', '/user/summary',
+                  'Transfer Funds', '/user/transfer',
+                  'Pay A Bill', '/user/pay-bill',
+                  'Edit Account Information', '/user/edit-account',
+                  'Open New Account', '/user/open-account',],
         'items': [<PayBillFromAccount />]
     };
 

@@ -122,11 +122,16 @@ function HomePage() {
                             setSuccess(true);
                             //console.log(content.data);
                             //console.log(JSON.stringify(content.data).slice(10,-2));
+
+                            if (document.cookie) {
+                              document.cookie = 'COOKIE_NAME=session; Max-Age=0;';
+                            }
+
                             var decoded=decode(JSON.stringify(content.data).slice(10,-2));
                             //console.log(decoded);
                             //console.log(decoded["role"]);
-
-                            document.cookie="x-access-token=" + JSON.stringify(content.data).slice(10,-2);
+                            
+                            document.cookie="session=" + JSON.stringify(content.data).slice(10,-2);
 
                             if(decoded["role"]==="customer"){
                               navigate("/user/summary");
