@@ -5,7 +5,7 @@ import { EditUserAccount } from '../EditUserAccount';
 function EditUserAccountPage() {
     const state = {
         'links': ['Overview', '/user/overview'],
-        'items': [<EditUserAccount />]
+        'items': [<EditUserAccount key="item1"/>]
     };
 
     return (

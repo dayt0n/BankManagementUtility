@@ -1,7 +1,14 @@
 import React from 'react';
 import { Button } from "react-bootstrap";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+function logout() {
+    if (document.cookie) {
+        document.cookie = 'COOKIE_NAME=session; Max-Age=0;';
+    }
+
+    console.log("Logged out!");
+}
 
 function TemplateHeader() {
 
@@ -11,28 +18,18 @@ function TemplateHeader() {
         redirect = <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
     }
 
+
     return (
         <header>
             {redirect}
             <div className="Header">
                 <span className="dot"></span>
                 <h1>Bank</h1>
-                <Button
-                    to="/"
-                    onClick={async () => {
-                        if (document.cookie) {
-                            document.cookie = 'COOKIE_NAME=session; Max-Age=0;';
-                        }
-
-                        console.log("Logged out!");
-
-                        
-                    }
-                }
-
-                >
-                    Log Out
-                </Button>
+                <Link to="/">
+                    <Button onClick={logout()}>
+                        Log Out
+                    </Button>
+                </Link>
             </div>
         </header>
     );

@@ -9,7 +9,7 @@ function PayBillPage() {
                   'Pay A Bill', '/user/pay-bill',
                   'Edit Account Information', '/user/edit-account',
                   'Open New Account', '/user/open-account',],
-        'items': [<PayBillFromAccount />]
+        'items': [<PayBillFromAccount key="item1"/>]
     };
 
     return (

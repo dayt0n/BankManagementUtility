@@ -9,7 +9,7 @@ function TransferFundsPage() {
                   'Pay A Bill', '/user/pay-bill',
                   'Edit Account Information', '/user/edit-account',
                   'Open New Account', '/user/open-account',],
-        'items': [<TransferAccountToAccount />]
+        'items': [<TransferAccountToAccount key="item1"/>]
     };
 
     return (

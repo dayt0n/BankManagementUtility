@@ -5,7 +5,7 @@ import { CreateUserAccount } from '../CreateUserAccount';
 function TellerCreateNewAccountPage() {
     const state = {
         'links': ['Home', '/'],
-        'items': [<CreateUserAccount />]
+        'items': [<CreateUserAccount key="item1"/>]
     };
 
     return (

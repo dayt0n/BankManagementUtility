@@ -5,7 +5,7 @@ import { TransferAccountToAccount } from "../TransferAccountToAccount";
 function TellerTransferFundsPage() {
     const state = {
         'links': ['Home', '/'],
-        'items': [<TransferAccountToAccount />]
+        'items': [<TransferAccountToAccount key="item1"/>]
     };
 
     return (

@@ -5,7 +5,7 @@ import { CreateTellerAccount } from '../CreateTellerAccount';
 function CreateTellerAccountPage() {
     const state = {
         'links': ['Overview', '/admin/overview'],
-        'items': [<CreateTellerAccount />]
+        'items': [<CreateTellerAccount key="item1"/>]
     };
 
     return (
