@@ -1,0 +1,5 @@
+Alembic configuration files
+============================
+Generic single-database configuration.
+
+Used for migrating database when something is changed in ../tables.py.

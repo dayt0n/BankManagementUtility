@@ -1,90 +1,52 @@
 import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
-import "./CreateUserAccount.css"
+import "./TransferAccountToAccount.css"
 
-export const CreateUserAccount = () => {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [address, setAddress] = useState("");
-    const [phone, setPhone] = useState("");
+export const TransferAccountToAccount = () => {
+    const [fromAccount, setFromAccount] = useState("");
+    const [toAccount, setToAccount] = useState("");
+    const [amount, setAmount] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
 
+    // GET TRANSFER OPTIONS HERE
+
+    const options = [
+        {key: 'c', text: 'Checking', value: 1234},
+        {key: 's', text: 'Saving', value: 1234}
+    ]
+
     return (
-        <div className="CreateUserAccount">
-            <h1>Create Account</h1>
+        <div className="TransferAccountToAccount">
+            <h1>Transfer Funds</h1>
             <hr />
-            <Form inverted className="UserAccountForm" success={success} error={error} >
-                <Form.Group widths='equal'>
-                    <Form.Input
-                        required
-                        fluid
-                        label='Username'
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <Form.Input
-                        required
-                        fluid
-                        type='password'
-                        label='Password'
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </Form.Group>
-
-                <Form.Group widths='equal'>
-                    <Form.Input
-                        required
-                        fluid
-                        label='First Name'
-                        placeholder="First Name"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                    <Form.Input
-                        required
-                        fluid
-                        label='Last Name'
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                    />
-                </Form.Group>
-
-                <Form.Input
+            <Form inverted className="TransferA2AForm" success={success} error={error} >
+                <Form.Select
                     required
                     fluid
-                    type='email'
-                    label='Email'
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    label='Transfer From'
+                    options={options}
+                    placeholder='Account'
+                    onChange={(e) => setFromAccount(e.target.value)}
+                />
+
+                <Form.Select
+                    required
+                    fluid
+                    label='Transfer To'
+                    options={options}
+                    placeholder='Account'
+                    onChange={(e) => setToAccount(e.target.value)}
                 />
 
                 <Form.Input
                     required
                     fluid
-                    label='Full Address'
-                    placeholder="Full Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                />
-
-                <Form.Input
-                    required
-                    fluid
-                    label='Phone Number'
-                    placeholder="Phone Number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    label='Amount'
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                 />
 
                 <Form.Button
@@ -92,7 +54,7 @@ export const CreateUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { username, password, firstName, lastName, address, phone, email };
+                        const createRequest = { fromAccount, toAccount, amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -107,7 +69,7 @@ export const CreateUserAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/auth/register", {
+                        const response = await fetch("/api/money/move/transfer", {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
@@ -145,7 +107,7 @@ export const CreateUserAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='You have successfully created your account! Please log in from the home page.'
+                    content='Money transfer was successful!'
                 />
                 <Message id='Error Message'
                     error
