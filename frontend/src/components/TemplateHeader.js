@@ -7,7 +7,7 @@ function logout() {
         document.cookie = 'COOKIE_NAME=session; Max-Age=0;';
     }
 
-    console.log("Logged out!");
+    // console.log("Logged out!");
 }
 
 function TemplateHeader() {

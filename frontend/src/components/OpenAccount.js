@@ -90,7 +90,7 @@ export const OpenAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='Payment went through successfully!'
+                    content='Account has been opened! Check your summary page to see your new account!'
                 />
                 <Message id='Error Message'
                     error

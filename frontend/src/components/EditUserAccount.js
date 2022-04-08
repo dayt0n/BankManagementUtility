@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
+import decode from 'jwt-decode';
 import "./EditUserAccount.css"
 
 export const EditUserAccount = () => {
@@ -7,7 +8,7 @@ export const EditUserAccount = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [oldPassword, setOldPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
+    const [password, setNewPassword] = useState("");
     const [address, setAddress] = useState("");
     const [phone, setPhone] = useState("");
     const [passSuccess, setPasswordSuccess] = useState(Boolean);
@@ -16,6 +17,26 @@ export const EditUserAccount = () => {
     const [infoError, setInfoError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
+
+    function setVars(userInfo) {
+        console.log(userInfo);
+        var name = userInfo['name'].split(" ");
+        setFirstName(name[0]);
+        setLastName(name[1]);
+        setAddress(userInfo['address']);
+        setPhone(userInfo['phone']);
+        setEmail(userInfo['email']);
+    }
+
+    if (document.cookie) {
+        var user = decode(document.cookie);
+    }
+
+    useEffect(() => {
+        fetch("/api/user/info/" + user["user"])
+            .then(res => res.json())
+            .then(data => setVars(data["data"]))
+    }, []);
 
     return (
         <div className="EditUserAccount">
@@ -38,7 +59,7 @@ export const EditUserAccount = () => {
                     type='password'
                     label='New Password'
                     placeholder="Password"
-                    value={newPassword}
+                    value={password}
                     onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <Form.Button
@@ -46,7 +67,7 @@ export const EditUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { oldPassword, newPassword };
+                        const createRequest = { oldPassword, password };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -61,7 +82,7 @@ export const EditUserAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/auth/register", {
+                        const response = await fetch("/api/user/edit/" + user["user"], {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
@@ -162,7 +183,7 @@ export const EditUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { firstName, lastName, address, phone };
+                        const createRequest = { firstName, lastName, address, phone, email };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -177,7 +198,7 @@ export const EditUserAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/auth/register", {
+                        const response = await fetch("/api/user/edit/" + user["user"], {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
