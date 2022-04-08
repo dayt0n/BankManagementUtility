@@ -7,6 +7,7 @@ from bmuapi.database.tables import User
 from passlib.hash import sha512_crypt
 from bmuapi.api.api_utils import error, success
 import re
+import phonenumbers
 
 
 auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -20,7 +21,7 @@ def auth_home():
 @auth.route('/login', methods=['POST'])
 def login():
     data = dict(request.get_json())
-    if 'username' not in data or 'password' not in data:
+    if not all(k in data for k in ('username', 'password')):
         abort(500)
     username = data['username']
     password = data['password']
@@ -40,29 +41,23 @@ def login():
 @auth.route('/register', methods=['POST'])
 def register():
     data = dict(request.get_json())
-    if ('username' not in data or
-        'password' not in data or
-        'firstName' not in data or
-        'lastName' not in data or
-        'email' not in data or
-        'address' not in data or
-            'phone' not in data):
+    reqKeys = ("username", "password", "firstName",
+               "lastName", "email", "address", "phone")
+    if not all(k in data for k in reqKeys):
         abort(500)
     username = data['username'].strip()
     password = data['password'].strip()
     email = data['email'].strip()
     name = data['firstName'].strip() + " " + data['lastName'].strip()
     address = data['address']
-    phone = re.sub(r'-|\+|\(|\)|\.', '', data['phone'])
-    if not phone.isdigit():
+    phone = data['phone']
+    try:
+        phoneParsed = phonenumbers.parse(phone, 'US')
+    except phonenumbers.phonenumberutil.NumberParseException:
         return error("Invalid phone number")
-    if len(phone) < 10:
-        return error("Phone number must have an area code.")
-    if len(phone) > 11:
+    if not phonenumbers.is_valid_number(phoneParsed):
         return error("Invalid phone number")
-    if len(phone) == 10:
-        phone = "1" + phone  # if no country code provided, assume US
-    phone = int(phone)
+    phone = phonenumbers.format_number(phoneParsed, 0)
     # check for valid email
     emailValidCheck = re.fullmatch(emailDomainRegex, email)
     if not emailValidCheck:
@@ -75,7 +70,7 @@ def register():
             return error(f"User with email '{email}' or username '{username}' already exists.")
         # add user to db
         sess.add(User(username=username, name=name,
-                 email=email, password=hashedPW, role='customer', phone=str(phone), address=address))
+                 email=email, password=hashedPW, role='customer', phone=phone, address=address))
     # TODO: try to send verification email here
     return success()
 

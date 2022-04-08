@@ -1,7 +1,9 @@
 import logging
-from os import getenv
-import os
+from bmuapi.api.money.move import move
+from bmuapi.api.money.account import account
+from bmuapi.api.money import money
 from bmuapi.api.auth import auth
+from bmuapi.api.user import user
 from bmuapi.api import api
 from dotenv import load_dotenv
 from flask import Flask, abort
@@ -15,7 +17,11 @@ init_db()
 
 app = Flask(__name__)
 
+money.register_blueprint(account)
+money.register_blueprint(move)
 api.register_blueprint(auth)
+api.register_blueprint(user)
+api.register_blueprint(money)
 app.register_blueprint(api)
 
 

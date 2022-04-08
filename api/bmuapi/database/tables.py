@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
-from sqlalchemy.dialects.postgresql import MONEY, ENUM
+from sqlalchemy.dialects.postgresql import MONEY, ENUM, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from . import Base
@@ -31,7 +31,6 @@ class UserAccount(Base):
     accountNum = Column(Integer)
     # transaction history table relationship
     history = relationship("TransactionHistory", back_populates="account")
-    historyID = Column(Integer, ForeignKey("transaction_history.id"))
     # checking/savings table relationship
     checkingSavingAcct = relationship(
         "CheckingSavings", back_populates="userAcct")
@@ -58,7 +57,7 @@ class CheckingSavings(Base):
     userAcct = relationship("UserAccount", back_populates="checkingSavingAcct")
     accountType = Column(
         ENUM('checking', 'savings', name='checking_savings_type_enum'))
-    accountName = Column(Integer)
+    accountName = Column(String)
     balance = Column(MONEY)
     routingNumber = Column(Integer)
     dividendRate = Column(Float)
@@ -85,15 +84,15 @@ class Mortgage(Base):
     id = Column(Integer, primary_key=True)
     userAcct = relationship("UserAccount", back_populates="mortgageAcct")
     accountType = Column(String)
-    accountName = Column(Integer)
+    accountName = Column(String)
     routingNumber = Column(Integer)
     loanAmount = Column(MONEY)
     currentAmountOwed = Column(MONEY)
     loanTerm = Column(Integer)
     interestRate = Column(Float)
     monthlyPayment = Column(MONEY)
-    paymentDueDate = Column(Integer)
-    startDate = Column(Integer)
+    paymentDueDate = Column(TIMESTAMP(timezone=True))
+    startDate = Column(TIMESTAMP(timezone=True))
     status = Column(String)
 
     def __repr__(self):
@@ -104,8 +103,9 @@ class TransactionHistory(Base):
     __tablename__ = 'transaction_history'
     id = Column(Integer, primary_key=True)
     account = relationship("UserAccount", back_populates="history")
+    accountID = Column(Integer, ForeignKey("user_accounts.id"))
     recipient = Column(String)
-    transactionDate = Column(Integer)
+    transactionDate = Column(TIMESTAMP(timezone=True))
     amount = Column(MONEY)
     internal = Column(Boolean)
 

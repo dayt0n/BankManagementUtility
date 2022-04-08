@@ -17,6 +17,11 @@ services:
       dockerfile: "./Dockerfile"
     networks:
       - dev-network
+    environment:
+      - ROUTING_NUMBER=123456789
+      - DIVIDEND_RATE=1.9
+      - CC_INTEREST_RATE=20.0
+      - MORTGAGE_INTEREST_RATE=4.0
   bmu-frontend-dev:
     restart: always
     build:
