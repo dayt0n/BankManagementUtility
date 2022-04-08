@@ -3,7 +3,7 @@ import arrow
 from flask import Blueprint, abort, request
 from bmuapi.database.database import SessionManager, get_money_account
 from bmuapi.database.tables import User
-from bmuapi.utils import admin_or_teller_only, teller_or_account_owner_only, teller_or_current_user_only
+from bmuapi.utils import admin_or_teller_only, teller_only, teller_or_account_owner_only, teller_or_current_user_only
 from bmuapi.api.api_utils import error, success
 from bmuapi.database.tables import UserAccount
 from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory
@@ -85,6 +85,52 @@ def create(token):
     return success(f"Created account of type {data['type']} for {data['username']}")
 
 
+@account.route('/delete/<accountNum>', methods=["GET"])
+@teller_only
+def delete(accountNum, token):
+    with SessionManager() as sess:
+        acct = sess.query(UserAccount).filter(
+            UserAccount.accountNum == accountNum).first()
+        if not acct:
+            return error(f"Could not find account with number {accountNum}")
+        sess.delete(acct)
+    return success(f"Deleted account {accountNum}")
+
+
+@account.route('/balance/<accountNum>', methods=["GET"])
+@teller_or_account_owner_only
+def balance(accountNum, token):
+    with SessionManager(commit=False) as sess:
+        acct = sess.query(UserAccount).filter(
+            UserAccount.accountNum == accountNum).first()
+        if not acct:
+            return error(f"Could not find account with number {accountNum}")
+        actualAccount = get_money_account(acct)
+        if not actualAccount:
+            return error("Error looking up account. Please contact an administrator.")
+        if hasattr(actualAccount, 'balance'):
+            return success({"balance": actualAccount.balance})
+        return error("Account does not have a balance.")
+
+
+@account.route('/history/<accountNum>', defaults={"count": 20})
+@account.route('/history/<accountNum>/<count>')
+def history(accountNum, count, token):
+    with SessionManager(commit=False) as sess:
+        acct = sess.query(UserAccount).filter(
+            UserAccount.accountNum == accountNum).first()
+        if not acct:
+            return error(f"Could not find account with number {accountNum}")
+        history = sess.query(TransactionHistory).filter(
+            TransactionHistory.accountID == acct.id).limit(count).order_by(TransactionHistory.transactionDate.asc()).all()
+        histories = []
+        for h in history:
+            hDict = h._asdict()
+            del hDict['id']  # don't need id in result
+            histories.append(hDict)
+        return success(histories)
+
+
 @account.route('/summary/<accountNum>', methods=["GET"])
 @teller_or_account_owner_only
 def summary(accountNum, token):
@@ -92,7 +138,7 @@ def summary(accountNum, token):
         acct = sess.query(UserAccount).filter(
             UserAccount.accountNum == accountNum).first()
         if not acct:
-            return error("Could not find account with number {accountNum}")
+            return error(f"Could not find account with number {accountNum}")
         actualAccount = get_money_account(acct)
         if not actualAccount:
             return error("Error looking up account. Please contact an administrator.")
