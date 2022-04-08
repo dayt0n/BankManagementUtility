@@ -120,19 +120,21 @@ function HomePage() {
                         else if (content.status === 'success') {
                             setError(false);
                             setSuccess(true);
-                            console.log(content.data);
-                            console.log(JSON.stringify(content.data).slice(10,-2));
+                            //console.log(content.data);
+                            //console.log(JSON.stringify(content.data).slice(10,-2));
                             var decoded=decode(JSON.stringify(content.data).slice(10,-2));
-                            console.log(decoded);
-                            console.log(decoded["role"]);
+                            //console.log(decoded);
+                            //console.log(decoded["role"]);
 
-                            if(decoded["role"]=="customer"){
+                            document.cookie="x-access-token=" + JSON.stringify(content.data).slice(10,-2)
+
+                            if(decoded["role"]==="customer"){
                               navigate("/user/summary");
                             }
-                            else if(decoded["role"]=="teller"){
+                            else if(decoded["role"]==="teller"){
                               navigate("/teller/overview");
                             }
-                            else if(decoded["role"]=="admin"){
+                            else if(decoded["role"]==="admin"){
                               navigate("/admin/pverview");
                             }
                         }
