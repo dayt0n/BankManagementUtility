@@ -2,7 +2,8 @@ import logo from '../logo.png';
 import './HomePage.css';
 import { Form, Message } from "semantic-ui-react";
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import decode from 'jwt-decode';
 
 function HomePage() {
   const [username, setUsername] = useState("");
@@ -11,8 +12,8 @@ function HomePage() {
   const [error, setError] = useState(Boolean);
   const [requestLoading, setRequestLoading] = useState(Boolean);
   var errorMsg = 'Placeholder Error Message';
-
   const navigate = useNavigate();
+
 
   return (
     <div className="HomePage">
@@ -119,6 +120,21 @@ function HomePage() {
                         else if (content.status === 'success') {
                             setError(false);
                             setSuccess(true);
+                            console.log(content.data);
+                            console.log(JSON.stringify(content.data).slice(10,-2));
+                            var decoded=decode(JSON.stringify(content.data).slice(10,-2));
+                            console.log(decoded);
+                            console.log(decoded["role"]);
+
+                            if(decoded["role"]=="customer"){
+                              navigate("/user/summary");
+                            }
+                            else if(decoded["role"]=="teller"){
+                              navigate("/teller/overview");
+                            }
+                            else if(decoded["role"]=="admin"){
+                              navigate("/admin/pverview");
+                            }
                         }
                     }}
                 >
