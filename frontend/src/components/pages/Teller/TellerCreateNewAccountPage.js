@@ -1,11 +1,11 @@
 import React from "react";
+import tellerSearchLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 import { CreateUserAccount } from '../../CreateUserAccount';
 
 function TellerCreateNewAccountPage() {
     const state = {
-        'links': ['Back to Search', '/teller/overview',
-                  'Create User Account', '/teller/user/create-account'],
+        'links': tellerSearchLinks,
         'items': [<CreateUserAccount key="item1"/>]
     };
 

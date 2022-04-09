@@ -5,7 +5,7 @@ import HomePage from './pages/HomePage';
 import TestPage from './pages/TestPage';
 import CreateUserAccountPage from './pages/CreateUserAccountPage';
 import EditUserAccountPage from './pages/User/EditUserAccountPage';
-import CreateTellerAccountPage from './pages/Admin/CreateTellerAccountPage';
+import AdminCreateTellerAccountPage from './pages/Admin/AdminCreateTellerAccountPage';
 import TransferFundsPage from './pages/User/TransferFundsPage';
 import PayBillPage from './pages/User/PayBillPage';
 import TellerTransferFundsPage from './pages/Teller/TellerTransferFundsPage';
@@ -38,7 +38,7 @@ const Main = () => {
             <Route path='/admin/overview' element={<AdminSummaryPage />}></Route>
             <Route path='/admin/user/summary' element={<AdminUserSummaryPage />}></Route>
             <Route path='/admin/user/view-account' element={<TestPage />}></Route>
-            <Route path='/admin/teller/create-account' element={<CreateTellerAccountPage />}></Route>
+            <Route path='/admin/teller/create-account' element={<AdminCreateTellerAccountPage />}></Route>
             <Route path='/admin/teller/delete-account' element={<TestPage />}></Route>
             <Route path='/admin/teller/edit-account' element={<TestPage />}></Route>
         </Routes>

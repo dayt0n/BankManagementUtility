@@ -1,10 +1,11 @@
 import React from "react";
+import adminSearchLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 import { CreateTellerAccount } from '../../CreateTellerAccount';
 
-function CreateTellerAccountPage() {
+function AdminCreateTellerAccountPage() {
     const state = {
-        'links': ['Overview', '/admin/overview'],
+        'links': adminSearchLinks,
         'items': [<CreateTellerAccount key="item1"/>]
     };
 
@@ -15,4 +16,4 @@ function CreateTellerAccountPage() {
     );
 }
 
-export default CreateTellerAccountPage;
+export default AdminCreateTellerAccountPage;

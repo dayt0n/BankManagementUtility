@@ -1,10 +1,10 @@
 import React from "react";
+import tellerSearchLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 
 function TellerSummaryPage() {
     const state = {
-        'links': ['Back to Search', '/teller/overview',
-                  'Create User Account', '/teller/user/create-account'],
+        'links': tellerSearchLinks,
         'items': []
     };
 

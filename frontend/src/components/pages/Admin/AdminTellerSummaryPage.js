@@ -1,9 +1,10 @@
 import React from "react";
+import adminTellerLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 
 function AdminTellerSummary() {
     const state = {
-        'links': ['Home', '/'],
+        'links': adminTellerLinks,
         'items': []
     };
 

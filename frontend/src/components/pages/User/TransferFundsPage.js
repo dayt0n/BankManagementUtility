@@ -1,16 +1,27 @@
 import React from "react";
+import userLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 import { TransferAccountToAccount } from "../../TransferAccountToAccount";
 
 function TransferFundsPage() {
     const state = {
-        'links': ['Summary', '/user/summary',
-                  'Transfer Funds', '/user/transfer',
-                  'Pay A Bill', '/user/pay-bill',
-                  'Edit Account Information', '/user/edit-account',],
+        'links': userLinks,
         'items': [<TransferAccountToAccount key="item1"/>]
     };
 
+    if (document.cookie) {
+        user = decode(document.cookie);
+        console.log(user);
+        console.log(document.cookie);
+
+        if (user["role"] !== "customer") {
+            return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
+        }
+    }
+    else {
+        return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
+    }
+    
     return (
         <div>
             <TemplatePage dataParentToChild={state} />

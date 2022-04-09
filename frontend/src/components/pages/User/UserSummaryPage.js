@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import userLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 import decode from 'jwt-decode';
 import { NoAccounts } from "../../NoAccounts";
@@ -31,10 +32,7 @@ function parseUserAccounts(accounts) {
 
 function UserSummaryPage() {
     const [items, setItems] = useState();
-    const links = ['Summary', '/user/summary',
-                   'Transfer Funds', '/user/transfer',
-                   'Pay A Bill', '/user/pay-bill',
-                   'Edit Account Information', '/user/edit-account',];
+    const links = userLinks;
 
     var user;
 
@@ -42,6 +40,13 @@ function UserSummaryPage() {
         user = decode(document.cookie);
         console.log(user);
         console.log(document.cookie);
+
+        if (user["role"] !== "customer") {
+            return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
+        }
+    }
+    else {
+        return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
     }
 
     useEffect(() => {

@@ -1,14 +1,11 @@
 import React from "react";
+import tellerUserLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 import { TransferAccountToAccount } from "../../TransferAccountToAccount";
 
 function TellerTransferFundsPage() {
     const state = {
-        'links': ['Back to Search', '/teller/overview',
-                  'User Summary', '/teller/user/summary',
-                  'Edit User Info', '/teller/user/view-account',
-                  'Transfer Funds', '/teller/user/transfer',
-                  'Delete Account', '/teller/user/delete-account'],
+        'links': tellerUserLinks,
         'items': []
     };
 

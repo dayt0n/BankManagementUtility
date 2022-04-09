@@ -12,16 +12,8 @@ function logout() {
 
 function TemplateHeader() {
 
-    var redirect = <></>;
-
-    if (!document.cookie) {
-        redirect = <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
-    }
-
-
     return (
         <header>
-            {redirect}
             <div className="Header">
                 <span className="dot"></span>
                 <h1>Bank</h1>

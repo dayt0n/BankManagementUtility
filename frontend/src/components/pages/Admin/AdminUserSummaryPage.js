@@ -1,9 +1,10 @@
 import React from "react";
+import adminUserLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
 
 function AdminUserSummary() {
     const state = {
-        'links': ['Home', '/'],
+        'links': adminUserLinks,
         'items': []
     };
 

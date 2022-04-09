@@ -1,11 +1,12 @@
 import React from "react";
 import tellerUserLinks from '../../LinkLists'
 import TemplatePage from '../TemplatePage';
+import { OpenAccount } from '../../OpenAccount';
 
-function TellerUserSummaryPage() {
+function TellerOpenAccountPage() {
     const state = {
         'links': tellerUserLinks,
-        'items': []
+        'items': [<OpenAccount key="item1"/>]
     };
 
     return (
@@ -15,4 +16,4 @@ function TellerUserSummaryPage() {
     );
 }
 
-export default TellerUserSummaryPage;
+export default TellerOpenAccountPage;
