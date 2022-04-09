@@ -1,5 +1,5 @@
 import React from "react";
-import adminSearchLinks from '../../LinkLists'
+import { adminSearchLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import { CreateTellerAccount } from '../../CreateTellerAccount';
 

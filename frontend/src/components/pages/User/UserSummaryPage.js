@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import userLinks from '../../LinkLists'
+import { userLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import decode from 'jwt-decode';
 import { NoAccounts } from "../../NoAccounts";

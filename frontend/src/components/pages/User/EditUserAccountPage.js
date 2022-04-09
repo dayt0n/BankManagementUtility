@@ -1,6 +1,7 @@
 import React from "react";
-import userLinks from '../../LinkLists'
+import { userLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
+import decode from 'jwt-decode';
 import { EditUserAccount } from '../../EditUserAccount';
 
 function EditUserAccountPage() {
@@ -10,7 +11,7 @@ function EditUserAccountPage() {
     };
 
     if (document.cookie) {
-        user = decode(document.cookie);
+        var user = decode(document.cookie);
         console.log(user);
         console.log(document.cookie);
 

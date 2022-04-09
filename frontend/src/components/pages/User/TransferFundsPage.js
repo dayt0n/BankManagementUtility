@@ -1,6 +1,7 @@
 import React from "react";
-import userLinks from '../../LinkLists'
+import { userLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
+import decode from 'jwt-decode';
 import { TransferAccountToAccount } from "../../TransferAccountToAccount";
 
 function TransferFundsPage() {
@@ -21,7 +22,7 @@ function TransferFundsPage() {
     else {
         return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
     }
-    
+
     return (
         <div>
             <TemplatePage dataParentToChild={state} />

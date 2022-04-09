@@ -1,5 +1,5 @@
 import React from "react";
-import tellerUserLinks from '../../LinkLists'
+import { tellerUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 
 function TellerUserSummaryPage() {

@@ -1,5 +1,5 @@
 import React from "react";
-import adminTellerLinks from '../../LinkLists'
+import { adminTellerLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 
 function AdminTellerSummary() {
