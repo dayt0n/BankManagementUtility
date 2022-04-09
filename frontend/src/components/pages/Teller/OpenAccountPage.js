@@ -1,6 +1,6 @@
 import React from "react";
-import TemplatePage from './TemplatePage';
-import { OpenAccount } from '../OpenAccount';
+import TemplatePage from '../TemplatePage';
+import { OpenAccount } from '../../OpenAccount';
 
 function OpenAccountPage() {
     const state = {

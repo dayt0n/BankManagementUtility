@@ -1,7 +1,7 @@
 import React from "react";
-import TemplatePage from './TemplatePage';
+import TemplatePage from '../TemplatePage';
 
-function AdminSummaryPage() {
+function AdminTellerSummary() {
     const state = {
         'links': ['Home', '/'],
         'items': []
@@ -14,4 +14,4 @@ function AdminSummaryPage() {
     );
 }
 
-export default AdminSummaryPage;
+export default AdminTellerSummary;

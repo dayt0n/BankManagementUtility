@@ -26,7 +26,7 @@ function TemplateHeader() {
                 <span className="dot"></span>
                 <h1>Bank</h1>
                 <Link to="/">
-                    <Button onClick={logout()}>
+                    <Button>
                         Log Out
                     </Button>
                 </Link>

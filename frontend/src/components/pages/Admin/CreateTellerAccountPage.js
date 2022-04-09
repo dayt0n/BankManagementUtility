@@ -1,6 +1,6 @@
 import React from "react";
-import TemplatePage from './TemplatePage';
-import { CreateTellerAccount } from '../CreateTellerAccount';
+import TemplatePage from '../TemplatePage';
+import { CreateTellerAccount } from '../../CreateTellerAccount';
 
 function CreateTellerAccountPage() {
     const state = {

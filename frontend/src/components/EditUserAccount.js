@@ -105,7 +105,7 @@ export const EditUserAccount = () => {
                         
                         if (content.status === 'error') {
                             errorMsg = document.getElementById('Error Message').getElementsByTagName('p')
-                            errorMsg[0].textContent = content.msg
+                            errorMsg[0].textContent = content.data
                             setPasswordError(true);
                             setPasswordSuccess(false);
                         }
@@ -120,7 +120,7 @@ export const EditUserAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='You have successfully created your account! Please log in from the home page.'
+                    content='Password Updated!'
                 />
                 <Message id='Error Message'
                     error
@@ -217,11 +217,12 @@ export const EditUserAccount = () => {
                         }
                         setRequestLoading(true);
                         let content = await response.json();
+                        console.log(content);
                         setRequestLoading(false);
                         
                         if (content.status === 'error') {
                             errorMsg = document.getElementById('Error Message Info').getElementsByTagName('p')
-                            errorMsg[0].textContent = content.msg
+                            errorMsg[0].textContent = content.data
                             setInfoError(true);
                             setInfoSuccess(false);
                         }
@@ -236,7 +237,7 @@ export const EditUserAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='You have successfully created your account! Please log in from the home page.'
+                    content='Account Information Successfully Updated!'
                 />
                 <Message id='Error Message Info'
                     error

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
-import TemplatePage from './TemplatePage';
+import TemplatePage from '../TemplatePage';
 import decode from 'jwt-decode';
-import { NoAccounts } from "../NoAccounts";
+import { NoAccounts } from "../../NoAccounts";
+import { AccountChecking } from "../../AccountChecking";
+import { AccountSaving } from "../../AccountSaving";
+import { AccountCreditCard } from "../../AccountCreditCard";
+import { AccountMortgage } from "../../AccountMortgage";
+import { AccountMoneyMarket } from "../../AccountMoneyMarket";
 
 function parseUserAccounts(accounts) {
     console.log(accounts);
@@ -29,8 +34,7 @@ function UserSummaryPage() {
     const links = ['Summary', '/user/summary',
                    'Transfer Funds', '/user/transfer',
                    'Pay A Bill', '/user/pay-bill',
-                   'Edit Account Information', '/user/edit-account',
-                   'Open New Account', '/user/open-account',];
+                   'Edit Account Information', '/user/edit-account',];
 
     var user;
 

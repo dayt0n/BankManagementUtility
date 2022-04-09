@@ -5,7 +5,7 @@ export const NoAccounts = () => {
 
     return (
         <div className="NoAccounts">
-            <h1>You have no accounts! Click on 'Open New Account' on the right side to create an account!</h1>
+            <h1>You have no accounts! Call us or visit a local branch to set up an account.</h1>
         </div>
     );
 };

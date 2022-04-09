@@ -1,10 +1,11 @@
 import React from "react";
-import TemplatePage from './TemplatePage';
-import { CreateUserAccount } from '../CreateUserAccount';
+import TemplatePage from '../TemplatePage';
+import { CreateUserAccount } from '../../CreateUserAccount';
 
 function TellerCreateNewAccountPage() {
     const state = {
-        'links': ['Home', '/'],
+        'links': ['Back to Search', '/teller/overview',
+                  'Create User Account', '/teller/user/create-account'],
         'items': [<CreateUserAccount key="item1"/>]
     };
 

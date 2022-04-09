@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
+import decode from 'jwt-decode';
 import "./OpenAccount.css"
 
 export const OpenAccount = () => {
-    const [accountType, setAccountType] = useState("");
+    const [type, setAccountType] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
 
-    // GET TRANSFER OPTIONS HERE
+    if (document.cookie) {
+        var user = decode(document.cookie);
+    }
+
+    var username = user["user"];
+
+    var name = "Checking";
 
     const accountTypeOpt = [
         {key: 'c', text: 'Checking', value: 1},
@@ -37,7 +44,7 @@ export const OpenAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { accountType };
+                        const createRequest = { username, type, name };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
