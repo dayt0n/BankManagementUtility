@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { userLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
-import decode from 'jwt-decode';
+import PermissionCheck from "../../PermissionCheck";
 import { NoAccounts } from "../../NoAccounts";
 import { AccountChecking } from "../../AccountChecking";
 import { AccountSaving } from "../../AccountSaving";
@@ -34,18 +34,9 @@ function UserSummaryPage() {
     const [items, setItems] = useState();
     const links = userLinks;
 
-    var user;
+    var user = PermissionCheck("customer");
 
-    if (document.cookie) {
-        user = decode(document.cookie);
-        console.log(user);
-        console.log(document.cookie);
-
-        if (user["role"] !== "customer") {
-            return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
-        }
-    }
-    else {
+    if (user === false) {
         return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
     }
 

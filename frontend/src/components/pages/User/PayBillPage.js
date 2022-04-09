@@ -1,7 +1,7 @@
 import React from "react";
 import { userLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
-import decode from 'jwt-decode';
+import PermissionCheck from "../../PermissionCheck";
 import { PayBillFromAccount } from "../../PayBillFromAccount";
 
 function PayBillPage() {
@@ -10,16 +10,9 @@ function PayBillPage() {
         'items': [<PayBillFromAccount key="item1"/>]
     };
 
-    if (document.cookie) {
-        user = decode(document.cookie);
-        console.log(user);
-        console.log(document.cookie);
+    var user = PermissionCheck("customer");
 
-        if (user["role"] !== "customer") {
-            return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
-        }
-    }
-    else {
+    if (user === false) {
         return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
     }
 
