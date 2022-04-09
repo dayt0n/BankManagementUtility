@@ -135,6 +135,7 @@ export const EditUserAccount = () => {
                     <Form.Input
                         required
                         fluid
+                        disabled
                         label='First Name'
                         placeholder="First Name"
                         value={firstName}
@@ -143,12 +144,15 @@ export const EditUserAccount = () => {
                     <Form.Input
                         required
                         fluid
+                        disabled
                         label='Last Name'
                         placeholder="Last Name"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                     />
                 </Form.Group>
+
+                <p>If you would like to change your name, call us or visit your local branch.</p>
 
                 <Form.Input
                     required
@@ -183,7 +187,7 @@ export const EditUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { firstName, lastName, address, phone, email };
+                        const createRequest = { address, phone, email };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

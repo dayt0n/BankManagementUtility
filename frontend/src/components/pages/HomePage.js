@@ -124,7 +124,7 @@ function HomePage() {
                             //console.log(JSON.stringify(content.data).slice(10,-2));
 
                             if (document.cookie) {
-                              document.cookie = 'COOKIE_NAME=session; Max-Age=0;';
+                              document.cookie = 'session=; Max-Age=0;';
                             }
 
                             var decoded=decode(JSON.stringify(content.data).slice(10,-2));
