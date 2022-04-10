@@ -1,5 +1,6 @@
 import React from "react";
 import { adminTellerLinks } from '../../LinkLists';
+import PermissionCheck from "../../PermissionCheck";
 import TemplatePage from '../TemplatePage';
 
 function AdminTellerSummary() {
@@ -7,6 +8,12 @@ function AdminTellerSummary() {
         'links': adminTellerLinks,
         'items': []
     };
+
+    var user = PermissionCheck("administrator");
+
+    if (user === false) {
+        return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
+    }
 
     return (
         <div>

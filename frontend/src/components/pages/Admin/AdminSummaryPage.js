@@ -14,6 +14,10 @@ function AdminSummaryPage() {
 
     var user = PermissionCheck("administrator");
 
+    if (user === false) {
+        return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
+    }
+    
     return (
         <div>
             <TemplatePage dataParentToChild={state} />

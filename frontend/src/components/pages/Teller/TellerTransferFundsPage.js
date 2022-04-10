@@ -1,5 +1,6 @@
 import React from "react";
 import { tellerUserLinks } from '../../LinkLists';
+import PermissionCheck from "../../PermissionCheck";
 import TemplatePage from '../TemplatePage';
 import { TransferAccountToAccount } from "../../TransferAccountToAccount";
 
@@ -8,6 +9,12 @@ function TellerTransferFundsPage() {
         'links': tellerUserLinks,
         'items': []
     };
+
+    var user = PermissionCheck("teller");
+
+    if (user === false) {
+        return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
+    }
 
     return (
         <div>
