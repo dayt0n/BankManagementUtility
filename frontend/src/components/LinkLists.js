@@ -8,8 +8,10 @@ export const tellerSearchLinks = ['Back to Search', '/teller/overview',
 
 export const tellerUserLinks = ['Back to Search', '/teller/overview',
                                 'User Summary', '/teller/user/summary',
-                                'Edit User Info', '/teller/user/view-account',
+                                'Edit User Info', '/teller/user/edit-account',
+                                'Open New Account', '/teller/user/open-account',
                                 'Transfer Funds', '/teller/user/transfer',
+                                'Withdraw/Deposit Funds', '/teller/user/withdraw',
                                 'Delete Account', '/teller/user/delete-account'];
 
 export const adminSearchLinks = ['Back to Search', '/admin/overview',
@@ -17,7 +19,13 @@ export const adminSearchLinks = ['Back to Search', '/admin/overview',
                                  'Create Teller Account', '/admin/teller/create-account',];
 
 export const adminTellerLinks = ['Back to Search', '/admin/overview',
-                                 ];
+                                 'Edit Teller Account', '/admin/teller/edit-account',
+                                 'Delete Teller Account', '/admin/teller/delete-account'];
 
 export const adminUserLinks = ['Back to Search', '/admin/overview',
-                               ];
+                               'User Summary', '/admin/user/summary',
+                               'Edit User Info', '/admin/user/edit-account',
+                               'Open New Account', '/admin/user/open-account',
+                               'Transfer User Funds', '/admin/user/transfer',
+                               'Withdraw/Deposit Funds', '/admin/user/withdraw',
+                               'Delete User Account', '/admin/user/delete-account',];

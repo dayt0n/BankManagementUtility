@@ -18,6 +18,8 @@ function HomePage() {
     document.cookie = 'session=; Max-Age=0;';
   }
 
+  localStorage.clear();
+
 
   return (
     <div className="HomePage">
