@@ -14,6 +14,10 @@ function HomePage() {
   var errorMsg = 'Placeholder Error Message';
   const navigate = useNavigate();
 
+  if (document.cookie) {
+    document.cookie = 'session=; Max-Age=0;';
+  }
+
 
   return (
     <div className="HomePage">

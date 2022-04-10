@@ -1,0 +1,26 @@
+.SearchItem {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    border: 2px #5f5e5e solid;
+    width: 100%;
+    margin: 0% 0% 0% 0%;
+    padding: 1%;
+    background-color: #403f3f;
+    color: #f0f0f0;
+    height: auto;
+}
+
+.SearchItem > h3 {
+    margin-top: 5px;
+    margin-left: 25px;
+    margin-bottom: 0;
+}
+
+.SearchItem > .ChooseButton {
+    margin-right: 25px;
+    margin-left: auto;
+    padding: 5px;
+}

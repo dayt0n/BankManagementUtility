@@ -16,6 +16,8 @@ export const adminSearchLinks = ['Back to Search', '/admin/overview',
                                  'Create User Account', '/admin/user/create-account',
                                  'Create Teller Account', '/admin/teller/create-account',];
 
-export const adminTellerLinks = [];
+export const adminTellerLinks = ['Back to Search', '/admin/overview',
+                                 ];
 
-export const adminUserLinks = [];
+export const adminUserLinks = ['Back to Search', '/admin/overview',
+                               ];
