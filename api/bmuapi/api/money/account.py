@@ -35,7 +35,7 @@ def create(token):
             User.username == data['username']).first()
     if not usr:
         return error(f"User {data['username']} not found")
-    acct = UserAccount(userID=usr.id)
+    acct = UserAccount(userID=usr.id, openDate=arrow.utcnow().datetime)
     routingNumber = int(getenv("ROUTING_NUMBER"))
     moneyAcct = None
     accountNumBase = 123456789
