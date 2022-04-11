@@ -6,7 +6,7 @@ from bmuapi.database.tables import User
 from bmuapi.utils import admin_or_teller_only, teller_only, teller_or_account_owner_only, teller_or_current_user_only
 from bmuapi.api.api_utils import error, success
 from bmuapi.database.tables import UserAccount
-from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory
+from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory, MoneyMarket
 from dateutil.rrule import rrule, MONTHLY
 
 account = Blueprint('account', __name__, url_prefix='/account')
@@ -58,6 +58,17 @@ def create(token):
             moneyAcct = CreditCard(
                 accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate)
             acct.ccAcctID = moneyAcct.id
+        case "moneyMarket":
+            acct.accountType = "moneyMarket"
+            interestRate = float(getenv("MM_INTEREST_RATE"))
+            balanceFrom = int(data['balanceFrom'])
+            balance = float(data['balance'])
+            # do transfer from 'balanceFrom' accountID to this one after account creation to meet minimum deposit
+            if balance < 500.0:
+                return error(f"${balance} is not enough to meet the minumum of $500 initial deposit for money market account.")
+            moneyAcct = MoneyMarket(
+                accountName=data['name'], balance=balance, routingNumber=routingNumber, interestRate=interestRate)
+            acct.mmAcctID = moneyAcct.id
         case "mortgage":
             if not all(k in data for k in ("loanAmount", "term", "dueDate", "startDate")):
                 return error("Not enough information for creating a mortgage account.")
@@ -82,6 +93,8 @@ def create(token):
         acct.accountNum = accountNumBase + acct.id
         sess.add(moneyAcct)
         sess.add(acct)
+        # TODO: do if money market here
+        # complete a transaction on the balanceFrom, reducing the balance in balanceFrom
     return success(f"Created account of type {data['type']} for {data['username']}")
 
 
@@ -113,8 +126,8 @@ def balance(accountNum, token):
         return error("Account does not have a balance.")
 
 
-@account.route('/history/<accountNum>', defaults={"count": 20})
-@account.route('/history/<accountNum>/<count>')
+@account.route('/history/<accountNum>', defaults={"count": 20}, methods=["GET"])
+@account.route('/history/<accountNum>/<count>', methods=["GET"])
 def history(accountNum, count, token):
     with SessionManager(commit=False) as sess:
         acct = sess.query(UserAccount).filter(
