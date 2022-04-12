@@ -1,4 +1,5 @@
 import functools
+from random import randint
 from flask import request, abort
 import logging
 from bmuapi.jwt_auth.token import decode_user_auth_token, is_token_expired
@@ -91,3 +92,7 @@ def admin_or_current_user_only(func):
             return func(*args, **kwargs, username=username, token=token)
         abort(403)
     return wrapper
+
+
+def random_int_of_size(size):
+    return randint(10**(size-1), (10**size)-1)

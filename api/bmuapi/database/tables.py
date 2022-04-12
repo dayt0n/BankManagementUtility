@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
-from sqlalchemy.dialects.postgresql import MONEY, ENUM, TIMESTAMP
+from sqlalchemy.dialects.postgresql import MONEY, ENUM, TIMESTAMP, BIGINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from . import Base
@@ -7,7 +7,7 @@ from . import Base
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
     email = Column(String)
     username = Column(String)
@@ -23,11 +23,11 @@ class User(Base):
 
 class UserAccount(Base):
     __tablename__ = 'user_accounts'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     user = relationship("User", back_populates="accounts")
     userID = Column(Integer, ForeignKey("users.id"))
     accountType = Column(ENUM('checkingSaving', 'creditCard',
-                         'mortage', name='accountTypeEnum'))
+                         'mortgage', 'moneyMarket', name='accountTypeEnum'))
     accountNum = Column(Integer)
     openDate = Column(TIMESTAMP(timezone=True))
     # transaction history table relationship
@@ -49,7 +49,7 @@ class UserAccount(Base):
     # accountID returns the ID of whatever ID is populated for this account type
     @hybrid_property  # https://ourpython.com/python/sqlalchemy-foreign-key-to-multiple-tables
     def accountID(self):
-        return self.checkingSavingsAcctID or self.ccAcctID or self.mortgageID
+        return self.checkingSavingsAcctID or self.ccAcctID or self.mortgageID or self.mmAcctID
 
     def __repr__(self):
         return f"<UserAccount(UserID='{self.userID}', accountType='{self.accountType}', accountID='{self.accountID}'"
@@ -57,7 +57,7 @@ class UserAccount(Base):
 
 class CheckingSavings(Base):
     __tablename__ = 'checking_savings'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     userAcct = relationship("UserAccount", back_populates="checkingSavingAcct")
     accountType = Column(
         ENUM('checking', 'savings', name='checking_savings_type_enum'))
@@ -72,7 +72,7 @@ class CheckingSavings(Base):
 
 class MoneyMarket(Base):
     __tablename__ = "money_market"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     userAcct = relationship("UserAccount", back_populates="mmAcct")
     accountName = Column(String)
     balance = Column(MONEY)
@@ -86,10 +86,12 @@ class MoneyMarket(Base):
 
 class CreditCard(Base):
     __tablename__ = 'credit_cards'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     userAcct = relationship("UserAccount", back_populates="ccAcct")
     accountName = Column(String)
     balance = Column(MONEY)
+    cardNumber = Column(BIGINT)
+    cvv = Column(Integer)
     routingNumber = Column(Integer)
     interestRate = Column(Float)
 
@@ -99,9 +101,8 @@ class CreditCard(Base):
 
 class Mortgage(Base):
     __tablename__ = 'mortgages'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     userAcct = relationship("UserAccount", back_populates="mortgageAcct")
-    accountType = Column(String)
     accountName = Column(String)
     routingNumber = Column(Integer)
     loanAmount = Column(MONEY)
@@ -119,7 +120,7 @@ class Mortgage(Base):
 
 class TransactionHistory(Base):
     __tablename__ = 'transaction_history'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     account = relationship("UserAccount", back_populates="history")
     accountID = Column(Integer, ForeignKey("user_accounts.id"))
     recipient = Column(String)

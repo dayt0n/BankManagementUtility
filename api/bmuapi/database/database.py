@@ -8,7 +8,7 @@ from bmuapi.database import Base
 
 from bmuapi.database.tables import User
 
-from bmuapi.database.tables import UserAccount, CheckingSavings, CreditCard, Mortgage
+from bmuapi.database.tables import UserAccount, CheckingSavings, CreditCard, Mortgage, MoneyMarket
 
 MySession = sessionmaker()
 
@@ -54,8 +54,10 @@ def add_dummy_data():
         session.add(usr)
 
 
-def get_money_account(acct: UserAccount):
+def get_money_account(acct: UserAccount, session=None):
     with SessionManager(commit=False) as sess:
+        if not session:
+            session = sess
         acctTable = None
         match acct.accountType:
             case 'checkingSaving':
@@ -64,7 +66,9 @@ def get_money_account(acct: UserAccount):
                 acctTable = CreditCard
             case 'mortgage':
                 acctTable = Mortgage
-        actualAccount = sess.query(acctTable).filter(
+            case 'moneyMarket':
+                acctTable = MoneyMarket
+        actualAccount = session.query(acctTable).filter(
             acctTable.id == acct.accountID).first()
         if not actualAccount:
             return None

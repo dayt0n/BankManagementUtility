@@ -34,7 +34,12 @@ def info(username, token):
 @admin_or_teller_only
 def list(token):
     with SessionManager(commit=False) as sess:
-        users = [usr.username for usr in sess.query(User.username).all()]
+        if token["role"] == "administrator":
+            users = [usr._asdict() for usr in sess.query(
+                User.username, User.role).filter(User.role != "administrator").all()]
+        else:
+            users = [usr._asdict() for usr in sess.query(
+                User.username, User.role).filter(User.role == "customer").all()]
     return success(users)
 
 
@@ -45,6 +50,8 @@ def delete(username, token):
         usr = sess.query(User).filter(User.username == username).first()
         if not usr:
             return error(f"User '{username}' not found.")
+        if usr.role == "administrator":
+            return error(f"Admin cannot delete another admin.")
         sess.delete(usr)
     return success(f"deleted '{username}'")
 

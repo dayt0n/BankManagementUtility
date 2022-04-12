@@ -1,3 +1,4 @@
+import arrow
 import requests
 
 url = 'http://bmu.local'
@@ -28,6 +29,43 @@ def login(sess: requests.Session, user="normal"):
     assert r.status_code == 200
 
 
+def user_info(sess: requests.Session):
+    login(sess, user="admin")
+    r = sess.get(url+"/api/user/info/a")
+    assert r.status_code == 200
+    logout(sess)
+
+
+def create_account(sess: requests.Session):
+    login(sess, user="teller")
+    # r = sess.post(url+"/api/money/account/create",
+    #              json={"username": "a", "type": "savings", "name": "a's savings"})
+    # print(r.text)
+    # r = sess.post(url+"/api/money/account/create",
+    #              json={"username": "a", "type": "checking", "name": "a's checking"})
+    # loanTerm = 15  # 15 years
+    # r = sess.post(url+"/api/money/account/create",
+    #              json={"username": "a", "type": "mortgage", "name": "a's first house mortgage", "loanAmount": 200000.0, "startDate": arrow.utcnow().isoformat(), "term": loanTerm})
+    # print(r.text)
+    # r = sess.post(url+"/api/money/account/create",
+    #              json={"username": "a", "type": "creditCard", "name": "a's first credit card"})
+    # print(r.text)
+    # r = sess.post(url+"/api/money/account/create",
+    #              json={"username": "a", "type": "moneyMarket", "name": "a's first money market account", "balanceFrom": bleh, "balance": 500.0})
+    frm = 123456791  # savings account for 'a'
+    r = sess.post(url+"/api/money/account/create", json={"username": "a", "type": "moneyMarket",
+                  "name": "a's first money market account", "balanceFrom": frm, "balance": 500.0})
+    print(r.text)
+    logout(sess)
+
+
+def list_accounts(sess: requests.Session, user):
+    login(sess, user="teller")
+    r = sess.get(url+f"/api/user/accounts/{user}")
+    print(r.text)
+    logout(sess)
+
+
 def list_users(sess: requests.Session):
     login(sess, user="normal")
     r = sess.get(url+"/api/user/list")
@@ -38,10 +76,12 @@ def list_users(sess: requests.Session):
     login(sess, user="teller")
     r = sess.get(url+"/api/user/list")
     assert r.status_code == 200
-    print(r.json())
     logout(sess)
 
 
 s = requests.Session()
 
-list_users(s)
+# user_info(s)
+# list_users(s)
+create_account(s)
+list_accounts(s, "a")

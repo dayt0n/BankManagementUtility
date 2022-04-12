@@ -1,12 +1,14 @@
 from os import getenv
+from random import randint
 import arrow
 from flask import Blueprint, abort, request
 from bmuapi.database.database import SessionManager, get_money_account
 from bmuapi.database.tables import User
-from bmuapi.utils import admin_or_teller_only, teller_only, teller_or_account_owner_only, teller_or_current_user_only
+from bmuapi.utils import admin_or_teller_only, teller_only, teller_or_account_owner_only, teller_or_current_user_only, random_int_of_size
 from bmuapi.api.api_utils import error, success
 from bmuapi.database.tables import UserAccount
 from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory, MoneyMarket
+from bmuapi.database.ops import transfer_op
 from dateutil.rrule import rrule, MONTHLY
 
 account = Blueprint('account', __name__, url_prefix='/account')
@@ -35,6 +37,8 @@ def create(token):
             User.username == data['username']).first()
     if not usr:
         return error(f"User {data['username']} not found")
+    if usr.role != "customer":
+        return error(f"Only customers can have money accounts.")
     acct = UserAccount(userID=usr.id, openDate=arrow.utcnow().datetime)
     routingNumber = int(getenv("ROUTING_NUMBER"))
     moneyAcct = None
@@ -45,22 +49,25 @@ def create(token):
             dividendRate = float(getenv("DIVIDEND_RATE"))
             moneyAcct = CheckingSavings(
                 accountType="checking", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
-            acct.checkingSavingsAcctID = moneyAcct.id
         case "savings":
             acct.accountType = "checkingSaving"
             dividendRate = float(getenv("DIVIDEND_RATE"))
             moneyAcct = CheckingSavings(
                 accountType="savings", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
-            acct.checkingSavingsAcctID = moneyAcct.id
         case "creditCard":
             acct.accountType = "creditCard"
             interestRate = float(getenv("CC_INTEREST_RATE"))
+            cardNum = random_int_of_size(16)
+            cvv = randint(0, 999)  # will have to zfill when extracting
+            # credit card accounts don't actually have an expiration date
+            # the expiration date is something that is for the plastic card only
             moneyAcct = CreditCard(
-                accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate)
-            acct.ccAcctID = moneyAcct.id
+                accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate, cardNumber=cardNum, cvv=cvv)
         case "moneyMarket":
             acct.accountType = "moneyMarket"
             interestRate = float(getenv("MM_INTEREST_RATE"))
+            if not all(k in data for k in ("balanceFrom", "balance")):
+                return error("Initial balance parameters not specified.")
             balanceFrom = int(data['balanceFrom'])
             balance = float(data['balance'])
             # do transfer from 'balanceFrom' accountID to this one after account creation to meet minimum deposit
@@ -68,16 +75,16 @@ def create(token):
                 return error(f"${balance} is not enough to meet the minumum of $500 initial deposit for money market account.")
             moneyAcct = MoneyMarket(
                 accountName=data['name'], balance=balance, routingNumber=routingNumber, interestRate=interestRate)
-            acct.mmAcctID = moneyAcct.id
         case "mortgage":
-            if not all(k in data for k in ("loanAmount", "term", "dueDate", "startDate")):
+            if not all(k in data for k in ("loanAmount", "term", "startDate")):
                 return error("Not enough information for creating a mortgage account.")
             interestRate = float(getenv("MORTGAGE_INTEREST_RATE"))
             startDate = arrow.get(data['startDate'])
-            dueDate = arrow.get(data['dueDate'])
+            dueDate = startDate.shift(years=int(data['term']))
             loanAmount = float(data['loanAmount'])
-            moneyAcct = Mortgage(
-                accountType="fixed", accountName=data['name'], routingNumber=routingNumber, loanAmount=loanAmount, loanTerm=int(data['term']), interestRate=interestRate, paymentDueDate=dueDate, startDate=startDate)
+            acct.accountType = "mortgage"
+            moneyAcct = Mortgage(accountName=data['name'], routingNumber=routingNumber, loanAmount=loanAmount, loanTerm=int(
+                data['term']), interestRate=interestRate, paymentDueDate=dueDate.datetime, startDate=startDate.datetime)
             # calculate currentAmountOwed, monthlyPayment
             paymentDates = getPaymentDates(startDate, dueDate)
             monthlyPayment = loanAmount / len(paymentDates)
@@ -86,15 +93,32 @@ def create(token):
                 moneyAcct.currentAmountOwed = monthlyPayment
             else:
                 moneyAcct.currentAmountOwed = 0
-            acct.mortgageID = moneyAcct.id
         case _:
             return error(f"No account type with name {data['type']}.")
     with SessionManager() as sess:
-        acct.accountNum = accountNumBase + acct.id
         sess.add(moneyAcct)
         sess.add(acct)
-        # TODO: do if money market here
-        # complete a transaction on the balanceFrom, reducing the balance in balanceFrom
+        sess.flush()
+        acct.accountNum = accountNumBase + acct.id
+        match data['type']:
+            case "checking":
+                acct.checkingSavingsAcctID = moneyAcct.id
+            case "savings":
+                acct.checkingSavingsAcctID = moneyAcct.id
+            case "creditCard":
+                acct.ccAcctID = moneyAcct.id
+            case "moneyMarket":
+                acct.mmAcctID = moneyAcct.id
+                sess.flush()
+                # complete a transaction on the balanceFrom, reducing the balance in balanceFrom
+                res = transfer_op(balanceFrom, acct.accountNum,
+                                  balance, session=sess)
+                if res != balance:  # transfer failed, possibly insufficient funds
+                    sess.delete(moneyAcct)
+                    sess.delete(acct)
+                    return error(res)
+            case "mortgage":
+                acct.mortgageID = moneyAcct.id
     return success(f"Created account of type {data['type']} for {data['username']}")
 
 
