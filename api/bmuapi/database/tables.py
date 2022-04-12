@@ -29,6 +29,7 @@ class UserAccount(Base):
     accountType = Column(ENUM('checkingSaving', 'creditCard',
                          'mortage', name='accountTypeEnum'))
     accountNum = Column(Integer)
+    openDate = Column(TIMESTAMP(timezone=True))
     # transaction history table relationship
     history = relationship("TransactionHistory", back_populates="account")
     # checking/savings table relationship
@@ -41,6 +42,9 @@ class UserAccount(Base):
     # mortgage table relationship
     mortgageAcct = relationship("Mortgage", back_populates="userAcct")
     mortgageID = Column(Integer, ForeignKey("mortgages.id"))
+    # money market table relationship
+    mmAcct = relationship("MoneyMarket", back_populates="userAcct")
+    mmAcctID = Column(Integer, ForeignKey("money_market.id"))
 
     # accountID returns the ID of whatever ID is populated for this account type
     @hybrid_property  # https://ourpython.com/python/sqlalchemy-foreign-key-to-multiple-tables
@@ -63,7 +67,21 @@ class CheckingSavings(Base):
     dividendRate = Column(Float)
 
     def __repr__(self):
-        return f"<CheckingSavings(accountType='{self.accountType}', accountName='{self.accountName}', accountID='{self.accountID}', balance='{self.balance}', routingNumber='{self.routingNumber}', dividendRate='{self.dividendRate}'"
+        return f"<CheckingSavings(accountType='{self.accountType}', accountName='{self.accountName}', balance='{self.balance}', routingNumber='{self.routingNumber}', dividendRate='{self.dividendRate}'"
+
+
+class MoneyMarket(Base):
+    __tablename__ = "money_market"
+    id = Column(Integer, primary_key=True)
+    userAcct = relationship("UserAccount", back_populates="mmAcct")
+    accountName = Column(String)
+    balance = Column(MONEY)
+    routingNumber = Column(Integer)
+    interestRate = Column(Float)
+    # get transfer count from TransactionHistory. limit to 6 every calendar month
+
+    def __repr__(self):
+        return f"<MoneyMarket(accountName='{self.accountName}', balance='{self.balance}', routingNumber='{self.routingNumber}', interestRate='{self.interestRate}'"
 
 
 class CreditCard(Base):

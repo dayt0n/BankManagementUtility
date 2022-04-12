@@ -22,6 +22,7 @@ services:
       - DIVIDEND_RATE=1.9
       - CC_INTEREST_RATE=20.0
       - MORTGAGE_INTEREST_RATE=4.0
+      - MM_INTEREST_RATE=0.9
   bmu-frontend-dev:
     restart: always
     build:

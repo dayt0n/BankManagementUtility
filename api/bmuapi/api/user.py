@@ -34,7 +34,7 @@ def info(username, token):
 @admin_or_teller_only
 def list(token):
     with SessionManager(commit=False) as sess:
-        users = [usr for usr in sess.query(User.username).all()]
+        users = [usr.username for usr in sess.query(User.username).all()]
     return success(users)
 
 
