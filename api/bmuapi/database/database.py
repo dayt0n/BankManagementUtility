@@ -31,8 +31,8 @@ def SessionManager(commit=True) -> Iterator[Session]:
 def init_db():
     global MySession
     url = f"postgresql+psycopg2://{getenv('DB_USER')}:{getenv('DB_PASS')}@{getenv('DB_HOST')}:{getenv('DB_PORT')}/{getenv('DB_NAME')}"
-    engine = create_engine(url)
-    MySession.configure(bind=engine, pool_pre_ping=True)
+    engine = create_engine(url, pool_pre_ping=True)
+    MySession.configure(bind=engine)
     # don't do this until we have User finalized
     # just want to avoid migration at this point in the development process
     Base.metadata.create_all(engine)

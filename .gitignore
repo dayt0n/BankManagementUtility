@@ -7,6 +7,7 @@ frontend/.pnp
 
 # testing
 /frontend/coverage
+tests/creds.txt
 
 # production
 /frontend/build

@@ -73,7 +73,7 @@ class CheckingSavings(Base):
 class MoneyMarket(Base):
     __tablename__ = "money_market"
     id = Column(Integer, primary_key=True)
-    userAcct = relationship("UserAccount", back_populates="checkingSavingAcct")
+    userAcct = relationship("UserAccount", back_populates="mmAcct")
     accountName = Column(String)
     balance = Column(MONEY)
     routingNumber = Column(Integer)
