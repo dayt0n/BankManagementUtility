@@ -16,6 +16,7 @@ import TellerEditUserAccountPage from './pages/Teller/TellerEditUserAccountPage'
 import TellerOpenUserAccountPage from './pages/Teller/TellerOpenUserAccountPage';
 import TellerTransferFundsPage from './pages/Teller/TellerTransferFundsPage';
 import TellerWithdrawFundsPage from './pages/Teller/TellerWithdrawFundsPage';
+import TellerPayABillPage from './pages/Teller/TellerPayABillPage';
 import TellerDeleteUserAccountPage from './pages/Teller/TellerDeleteUserAccountPage';
 
 import AdminSummaryPage from './pages/Admin/AdminSummaryPage';
@@ -25,6 +26,7 @@ import AdminEditUserAccountPage from './pages/Admin/AdminEditUserAccountPage';
 import AdminOpenUserAccountPage from './pages/Admin/AdminOpenUserAccountPage';
 import AdminTransferFundsPage from './pages/Admin/AdminTransferFundsPage';
 import AdminWithdrawFundsPage from './pages/Admin/AdminWithdrawFundsPage';
+import AdminPayABillPage from './pages/Admin/AdminPayABillPage';
 import AdminDeleteUserAccountPage from './pages/Admin/AdminDeleteUserAccountPage';
 import AdminCreateTellerAccountPage from './pages/Admin/AdminCreateTellerAccountPage';
 import AdminDeleteTellerAccountPage from './pages/Admin/AdminDeleteTellerAccountPage';
@@ -49,6 +51,7 @@ const Main = () => {
                 <Route path='/teller/user/open-account' element={<TellerOpenUserAccountPage />}></Route>
                 <Route path='/teller/user/transfer' element={<TellerTransferFundsPage />}></Route>
                 <Route path='/teller/user/withdraw' element={<TellerWithdrawFundsPage />}></Route>
+                <Route path='/teller/user/pay-bill' element={<TellerPayABillPage />}></Route>
                 <Route path='/teller/user/delete-account' element={<TellerDeleteUserAccountPage />}></Route>
 
                 <Route path='/admin/overview' element={<AdminSummaryPage />}></Route>
@@ -58,6 +61,7 @@ const Main = () => {
                 <Route path='/admin/user/open-account' element={<AdminOpenUserAccountPage />}></Route>
                 <Route path='/admin/user/transfer' element={<AdminTransferFundsPage />}></Route>
                 <Route path='/admin/user/withdraw' element={<AdminWithdrawFundsPage />}></Route>
+                <Route path='/admin/user/pay-bill' element={<AdminPayABillPage />}></Route>
                 <Route path='/admin/user/delete-account' element={<AdminDeleteUserAccountPage />}></Route>
                 <Route path='/admin/teller/create-account' element={<AdminCreateTellerAccountPage />}></Route>
                 <Route path='/admin/teller/delete-account' element={<AdminDeleteTellerAccountPage />}></Route>

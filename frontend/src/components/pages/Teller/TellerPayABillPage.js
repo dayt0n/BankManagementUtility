@@ -1,16 +1,16 @@
 import React from "react";
-import { adminUserLinks } from '../../LinkLists';
+import { tellerUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
-import { TransferAccountToAccount } from "../../TransferAccountToAccount";
+import { PayBillFromAccount } from "../../PayBillFromAccount";
 
-function AdminTransferFundsPage() {
+function TellerPayABillPage() {
     const state = {
-        'links': adminUserLinks,
-        'items': [<TransferAccountToAccount key="item0"/>]
+        'links': tellerUserLinks,
+        'items': [<PayBillFromAccount key="item0"/>]
     };
 
-    var user = PermissionCheck("administrator");
+    var user = PermissionCheck("teller");
 
     if (user === false) {
         return <meta http-equiv="refresh" content="0; URL=http://bmu.local/" />;
@@ -23,4 +23,4 @@ function AdminTransferFundsPage() {
     );
 }
 
-export default AdminTransferFundsPage;
+export default TellerPayABillPage;

@@ -1,83 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
-import decode from "jwt-decode";
-import "./TransferAccountToAccount.css";
-
+import "./DeleteAccount.css"
 
 function parseUserAccounts(accounts) {
 
-    var from = [];
-    var to = [];
-
     if (accounts["status"] === 'error') {
-        return [from, to];
+        return [];
     }
-    return [from, to];
+    return accounts;
 }
 
-export const TransferAccountToAccount = () => {
-    const [fromAccount, setFromAccount] = useState("");
-    const [toAccount, setToAccount] = useState("");
-    const [options, setOptions] = useState([[],[]]);
-    const [amount, setAmount] = useState("");
+export const DeleteAccount = () => {
+    const [account, setAccount] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
+    const [accountOpt, setAccountOptions] = useState([]);
     var errorMsg = 'Placeholder Error Message';
 
-    // GET TRANSFER OPTIONS HERE
-
     var name = localStorage.getItem("User");
-
-    if (name === null)
-    {
-        var user = decode(document.cookie)
-        name = user["user"];
-    }
 
     useEffect(() => {
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setOptions(parseUserAccounts(data)))
+            .then(data => setAccountOptions(parseUserAccounts(data)))
     }, []);
 
+
     return (
-        <div className="TransferAccountToAccount">
-            <h1>Transfer Funds</h1>
+        <div className="DeleteAccount">
+            <h1>Delete Account</h1>
             <hr />
-            <Form inverted className="TransferA2AForm" success={success} error={error} >
-                <Form.Select
-                    required
-                    fluid
-                    label='Transfer From'
-                    options={options[0]}
-                    placeholder='Account'
-                    onChange={(e, {value}) => setFromAccount(value)}
-                />
+            <Form inverted className="DeleteAccountForm" success={success} error={error} >
 
                 <Form.Select
                     required
                     fluid
-                    label='Transfer To'
-                    options={options[1]}
+                    label='Account'
+                    options={accountOpt}
                     placeholder='Account'
-                    onChange={(e, {value}) => setToAccount(value)}
-                />
-
-                <Form.Input
-                    required
-                    fluid
-                    label='Amount'
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={(e, {value}) => setAccount(value)}
                 />
 
                 <Form.Button
                     fluid
+                    negative
                     loading={requestLoading}
-                    type='submit'
+                    type='Delete Account'
                     onClick={async () => {
-                        const createRequest = { fromAccount, toAccount, amount };
+                        const createRequest = { account };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -92,7 +63,7 @@ export const TransferAccountToAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/money/move/transfer", {
+                        const response = await fetch("/api/money/bills/pay", {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
@@ -130,7 +101,7 @@ export const TransferAccountToAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='Money transfer was successful!'
+                    content='Account Deleted!'
                 />
                 <Message id='Error Message'
                     error

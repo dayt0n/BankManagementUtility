@@ -1,40 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
+import decode from "jwt-decode";
 import "./PayBillFromAccount.css"
 
+function parseUserAccounts(accounts) {
+
+    if (accounts["status"] === 'error') {
+        return [];
+    }
+    return accounts;
+}
+
 export const PayBillFromAccount = () => {
-    const [billAccount, setBillAccount] = useState("");
-    const [moneyAccount, setMoneyAccount] = useState("");
+    const [payee, setPayee] = useState("");
+    const [address, setAddress] = useState("");
+    const [date, setDate] = useState("");
+    const [account, setAccount] = useState("");
     const [amount, setAmount] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
+    const [accountOpt, setAccountOptions] = useState([]);
     var errorMsg = 'Placeholder Error Message';
 
-    // GET TRANSFER OPTIONS HERE
+    var name = localStorage.getItem("User");
 
-    const accountOpt = [
-        {key: 'c', text: 'Checking', value: 1},
-        {key: 's', text: 'Saving', value: 2}
-    ]
+    if (name === null)
+    {
+        var user = decode(document.cookie)
+        name = user["user"];
+    }
 
-    const billOpt = [
-        {key: 'm', text: 'Mortgage', value: 1},
-        {key: 'cc', text: 'Credit Card', value: 2}
-    ]
+    useEffect(() => {
+        fetch("/api/user/accounts/" + name)
+            .then(res => res.json())
+            .then(data => setAccountOptions(parseUserAccounts(data)))
+    }, []);
+
 
     return (
         <div className="PayBillFromAccount">
             <h1>Pay Bill</h1>
             <hr />
             <Form inverted className="PayBillForm" success={success} error={error} >
-                <Form.Select
+                <Form.Input
                     required
                     fluid
-                    label='Bill To Pay'
-                    options={billOpt}
-                    placeholder='Bill'
-                    onChange={(e) => setBillAccount(e.target.value)}
+                    label='Payee'
+                    placeholder='Name'
+                    onChange={(e) => setPayee(e.target.value)}
+                />
+
+                <Form.Input
+                    required
+                    fluid
+                    label='Address'
+                    placeholder='Address'
+                    onChange={(e) => setAddress(e.target.value)}
+                />
+
+                <Form.Input
+                    required
+                    fluid
+                    label='Due Date'
+                    placeholder='Date'
+                    onChange={(e) => setDate(e.target.value)}
                 />
 
                 <Form.Select
@@ -43,13 +73,14 @@ export const PayBillFromAccount = () => {
                     label='Account To Pay From'
                     options={accountOpt}
                     placeholder='Account'
-                    onChange={(e) => setMoneyAccount(e.target.value)}
+                    onChange={(e, {value}) => setAccount(value)}
                 />
 
                 <Form.Input
                     required
                     fluid
                     label='Amount'
+                    placeholder="Amount"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                 />
@@ -59,7 +90,7 @@ export const PayBillFromAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { billAccount, moneyAccount, amount };
+                        const createRequest = { payee, address, date, account, amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

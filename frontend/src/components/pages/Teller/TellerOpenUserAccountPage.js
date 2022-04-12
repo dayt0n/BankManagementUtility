@@ -2,11 +2,12 @@ import React from "react";
 import { tellerUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
+import { OpenAccount } from "../../OpenAccount";
 
 function TellerOpenUserAccountPage() {
     const state = {
         'links': tellerUserLinks,
-        'items': []
+        'items': [<OpenAccount key="item0"/>]
     };
 
     var user = PermissionCheck("teller");

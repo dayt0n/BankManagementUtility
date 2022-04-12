@@ -2,11 +2,12 @@ import React from "react";
 import { tellerUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
+import { WithdrawDepositFunds } from "../../WithdrawDepositFunds";
 
 function TellerWithdrawFundsPage() {
     const state = {
         'links': tellerUserLinks,
-        'items': []
+        'items': [<WithdrawDepositFunds key="item0"/>]
     };
 
     var user = PermissionCheck("teller");

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "semantic-ui-react";
-import { fakenamelist } from "./fakenamelist";
 import SearchItem from "./SearchItem";
 import "./TellerUserSearch.css"
 
@@ -38,7 +37,6 @@ export const TellerUserSearch = () => {
 
     const [userList, setUserList] = useState([]);
     const [users, setUsers] = useState([]);
-    const [limitReaced, setLimitReached] = useState(<></>);
 
     var limitReached = <></>;
     if (over50) {

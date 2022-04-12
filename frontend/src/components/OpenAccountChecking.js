@@ -1,83 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
-import decode from "jwt-decode";
-import "./TransferAccountToAccount.css";
 
-
-function parseUserAccounts(accounts) {
-
-    var from = [];
-    var to = [];
-
-    if (accounts["status"] === 'error') {
-        return [from, to];
-    }
-    return [from, to];
-}
-
-export const TransferAccountToAccount = () => {
-    const [fromAccount, setFromAccount] = useState("");
-    const [toAccount, setToAccount] = useState("");
-    const [options, setOptions] = useState([[],[]]);
-    const [amount, setAmount] = useState("");
+export const OpenAccountChecking = () => {
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
 
-    // GET TRANSFER OPTIONS HERE
-
-    var name = localStorage.getItem("User");
-
-    if (name === null)
-    {
-        var user = decode(document.cookie)
-        name = user["user"];
-    }
-
-    useEffect(() => {
-        fetch("/api/user/accounts/" + name)
-            .then(res => res.json())
-            .then(data => setOptions(parseUserAccounts(data)))
-    }, []);
+    var user = localStorage.getItem("User");
 
     return (
-        <div className="TransferAccountToAccount">
-            <h1>Transfer Funds</h1>
+        <div className="OpenAccount">
+            <h2>Checking</h2>
             <hr />
-            <Form inverted className="TransferA2AForm" success={success} error={error} >
-                <Form.Select
-                    required
-                    fluid
-                    label='Transfer From'
-                    options={options[0]}
-                    placeholder='Account'
-                    onChange={(e, {value}) => setFromAccount(value)}
-                />
-
-                <Form.Select
-                    required
-                    fluid
-                    label='Transfer To'
-                    options={options[1]}
-                    placeholder='Account'
-                    onChange={(e, {value}) => setToAccount(value)}
-                />
-
-                <Form.Input
-                    required
-                    fluid
-                    label='Amount'
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
-
+            <Form inverted className="OpenAccountCheckingForm" success={success} error={error} >
                 <Form.Button
                     fluid
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { fromAccount, toAccount, amount };
+                        const createRequest = {};
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -92,7 +34,7 @@ export const TransferAccountToAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/money/move/transfer", {
+                        const response = await fetch("/api/money/account/create", {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
@@ -130,7 +72,7 @@ export const TransferAccountToAccount = () => {
                 <Message
                     success
                     header='Form Completed'
-                    content='Money transfer was successful!'
+                    content='Account has been opened! Check your summary page to see your new account!'
                 />
                 <Message id='Error Message'
                     error

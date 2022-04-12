@@ -2,12 +2,12 @@ import React from "react";
 import { adminUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
-import { TransferAccountToAccount } from "../../TransferAccountToAccount";
+import { PayBillFromAccount } from "../../PayBillFromAccount";
 
-function AdminTransferFundsPage() {
+function AdminPayABillPage() {
     const state = {
         'links': adminUserLinks,
-        'items': [<TransferAccountToAccount key="item0"/>]
+        'items': [<PayBillFromAccount key="item0"/>]
     };
 
     var user = PermissionCheck("administrator");
@@ -23,4 +23,4 @@ function AdminTransferFundsPage() {
     );
 }
 
-export default AdminTransferFundsPage;
+export default AdminPayABillPage;

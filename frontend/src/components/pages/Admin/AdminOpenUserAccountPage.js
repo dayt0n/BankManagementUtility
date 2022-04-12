@@ -2,11 +2,12 @@ import React from "react";
 import { adminUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
+import { OpenAccount } from "../../OpenAccount";
 
 function AdminOpenUserAccountPage() {
     const state = {
         'links': adminUserLinks,
-        'items': []
+        'items': [<OpenAccount key="item0"/>]
     };
 
     var user = PermissionCheck("administrator");

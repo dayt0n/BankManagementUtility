@@ -137,7 +137,7 @@ function HomePage() {
                             //console.log(decoded);
                             //console.log(decoded["role"]);
                             
-                            document.cookie="session=" + JSON.stringify(content.data).slice(10,-2);
+                            document.cookie="session=" + JSON.stringify(content.data).slice(10,-2) + ";path='/';";
 
                             if(decoded["role"]==="customer"){
                               navigate("/user/summary");

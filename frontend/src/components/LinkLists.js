@@ -11,6 +11,7 @@ export const tellerUserLinks = ['Back to Search', '/teller/overview',
                                 'Edit User Info', '/teller/user/edit-account',
                                 'Open New Account', '/teller/user/open-account',
                                 'Transfer Funds', '/teller/user/transfer',
+                                'Pay A Bill', '/teller/user/pay-bill',
                                 'Withdraw/Deposit Funds', '/teller/user/withdraw',
                                 'Delete Account', '/teller/user/delete-account'];
 
@@ -27,5 +28,6 @@ export const adminUserLinks = ['Back to Search', '/admin/overview',
                                'Edit User Info', '/admin/user/edit-account',
                                'Open New Account', '/admin/user/open-account',
                                'Transfer User Funds', '/admin/user/transfer',
+                               'Pay A Bill', '/admin/user/pay-bill',
                                'Withdraw/Deposit Funds', '/admin/user/withdraw',
                                'Delete User Account', '/admin/user/delete-account',];

@@ -2,11 +2,12 @@ import React from "react";
 import { adminUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
+import { WithdrawDepositFunds } from "../../WithdrawDepositFunds";
 
 function AdminWithdrawFundsPage() {
     const state = {
         'links': adminUserLinks,
-        'items': [<TellerEditUserAccount key="item1"/>]
+        'items': [<WithdrawDepositFunds key="item0"/>]
     };
 
     var user = PermissionCheck("administrator");

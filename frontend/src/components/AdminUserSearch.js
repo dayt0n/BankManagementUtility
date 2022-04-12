@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "semantic-ui-react";
 import SearchItem from "./SearchItem";
-import "./AdminUserSearch.css"
+import "./AdminUserSearch.css";
 
 function SearchUsers(users, search) {
     var key = 1;
@@ -24,7 +24,7 @@ function SearchUsers(users, search) {
 
 export const AdminUserSearch = () => {
 
-    var fakeusers = ["a", "bob", "joe", "timmy", "tim", "alex"];
+    var fakeusers = ["a"];
 
     const [userList, setUserList] = useState([]);
     const [users, setUsers] = useState(SearchUsers(fakeusers, ""));

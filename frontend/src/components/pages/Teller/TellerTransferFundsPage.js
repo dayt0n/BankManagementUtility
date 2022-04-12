@@ -7,7 +7,7 @@ import { TransferAccountToAccount } from "../../TransferAccountToAccount";
 function TellerTransferFundsPage() {
     const state = {
         'links': tellerUserLinks,
-        'items': []
+        'items': [<TransferAccountToAccount key="item0"/>]
     };
 
     var user = PermissionCheck("teller");

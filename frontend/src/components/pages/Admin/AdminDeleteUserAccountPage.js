@@ -1,12 +1,13 @@
 import React from "react";
-import { adminTellerLinks } from '../../LinkLists';
+import { adminUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
+import { DeleteAccount } from "../../DeleteAccount";
 
 function AdminDeleteUserAccountPage() {
     const state = {
         'links': adminUserLinks,
-        'items': []
+        'items': [<DeleteAccount key="item0"/>]
     };
 
     var user = PermissionCheck("administrator");
