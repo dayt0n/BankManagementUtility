@@ -106,6 +106,13 @@ def delete(accountNum, token):
             UserAccount.accountNum == accountNum).first()
         if not acct:
             return error(f"Could not find account with number {accountNum}")
+        moneyAcct = get_money_account(acct)
+        if isinstance(moneyAcct, Mortgage):
+            if moneyAcct.status != "paid":
+                return error(f"Mortgage account {accountNum} has not been paid off yet. Not going to delete.")
+        else:
+            if moneyAcct.balance != 0.0:
+                return error(f"Account {accountNum} is not empty. Not going to delete.")
         sess.delete(acct)
     return success(f"Deleted account {accountNum}")
 
@@ -126,6 +133,7 @@ def balance(accountNum, token):
         return error("Account does not have a balance.")
 
 
+# TODO: need to figure out permissions
 @account.route('/history/<accountNum>', defaults={"count": 20}, methods=["GET"])
 @account.route('/history/<accountNum>/<count>', methods=["GET"])
 def history(accountNum, count, token):
