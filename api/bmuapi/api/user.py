@@ -17,7 +17,7 @@ def user_home():
 
 
 @user.route('/info/<username>', methods=["GET"])
-@admin_or_current_user_only
+@teller_or_current_user_only
 def info(username, token):
     with SessionManager(commit=False) as sess:
         usr = sess.query(User).filter(
