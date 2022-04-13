@@ -8,8 +8,21 @@ function parseUserAccounts(accounts) {
     if (accounts["status"] === 'error') {
         return [];
     }
-    return accounts;
+
+    var accountOpt = []
+
+    for (var account in accounts) {
+        account = accounts[account];
+        var accountNum = account["accountNum"].toString();
+        var len = accountNum.length;
+        accountOpt.push({key: account["accountName"], 
+                         text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
+                         value: account["accountNum"]})
+    }
+
+    return accountOpt;
 }
+
 
 export const WithdrawDepositFunds = () => {
     const [account, setAccount] = useState("");
@@ -32,7 +45,7 @@ export const WithdrawDepositFunds = () => {
     useEffect(() => {
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setAccountOptions(parseUserAccounts(data)))
+            .then(data => setAccountOptions(parseUserAccounts(data["data"])))
     }, []);
 
 
@@ -82,7 +95,7 @@ export const WithdrawDepositFunds = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { account, amount, type };
+                        const createRequest = { account, amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

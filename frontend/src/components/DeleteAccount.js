@@ -7,7 +7,19 @@ function parseUserAccounts(accounts) {
     if (accounts["status"] === 'error') {
         return [];
     }
-    return accounts;
+
+    var accountOpt = []
+
+    for (var account in accounts) {
+        account = accounts[account];
+        var accountNum = account["accountNum"].toString();
+        var len = accountNum.length;
+        accountOpt.push({key: account["accountName"], 
+                         text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
+                         value: account["accountNum"]})
+    }
+
+    return accountOpt;
 }
 
 export const DeleteAccount = () => {
@@ -23,7 +35,7 @@ export const DeleteAccount = () => {
     useEffect(() => {
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setAccountOptions(parseUserAccounts(data)))
+            .then(data => setAccountOptions(parseUserAccounts(data["data"])))
     }, []);
 
 
@@ -46,30 +58,15 @@ export const DeleteAccount = () => {
                     fluid
                     negative
                     loading={requestLoading}
-                    type='Delete Account'
+                    type='submit'
                     onClick={async () => {
-                        const createRequest = { account };
-                        var quit = false;
-                        for (var field in createRequest) {
-                            if (createRequest[field] === "") {
-                                errorMsg = document.getElementById('Error Message').getElementsByTagName('p')
-                                errorMsg[0].textContent = "All fields must be filled."
-                                setError(true);
-                                setSuccess(false);
-                                quit = true;
-                            }
-                        }
 
-                        if (quit) { return; }
-
-
-                        const response = await fetch("/api/money/bills/pay", {
-                            method: "POST",
+                        const response = await fetch("/api/money/account/delete/" + account, {
+                            method: "GET",
                             headers: {
                                 "Accept": "application/json",
                                 "Content-Type": "application/json",
                             },
-                            body: JSON.stringify(createRequest),
                         });
 
                         if (!response.ok) {
@@ -96,7 +93,7 @@ export const DeleteAccount = () => {
                         }
                     }}
                 >
-                    Submit
+                    Delete Account
                 </Form.Button>
                 <Message
                     success

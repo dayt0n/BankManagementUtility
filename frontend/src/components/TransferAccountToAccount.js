@@ -6,18 +6,35 @@ import "./TransferAccountToAccount.css";
 
 function parseUserAccounts(accounts) {
 
-    var from = [];
-    var to = [];
-
     if (accounts["status"] === 'error') {
-        return [from, to];
+        return [];
     }
-    return [from, to];
+
+    var from = []
+    var to = []
+
+    for (var account in accounts) {
+        account = accounts[account];
+        var accountNum = account["accountNum"].toString();
+        var len = accountNum.length;
+        if (account["accountType"] === "checking" || account["accountType"] === "savings") {
+            from.push({key: account["accountName"], 
+                       text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
+                       value: account["accountNum"]})
+        }
+        to.push({key: account["accountName"], 
+                 text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
+                 value: account["accountNum"]})
+    }
+
+    var options = [from, to];
+
+    return options;
 }
 
 export const TransferAccountToAccount = () => {
-    const [fromAccount, setFromAccount] = useState("");
-    const [toAccount, setToAccount] = useState("");
+    const [from, setFromAccount] = useState("");
+    const [to, setToAccount] = useState("");
     const [options, setOptions] = useState([[],[]]);
     const [amount, setAmount] = useState("");
     const [success, setSuccess] = useState(Boolean);
@@ -38,7 +55,7 @@ export const TransferAccountToAccount = () => {
     useEffect(() => {
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setOptions(parseUserAccounts(data)))
+            .then(data => setOptions(parseUserAccounts(data["data"])))
     }, []);
 
     return (
@@ -77,7 +94,7 @@ export const TransferAccountToAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { fromAccount, toAccount, amount };
+                        const createRequest = { from, to, amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

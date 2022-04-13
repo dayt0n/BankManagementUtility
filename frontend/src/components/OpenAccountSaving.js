@@ -2,24 +2,37 @@ import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
 
 export const OpenAccountSaving = () => {
+    const [name, setName] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
 
     var user = localStorage.getItem("User");
+    
+    var username = user;
+    var type = "savings";
 
     return (
         <div className="OpenAccount">
             <h2>Saving</h2>
             <hr />
             <Form inverted className="OpenAccountSavingForm" success={success} error={error} >
+
+                <Form.Input
+                    required
+                    fluid
+                    label='Account Name'
+                    placeholder='Name'
+                    onChange={(e) => setName(e.target.value)}
+                />
+
                 <Form.Button
                     fluid
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = {};
+                        const createRequest = {username, type, name};
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

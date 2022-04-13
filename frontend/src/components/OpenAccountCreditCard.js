@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
 
 export const OpenAccountCreditCard = () => {
+    const [name, setName] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
@@ -9,18 +10,29 @@ export const OpenAccountCreditCard = () => {
 
     var user = localStorage.getItem("User");
 
+    var username = user;
+    var type = "creditCard";
+
     return (
         <div className="OpenAccount">
             <h2>Credit Card</h2>
             <hr />
             <Form inverted className="OpenAccountCreditCardForm" success={success} error={error} >
 
+                <Form.Input
+                    required
+                    fluid
+                    label='Account Name'
+                    placeholder='Name'
+                    onChange={(e) => setName(e.target.value)}
+                />
+
                 <Form.Button
                     fluid
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = {};
+                        const createRequest = {username, type, name};
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

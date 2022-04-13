@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
 
 export const OpenAccountMortgage = () => {
+    const [name, setName] = useState("");
+    const [loanAmount, setLoanAmount] = useState(0);
+    const [term, setTerm] = useState(0);
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
@@ -9,17 +12,47 @@ export const OpenAccountMortgage = () => {
 
     var user = localStorage.getItem("User");
 
+    var username = user;
+    var type = "mortgage";
+
     return (
         <div className="OpenAccount">
             <h2>Mortgage</h2>
             <hr />
             <Form inverted className="OpenAccountMortgageForm" success={success} error={error} >
+
+                <Form.Input
+                    required
+                    fluid
+                    label='Account Name'
+                    placeholder='Name'
+                    onChange={(e) => setName(e.target.value)}
+                />
+
+                <Form.Input
+                    required
+                    fluid
+                    label='Loan Amount'
+                    placeholder='Amount'
+                    onChange={(e) => setLoanAmount(e.target.value)}
+                />
+
+                <Form.Input
+                    required
+                    fluid
+                    label='Term in Years'
+                    placeholder='Years'
+                    onChange={(e) => setTerm(e.target.value)}
+                />
+
                 <Form.Button
                     fluid
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = {};
+                        var currentTime = new Date();
+                        var startDate = currentTime.toISOString();
+                        const createRequest = {username, type, name, loanAmount, startDate, term};
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

@@ -8,7 +8,21 @@ function parseUserAccounts(accounts) {
     if (accounts["status"] === 'error') {
         return [];
     }
-    return accounts;
+
+    var from = []
+
+    for (var account in accounts) {
+        account = accounts[account];
+        if (account["accountType"] === "checking" || account["accountType"] === "savings") {
+            var accountNum = account["accountNum"].toString();
+            var len = accountNum.length;
+            from.push({key: account["accountName"], 
+                       text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
+                       value: account["accountNum"]})
+        }
+    }
+
+    return from;
 }
 
 export const PayBillFromAccount = () => {
@@ -34,7 +48,7 @@ export const PayBillFromAccount = () => {
     useEffect(() => {
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setAccountOptions(parseUserAccounts(data)))
+            .then(data => setAccountOptions(parseUserAccounts(data["data"])))
     }, []);
 
 
