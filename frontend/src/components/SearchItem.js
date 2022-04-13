@@ -9,26 +9,28 @@ function SearchItem(dataParentToChild) {
     const navigate = useNavigate();
 
     var user = decode(document.cookie);
-
-    console.log(dataParentToChild)
+    var name = dataParentToChild.dataParentToChild["username"];
+    var role = dataParentToChild.dataParentToChild["role"];
 
     return (
         <div className="SearchItem">
-            <h3 className="Name">Name: {dataParentToChild.dataParentToChild["username"]}</h3>
-
-            <h3 className="Role">Role: {dataParentToChild.dataParentToChild["role"]}</h3>
+            <h3 className="Name">{role[0].toUpperCase() + role.slice(1)}: {name}</h3>
 
             <Button className="ChooseButton"
                 onClick= {() => {
-                    localStorage.setItem('User', dataParentToChild.dataParentToChild["username"]);
+                    localStorage.setItem('User', name);
                     
                     if (user["role"] === "teller") {
                         navigate("/teller/user/summary");
                     }
-                    else {
-                        navigate("/admin/user/summary");
+                    else if (user["role"] === "administrator") {
+                        if (role === "customer") {
+                            navigate("/admin/user/summary");
+                        }
+                        else {
+                            navigate("/admin/teller/edit-account");
+                        }
                     }
-                
                 }}>
                 Choose User
             </Button>

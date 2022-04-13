@@ -28,8 +28,6 @@ function SearchUsers(users, search) {
         htmlList.push(<SearchItem key={"item" + key} dataParentToChild={list[item]} />)
         key += 1;
     }
-
-    console.log(htmlList)
     
     return htmlList;
 }
@@ -48,7 +46,7 @@ export const TellerUserSearch = () => {
     useEffect(() => {
         fetch("/api/user/list")
             .then(res => res.json())
-            .then(data => setUserList(data["data"]))
+            .then(data => { setUserList(data["data"]); console.log(data); })
             .then(() => setUsers(SearchUsers(userList, "")))
     }, []);
 

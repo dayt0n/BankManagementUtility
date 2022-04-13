@@ -58,7 +58,11 @@ export const TransferAccountToAccount = () => {
         setAccountsLoading(true);
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setOptions(parseUserAccounts(data["data"])))
+            .then(data => {
+                if (data["status"] === "success") {
+                    setOptions(parseUserAccounts(data["data"]))
+                }
+            })
             .then(() => setAccountsLoading(false))
     }, []);
 

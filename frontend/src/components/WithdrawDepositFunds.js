@@ -5,11 +5,6 @@ import CurrencyInput from 'react-currency-input-field';
 import "./WithdrawDepositFunds.css"
 
 function parseUserAccounts(accounts) {
-
-    if (accounts["status"] === 'error') {
-        return [];
-    }
-
     var accountOpt = []
 
     for (var account in accounts) {
@@ -48,7 +43,11 @@ export const WithdrawDepositFunds = () => {
         setAccountsLoading(true);
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setAccountOptions(parseUserAccounts(data["data"])))
+            .then(data => {
+                if (data["status"] === "success") {
+                    setAccountOptions(parseUserAccounts(data["data"]))
+                }
+            })
             .then(() => setAccountsLoading(false))
     }, []);
 

@@ -16,7 +16,7 @@ export const EditUserAccount = () => {
     const [street, setStreet] = useState("");
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
-    const [zip, setZip] = useState(null);
+    const [zip, setZip] = useState("");
 
     const [phone, setPhone] = useState("");
     const [passSuccess, setPasswordSuccess] = useState(Boolean);

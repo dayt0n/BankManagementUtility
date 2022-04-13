@@ -37,7 +37,11 @@ export const DeleteAccount = () => {
         setAccountsLoading(true);
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
-            .then(data => setAccountOptions(parseUserAccounts(data["data"])))
+            .then(data => {
+                if (data["status"] === "success") {
+                    setAccountOptions(parseUserAccounts(data["data"]))
+                }
+            })
             .then(() => setAccountsLoading(false))
     }, []);
 
