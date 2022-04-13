@@ -32,6 +32,7 @@ def login(sess: requests.Session, user="normal"):
 def user_info(sess: requests.Session):
     login(sess, user="admin")
     r = sess.get(url+"/api/user/info/a")
+    print( r.json() )
     assert r.status_code == 200
     logout(sess)
 
@@ -81,7 +82,7 @@ def list_users(sess: requests.Session):
 
 s = requests.Session()
 
-# user_info(s)
+user_info(s)
 # list_users(s)
-create_account(s)
-list_accounts(s, "a")
+# create_account(s)
+# list_accounts(s, "a")
