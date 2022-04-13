@@ -10,13 +10,17 @@ function SearchItem(dataParentToChild) {
 
     var user = decode(document.cookie);
 
+    console.log(dataParentToChild)
+
     return (
         <div className="SearchItem">
-            <h3>{dataParentToChild.dataParentToChild}</h3>
+            <h3 className="Name">Name: {dataParentToChild.dataParentToChild["username"]}</h3>
+
+            <h3 className="Role">Role: {dataParentToChild.dataParentToChild["role"]}</h3>
 
             <Button className="ChooseButton"
                 onClick= {() => {
-                    localStorage.setItem('User', dataParentToChild.dataParentToChild);
+                    localStorage.setItem('User', dataParentToChild.dataParentToChild["username"]);
                     
                     if (user["role"] === "teller") {
                         navigate("/teller/user/summary");

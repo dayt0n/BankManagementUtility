@@ -40,15 +40,17 @@ export const AdminUserSearch = () => {
         <div className="AdminUserSearch">
             <h1>Search for User</h1>
             <hr />
-            <Form.Input
-                required
-                fluid
-                label='Search for name'
-                placeholder="Name"
-                onChange={(e) => { 
-                    setUsers(SearchUsers(fakeusers, e.target.value));
-                }}
-            />
+            <Form inverted >
+                <Form.Input
+                    inverted
+                    fluid
+                    label='Search for name'
+                    placeholder="Name"
+                    onChange={(e) => { 
+                        setUsers(SearchUsers(fakeusers, e.target.value));
+                    }}
+                />
+            </Form>
             {users}
         </div>
     );

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
+import { USStates } from "./arrays";
 import decode from 'jwt-decode';
+import PhoneInput from "react-phone-number-input/input";
+import 'react-phone-number-input/style.css';
 import "./EditUserAccount.css"
 
 export const EditUserAccount = () => {
@@ -9,7 +12,12 @@ export const EditUserAccount = () => {
     const [email, setEmail] = useState("");
     const [oldPassword, setOldPassword] = useState("");
     const [password, setNewPassword] = useState("");
-    const [address, setAddress] = useState("");
+
+    const [street, setStreet] = useState("");
+    const [city, setCity] = useState("");
+    const [state, setState] = useState("");
+    const [zip, setZip] = useState(null);
+
     const [phone, setPhone] = useState("");
     const [passSuccess, setPasswordSuccess] = useState(Boolean);
     const [passError, setPasswordError] = useState(Boolean);
@@ -23,17 +31,32 @@ export const EditUserAccount = () => {
         var name = userInfo['name'].split(" ");
         setFirstName(name[0]);
         setLastName(name[1]);
-        setAddress(userInfo['address']);
+        var arr = userInfo['address'].split(", ")
+        setStreet(arr[0]);
+        setCity(arr[1]);
+        setState(arr[2]);
+        setZip(arr[3]);
         setPhone(userInfo['phone']);
         setEmail(userInfo['email']);
     }
 
-    if (document.cookie) {
-        var user = decode(document.cookie);
+    function createAddress(street, city, state, zip) {
+        var address = "";
+
+        address = `${street}, ${city}, ${state}, ${zip}`;
+
+        return address
+    }
+
+    var user = localStorage.getItem("User");
+
+    if (user === null && document.cookie) {
+        var cookie = decode(document.cookie);
+        user = cookie["user"];
     }
 
     useEffect(() => {
-        fetch("/api/user/info/" + user["user"])
+        fetch("/api/user/info/" + user)
             .then(res => res.json())
             .then(data => setVars(data["data"]))
     }, []);
@@ -44,24 +67,26 @@ export const EditUserAccount = () => {
             <hr />
             <h3>Change Password</h3>
             <Form inverted className="ChangePasswordForm" success={passSuccess} error={passError} >
-                <Form.Input
-                    required
-                    fluid
-                    type='password'
-                    label='Old Password'
-                    placeholder="Password"
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                />
-                <Form.Input
-                    required
-                    fluid
-                    type='password'
-                    label='New Password'
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                />
+
+                <Form.Group widths='equal'>
+                    <Form.Input
+                        fluid
+                        type='password'
+                        label='Old Password'
+                        placeholder="Password"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                    />
+                    <Form.Input
+                        fluid
+                        type='password'
+                        label='New Password'
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                </Form.Group>
+
                 <Form.Button
                     fluid
                     loading={requestLoading}
@@ -82,7 +107,7 @@ export const EditUserAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/user/edit/" + user["user"], {
+                        const response = await fetch("/api/user/edit/" + user, {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",
@@ -133,7 +158,6 @@ export const EditUserAccount = () => {
             <Form inverted className="ChangeAccountInfoForm" success={infoSuccess} error={infoError} >
                 <Form.Group widths='equal'>
                     <Form.Input
-                        required
                         fluid
                         disabled
                         label='First Name'
@@ -142,7 +166,6 @@ export const EditUserAccount = () => {
                         onChange={(e) => setFirstName(e.target.value)}
                     />
                     <Form.Input
-                        required
                         fluid
                         disabled
                         label='Last Name'
@@ -155,7 +178,6 @@ export const EditUserAccount = () => {
                 <p>If you would like to change your name, call us or visit your local branch.</p>
 
                 <Form.Input
-                    required
                     fluid
                     type='email'
                     label='Email'
@@ -163,23 +185,56 @@ export const EditUserAccount = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                
-                <Form.Input
-                    required
-                    fluid
-                    label='Full Address'
-                    placeholder="Full Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                />
 
-                <Form.Input
-                    required
-                    fluid
-                    label='Phone Number'
+                <Form.Group>
+                    <Form.Input
+                        fluid
+                        width={10}
+                        label='Street'
+                        placeholder="Street"
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
+                    />
+
+                    <Form.Input
+                        fluid
+                        width={4}
+                        label='City'
+                        placeholder="City"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                    />
+
+                    <Form.Dropdown
+                        fluid
+                        width={2}
+                        label='State'
+                        placeholder="??"
+                        search
+                        selection
+                        options={USStates}
+                        value={state}
+                        onChange={(e, {value}) => setState(value)}
+                    />
+
+                    <Form.Input
+                        fluid
+                        width={4}
+                        label='Zip Code'
+                        placeholder="Zip Code"
+                        value={zip}
+                        onChange={(e) => setZip(e.target.value)}
+                    />
+                </Form.Group>
+
+                <label>Phone Number</label>
+
+                <PhoneInput
+                    id="PhoneInput"
+                    country="US"
                     placeholder="Phone Number"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={setPhone}
                 />
 
                 <Form.Button
@@ -187,7 +242,7 @@ export const EditUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { address, phone, email };
+                        const createRequest = { address: createAddress(street, city, state, zip), phone, email };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -202,7 +257,7 @@ export const EditUserAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/user/edit/" + user["user"], {
+                        const response = await fetch("/api/user/edit/" + user, {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",

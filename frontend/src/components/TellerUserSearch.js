@@ -13,7 +13,8 @@ function SearchUsers(users, search) {
     var list = []
     var htmlList = []
     for (var user in users) {
-        if ((users[user].toLowerCase()).includes(search.toLowerCase())) {
+        var userName = users[user]["username"];
+        if ((userName.toLowerCase()).includes(search.toLowerCase())) {
             list.push(users[user]);
             i += 1;
             if (i >= limit) {
@@ -27,13 +28,13 @@ function SearchUsers(users, search) {
         htmlList.push(<SearchItem key={"item" + key} dataParentToChild={list[item]} />)
         key += 1;
     }
+
+    console.log(htmlList)
     
     return htmlList;
 }
 
 export const TellerUserSearch = () => {
-
-    var fakeusers = ["a"];
 
     const [userList, setUserList] = useState([]);
     const [users, setUsers] = useState([]);
@@ -44,26 +45,29 @@ export const TellerUserSearch = () => {
     }
 
 
-    // useEffect(() => {
-    //     fetch("/api/user/list")
-    //         .then(res => res.json())
-    //         .then(data => { setUserList(data); console.log(data); })
-    // }, []);
+    useEffect(() => {
+        fetch("/api/user/list")
+            .then(res => res.json())
+            .then(data => setUserList(data["data"]))
+            .then(() => setUsers(SearchUsers(userList, "")))
+    }, []);
 
     return (
         <div className="TellerUserSearch">
             <h1>Search for User</h1>
             {limitReached}
             <hr />
-            <Form.Input
-                required
-                fluid
-                label='Search for name'
-                placeholder="Name"
-                onChange={(e) => { 
-                    setUsers(SearchUsers(fakeusers, e.target.value));
-                }}
-            />
+            <Form inverted >
+                <Form.Input
+                    inverted
+                    fluid
+                    label='Search for name'
+                    placeholder="Name"
+                    onChange={(e) => { 
+                        setUsers(SearchUsers(userList, e.target.value));
+                    }}
+                />
+            </Form>
             {users}
         </div>
     );

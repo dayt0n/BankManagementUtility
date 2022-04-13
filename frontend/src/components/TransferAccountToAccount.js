@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
 import decode from "jwt-decode";
+import CurrencyInput from 'react-currency-input-field';
 import "./TransferAccountToAccount.css";
 
 
@@ -39,6 +40,7 @@ export const TransferAccountToAccount = () => {
     const [amount, setAmount] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
+    const [accountsLoading, setAccountsLoading] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     var errorMsg = 'Placeholder Error Message';
 
@@ -53,9 +55,11 @@ export const TransferAccountToAccount = () => {
     }
 
     useEffect(() => {
+        setAccountsLoading(true);
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
             .then(data => setOptions(parseUserAccounts(data["data"])))
+            .then(() => setAccountsLoading(false))
     }, []);
 
     return (
@@ -64,29 +68,36 @@ export const TransferAccountToAccount = () => {
             <hr />
             <Form inverted className="TransferA2AForm" success={success} error={error} >
                 <Form.Select
-                    required
                     fluid
                     label='Transfer From'
+                    disabled={accountsLoading}
+                    loading={accountsLoading}
                     options={options[0]}
                     placeholder='Account'
                     onChange={(e, {value}) => setFromAccount(value)}
                 />
 
                 <Form.Select
-                    required
                     fluid
                     label='Transfer To'
+                    disabled={accountsLoading}
+                    loading={accountsLoading}
                     options={options[1]}
                     placeholder='Account'
                     onChange={(e, {value}) => setToAccount(value)}
                 />
 
-                <Form.Input
-                    required
-                    fluid
-                    label='Amount'
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                <label><b>Amount</b></label>
+
+                <CurrencyInput
+                    id="amount-input"
+                    name="Amount"
+                    placeholder="Amount"
+                    decimalsLimit={2}
+                    allowNegativeValue={false}
+                    defaultValue={0}
+                    prefix="$"
+                    onValueChange={(value, name) => setAmount(value)}
                 />
 
                 <Form.Button

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
 import decode from "jwt-decode";
+import CurrencyInput from 'react-currency-input-field';
+import DatePicker from 'react-datepicker';
 import "./PayBillFromAccount.css"
+import "react-datepicker/dist/react-datepicker.css";
 
 function parseUserAccounts(accounts) {
 
@@ -28,11 +31,12 @@ function parseUserAccounts(accounts) {
 export const PayBillFromAccount = () => {
     const [payee, setPayee] = useState("");
     const [address, setAddress] = useState("");
-    const [date, setDate] = useState("");
+    const [date, setDate] = useState(new Date());
     const [account, setAccount] = useState("");
     const [amount, setAmount] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
+    const [accountsLoading, setAccountsLoading] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     const [accountOpt, setAccountOptions] = useState([]);
     var errorMsg = 'Placeholder Error Message';
@@ -45,10 +49,14 @@ export const PayBillFromAccount = () => {
         name = user["user"];
     }
 
+    var today = new Date();
+
     useEffect(() => {
+        setAccountsLoading(true);
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
             .then(data => setAccountOptions(parseUserAccounts(data["data"])))
+            .then(() => setAccountsLoading(false))
     }, []);
 
 
@@ -58,7 +66,6 @@ export const PayBillFromAccount = () => {
             <hr />
             <Form inverted className="PayBillForm" success={success} error={error} >
                 <Form.Input
-                    required
                     fluid
                     label='Payee'
                     placeholder='Name'
@@ -66,37 +73,42 @@ export const PayBillFromAccount = () => {
                 />
 
                 <Form.Input
-                    required
                     fluid
                     label='Address'
                     placeholder='Address'
                     onChange={(e) => setAddress(e.target.value)}
                 />
 
-                <Form.Input
-                    required
-                    fluid
-                    label='Due Date'
-                    placeholder='Date'
-                    onChange={(e) => setDate(e.target.value)}
+                <label>Due Date</label>
+
+                <DatePicker
+                    id="DatePicker"
+                    minDate={today}
+                    selected={date} 
+                    onChange={(date) => setDate(date)} 
                 />
 
                 <Form.Select
-                    required
                     fluid
                     label='Account To Pay From'
+                    disabled={accountsLoading}
+                    loading={accountsLoading}
                     options={accountOpt}
                     placeholder='Account'
                     onChange={(e, {value}) => setAccount(value)}
                 />
 
-                <Form.Input
-                    required
-                    fluid
-                    label='Amount'
+                <label><b>Amount</b></label>
+
+                <CurrencyInput
+                    id="amount-input"
+                    name="Amount"
                     placeholder="Amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    decimalsLimit={2}
+                    allowNegativeValue={false}
+                    defaultValue={0}
+                    prefix="$"
+                    onValueChange={(value, name) => setAmount(value)}
                 />
 
                 <Form.Button
@@ -104,7 +116,7 @@ export const PayBillFromAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { payee, address, date, account, amount };
+                        const createRequest = { payee, address, date: date.toISOString(), account, amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

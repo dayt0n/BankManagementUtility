@@ -97,3 +97,28 @@ hr {
     margin-bottom: 1%;
     width: 100%;
 }
+
+label {
+    display: block;
+    margin: 0 0 0.28571429rem 0;
+    color: rgba(0,0,0,.87);
+    font-size: .92857143em;
+    font-weight: 700;
+    text-transform: none;
+}
+
+#amount-input {
+    margin-bottom: 14px;
+}
+
+#PhoneInput {
+    margin-bottom: 14px;
+}
+
+#DatePicker {
+    margin-bottom: 14px;
+}
+
+.react-date-picker__inputGroup__input {
+    height: auto;
+}

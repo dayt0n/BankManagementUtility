@@ -16,7 +16,6 @@ export const OpenAccountMoneyMarket = () => {
             <Form inverted className="OpenAccountMoneyMarketForm" success={success} error={error} >
 
                 <Form.Input
-                    required
                     fluid
                     label='Account Name'
                     placeholder='Name'

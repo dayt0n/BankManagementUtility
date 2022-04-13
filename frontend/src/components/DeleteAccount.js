@@ -26,6 +26,7 @@ export const DeleteAccount = () => {
     const [account, setAccount] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
+    const [accountsLoading, setAccountsLoading] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     const [accountOpt, setAccountOptions] = useState([]);
     var errorMsg = 'Placeholder Error Message';
@@ -33,9 +34,11 @@ export const DeleteAccount = () => {
     var name = localStorage.getItem("User");
 
     useEffect(() => {
+        setAccountsLoading(true);
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
             .then(data => setAccountOptions(parseUserAccounts(data["data"])))
+            .then(() => setAccountsLoading(false))
     }, []);
 
 
@@ -49,6 +52,8 @@ export const DeleteAccount = () => {
                     required
                     fluid
                     label='Account'
+                    disabled={accountsLoading}
+                    loading={accountsLoading}
                     options={accountOpt}
                     placeholder='Account'
                     onChange={(e, {value}) => setAccount(value)}

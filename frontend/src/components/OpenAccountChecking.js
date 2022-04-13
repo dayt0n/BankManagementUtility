@@ -20,7 +20,6 @@ export const OpenAccountChecking = () => {
             <Form inverted className="OpenAccountCheckingForm" success={success} error={error} >
 
                 <Form.Input
-                    required
                     fluid
                     label='Account Name'
                     placeholder='Name'

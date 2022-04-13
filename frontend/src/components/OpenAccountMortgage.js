@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
+import CurrencyInput from 'react-currency-input-field';
 
 export const OpenAccountMortgage = () => {
     const [name, setName] = useState("");
@@ -22,23 +23,26 @@ export const OpenAccountMortgage = () => {
             <Form inverted className="OpenAccountMortgageForm" success={success} error={error} >
 
                 <Form.Input
-                    required
                     fluid
                     label='Account Name'
                     placeholder='Name'
                     onChange={(e) => setName(e.target.value)}
                 />
 
-                <Form.Input
-                    required
-                    fluid
-                    label='Loan Amount'
-                    placeholder='Amount'
-                    onChange={(e) => setLoanAmount(e.target.value)}
+                <label><b>Loan Amount</b></label>
+
+                <CurrencyInput
+                    id="amount-input"
+                    name="Amount"
+                    placeholder="Amount"
+                    decimalsLimit={2}
+                    allowNegativeValue={false}
+                    defaultValue={0}
+                    prefix="$"
+                    onValueChange={(value, name) => setLoanAmount(value)}
                 />
 
                 <Form.Input
-                    required
                     fluid
                     label='Term in Years'
                     placeholder='Years'

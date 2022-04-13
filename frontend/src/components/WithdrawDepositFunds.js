@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
 import decode from "jwt-decode";
+import CurrencyInput from 'react-currency-input-field';
 import "./WithdrawDepositFunds.css"
 
 function parseUserAccounts(accounts) {
@@ -30,6 +31,7 @@ export const WithdrawDepositFunds = () => {
     const [type, setType] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
+    const [accountsLoading, setAccountsLoading] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
     const [accountOpt, setAccountOptions] = useState([]);
     var errorMsg = 'Placeholder Error Message';
@@ -43,9 +45,11 @@ export const WithdrawDepositFunds = () => {
     }
 
     useEffect(() => {
+        setAccountsLoading(true);
         fetch("/api/user/accounts/" + name)
             .then(res => res.json())
             .then(data => setAccountOptions(parseUserAccounts(data["data"])))
+            .then(() => setAccountsLoading(false))
     }, []);
 
 
@@ -55,21 +59,26 @@ export const WithdrawDepositFunds = () => {
             <hr />
             <Form inverted className="WithdrawDepositFundsForm" success={success} error={error} >
                 <Form.Select
-                    required
                     fluid
                     label='Account'
+                    disabled={accountsLoading}
+                    loading={accountsLoading}
                     options={accountOpt}
                     placeholder='Account'
                     onChange={(e, {value}) => setAccount(value)}
                 />
 
-                <Form.Input
-                    required
-                    fluid
-                    label='Amount'
+                <label><b>Amount</b></label>
+
+                <CurrencyInput
+                    id="amount-input"
+                    name="Amount"
                     placeholder="Amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    decimalsLimit={2}
+                    allowNegativeValue={false}
+                    defaultValue={0}
+                    prefix="$"
+                    onValueChange={(value, name) => setAmount(value)}
                 />
 
                 <Form.Group>

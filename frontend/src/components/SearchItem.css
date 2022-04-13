@@ -1,8 +1,7 @@
 .SearchItem {
     box-sizing: border-box;
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
+    flex-wrap: wrap;
     align-items: center;
     border: 2px #5f5e5e solid;
     width: 100%;

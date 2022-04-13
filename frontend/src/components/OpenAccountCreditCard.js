@@ -20,7 +20,6 @@ export const OpenAccountCreditCard = () => {
             <Form inverted className="OpenAccountCreditCardForm" success={success} error={error} >
 
                 <Form.Input
-                    required
                     fluid
                     label='Account Name'
                     placeholder='Name'
