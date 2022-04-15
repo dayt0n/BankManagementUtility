@@ -25,6 +25,7 @@ def info(username, token):
         if not usr:
             return error(f"User '{username}' not found.")
         usrDict = usr._asdict()
+        # return last 4 of social only
         # return everything except the password hash, no reason anyone ever needs to know that
         del usrDict['password']
         return success(usrDict)
@@ -33,6 +34,7 @@ def info(username, token):
 @user.route('/list', methods=["GET"])
 @admin_or_teller_only
 def list(token):
+    # TODO: sort alphabetically, but separate by role
     with SessionManager(commit=False) as sess:
         if token["role"] == "administrator":
             users = [usr._asdict() for usr in sess.query(
@@ -46,6 +48,7 @@ def list(token):
 @user.route('/delete/<username>', methods=["GET"])
 @admin_only
 def delete(username, token):
+    # TODO: individual account checks for balance == 0
     with SessionManager() as sess:
         usr = sess.query(User).filter(User.username == username).first()
         if not usr:
@@ -60,6 +63,7 @@ def delete(username, token):
 @admin_or_current_user_only
 def edit(username, token):
     data = dict(request.get_json())
+    # TODO: if teller or admin, name can be changed (firstName, lastName)
     with SessionManager() as sess:
         usr = sess.query(User).filter(User.username == username).first()
         if 'email' in data:
@@ -106,6 +110,8 @@ def accounts(username, token):
                 return error("Error looking up account. Please contact an administrator.")
             dictAccount = actualAccount._asdict()
             dictAccount['accountNum'] = account.accountNum
+            if 'accountType' not in dictAccount:
+                dictAccount['accountType'] = account.accountType
             realAccounts.append(dictAccount)
         return success(realAccounts)
 
