@@ -79,9 +79,17 @@ def list_users(sess: requests.Session):
     logout(sess)
 
 
+def delete_account(sess: requests.Session, accountNum):
+    login(sess, user='admin')
+    r = sess.get(url+f"/api/money/account/delete/{accountNum}")
+    print(r.json())
+    logout(sess)
+
+
 s = requests.Session()
 
 # user_info(s)
 # list_users(s)
-create_account(s)
+# create_account(s)
 list_accounts(s, "a")
+delete_account(s, 123456792)

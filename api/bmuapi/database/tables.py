@@ -1,8 +1,22 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, TypeDecorator
 from sqlalchemy.dialects.postgresql import MONEY, ENUM, TIMESTAMP, BIGINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from . import Base
+import re
+import decimal
+from typing import Any
+
+
+class NumericMoney(TypeDecorator):
+    impl = MONEY
+
+    def process_result_value(self, value: Any, dialect: Any) -> None:
+        if value is not None:
+            m = re.match(r"\$([\d.]+)", value)
+            if m:
+                value = decimal.Decimal(m.group(1))
+        return value
 
 
 class User(Base):
@@ -16,6 +30,7 @@ class User(Base):
     address = Column(String)
     phone = Column(String)
     accounts = relationship("UserAccount", back_populates="user")
+    ssn = Column(BIGINT)
 
     def __repr__(self):
         return f"<User(name='{self.name}', email='{self.email}', rank='{self.rank}', address='{self.address}', phone='{self.phone}'"
@@ -62,7 +77,7 @@ class CheckingSavings(Base):
     accountType = Column(
         ENUM('checking', 'savings', name='checking_savings_type_enum'))
     accountName = Column(String)
-    balance = Column(MONEY)
+    balance = Column(NumericMoney)
     routingNumber = Column(Integer)
     dividendRate = Column(Float)
 
@@ -75,7 +90,7 @@ class MoneyMarket(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     userAcct = relationship("UserAccount", back_populates="mmAcct")
     accountName = Column(String)
-    balance = Column(MONEY)
+    balance = Column(NumericMoney)
     routingNumber = Column(Integer)
     interestRate = Column(Float)
     # get transfer count from TransactionHistory. limit to 6 every calendar month
@@ -89,11 +104,13 @@ class CreditCard(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     userAcct = relationship("UserAccount", back_populates="ccAcct")
     accountName = Column(String)
-    balance = Column(MONEY)
+    balance = Column(NumericMoney)
     cardNumber = Column(BIGINT)
     cvv = Column(Integer)
     routingNumber = Column(Integer)
     interestRate = Column(Float)
+    creditLimit = Column(NumericMoney)
+    moneyLimit = Column(NumericMoney)
 
     def __repr__(self):
         return f"<CreditCard(accountName='{self.accountName}', accountID='{self.accountID}', balance='{self.balance}', routingNumber='{self.routingNumber}', interestRate='{self.interestRate}'"
@@ -105,11 +122,11 @@ class Mortgage(Base):
     userAcct = relationship("UserAccount", back_populates="mortgageAcct")
     accountName = Column(String)
     routingNumber = Column(Integer)
-    loanAmount = Column(MONEY)
-    currentAmountOwed = Column(MONEY)
+    loanAmount = Column(NumericMoney)
+    currentAmountOwed = Column(NumericMoney)
     loanTerm = Column(Integer)
     interestRate = Column(Float)
-    monthlyPayment = Column(MONEY)
+    monthlyPayment = Column(NumericMoney)
     paymentDueDate = Column(TIMESTAMP(timezone=True))
     startDate = Column(TIMESTAMP(timezone=True))
     status = Column(String)
@@ -125,8 +142,10 @@ class TransactionHistory(Base):
     accountID = Column(Integer, ForeignKey("user_accounts.id"))
     recipient = Column(String)
     transactionDate = Column(TIMESTAMP(timezone=True))
-    amount = Column(MONEY)
+    amount = Column(NumericMoney)
     internal = Column(Boolean)
 
     def __repr__(self):
         return f"<TransactionHistory(accountID='{self.accountID}', recipient='{self.recipient}', transactionDate='{self.transactionDate}', amount='{self.amount}', internal='{self.internal}'"
+
+# TODO: employee info table

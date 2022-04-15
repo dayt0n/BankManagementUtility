@@ -1,3 +1,4 @@
+import logging
 from os import getenv
 from random import randint
 import arrow
@@ -51,6 +52,7 @@ def create(token):
                 accountType="checking", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
         case "savings":
             acct.accountType = "checkingSaving"
+            # TODO: maybe allow custom rates
             dividendRate = float(getenv("DIVIDEND_RATE"))
             moneyAcct = CheckingSavings(
                 accountType="savings", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
@@ -153,13 +155,15 @@ def balance(accountNum, token):
         if not actualAccount:
             return error("Error looking up account. Please contact an administrator.")
         if hasattr(actualAccount, 'balance'):
-            return success({"balance": actualAccount.balance})
+            if actualAccount.balance != '':
+                return success({"balance": actualAccount.balance})
         return error("Account does not have a balance.")
 
 
 # TODO: need to figure out permissions
 @account.route('/history/<accountNum>', defaults={"count": 20}, methods=["GET"])
 @account.route('/history/<accountNum>/<count>', methods=["GET"])
+@teller_or_account_owner_only
 def history(accountNum, count, token):
     with SessionManager(commit=False) as sess:
         acct = sess.query(UserAccount).filter(
@@ -189,4 +193,7 @@ def summary(accountNum, token):
             return error("Error looking up account. Please contact an administrator.")
         dictAccount = actualAccount._asdict()
         dictAccount['accountNum'] = acct.accountNum
+        if 'accountType' not in dictAccount:
+            dictAccount['accountType'] = acct.accountType
+        # TODO: money market list transactions remaining for the month
         return success(dictAccount)
