@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
+import { USStates } from "./arrays";
 import decode from "jwt-decode";
 import CurrencyInput from 'react-currency-input-field';
 import DatePicker from 'react-datepicker';
@@ -28,9 +29,24 @@ function parseUserAccounts(accounts) {
     return from;
 }
 
+function createAddress(street, city, state, zip) {
+    var address = "";
+
+    address = `${street}, ${city}, ${state}, ${zip}`;
+
+    console.log(address)
+
+    return address
+}
+
 export const PayBillFromAccount = () => {
     const [payee, setPayee] = useState("");
-    const [address, setAddress] = useState("");
+
+    const [street, setStreet] = useState("");
+    const [city, setCity] = useState("");
+    const [state, setState] = useState("");
+    const [zip, setZip] = useState("");
+
     const [date, setDate] = useState(new Date());
     const [account, setAccount] = useState("");
     const [amount, setAmount] = useState("");
@@ -76,12 +92,46 @@ export const PayBillFromAccount = () => {
                     onChange={(e) => setPayee(e.target.value)}
                 />
 
-                <Form.Input
-                    fluid
-                    label='Address'
-                    placeholder='Address'
-                    onChange={(e) => setAddress(e.target.value)}
-                />
+                <Form.Group>
+                    <Form.Input
+                        fluid
+                        width={10}
+                        label='Street'
+                        placeholder="Street"
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
+                    />
+
+                    <Form.Input
+                        fluid
+                        width={4}
+                        label='City'
+                        placeholder="City"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                    />
+
+                    <Form.Dropdown
+                        fluid
+                        width={2}
+                        label='State'
+                        placeholder="??"
+                        search
+                        selection
+                        options={USStates}
+                        value={state}
+                        onChange={(e, {value}) => setState(value)}
+                    />
+
+                    <Form.Input
+                        fluid
+                        width={4}
+                        label='Zip Code'
+                        placeholder="Zip Code"
+                        value={zip}
+                        onChange={(e) => setZip(e.target.value)}
+                    />
+                </Form.Group>
 
                 <label>Due Date</label>
 
@@ -120,7 +170,7 @@ export const PayBillFromAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { payee, address, date: date.toISOString(), account, amount };
+                        const createRequest = { payee, address: createAddress(street, city, state, zip), date: date.toISOString(), account, amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

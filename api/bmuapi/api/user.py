@@ -108,3 +108,20 @@ def accounts(username, token):
             dictAccount['accountNum'] = account.accountNum
             realAccounts.append(dictAccount)
         return success(realAccounts)
+
+
+@user.route('/changeRole/<username>/<role>')
+@admin_only
+def change_role(username, role, token):
+    if role not in ("customer", "teller", "administrator"):
+        return error(f"Bad role: '{role}'.")
+    with SessionManager() as sess:
+        # not sure there is a good way to stop admins from de-admining other admins
+        # but maybe that would be necessary if a customer somehow mistakenly becomes an admin
+        # I will just leave it like this for now
+        usr = sess.query(User).filter(User.username == username).first()
+        if not usr:
+            return error(f"User {username} not found")
+        oldRole = usr.role
+        usr.role = role
+    return success(f"Changed {username}'s role from {oldRole} to {role}")

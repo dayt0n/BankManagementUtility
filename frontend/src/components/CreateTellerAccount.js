@@ -1,6 +1,28 @@
 import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
-import "./CreateTellerAccount.css"
+import { USStates } from "./arrays";
+import PhoneInput from "react-phone-number-input/input";
+import 'react-phone-number-input/style.css';
+import "./CreateTellerAccount.css";
+
+function createAddress(street, city, state, zip) {
+    var address = "";
+
+    address = `${street}, ${city}, ${state}, ${zip}`;
+
+    console.log(address)
+
+    return address
+}
+
+async function upgradeAccount(username) {
+    const response = await fetch("/api/user/changeRole/" + username + "/teller");
+
+    if (!response.ok) {
+        console.log("Upgrading to Teller failed!");
+        return;
+    }
+}
 
 export const CreateTellerAccount = () => {
     const [firstName, setFirstName] = useState("");
@@ -8,7 +30,12 @@ export const CreateTellerAccount = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [address, setAddress] = useState("");
+
+    const [street, setStreet] = useState("");
+    const [city, setCity] = useState("");
+    const [state, setState] = useState("");
+    const [zip, setZip] = useState("");
+
     const [phone, setPhone] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
@@ -19,10 +46,9 @@ export const CreateTellerAccount = () => {
         <div className="CreateTellerAccount">
             <h1>Create Account</h1>
             <hr />
-            <Form inverted className="UserAccountForm" success={success} error={error} >
+            <Form inverted className="TellerAccountForm" success={success} error={error} >
                 <Form.Group widths='equal'>
                     <Form.Input
-                        required
                         fluid
                         label='Username'
                         placeholder="Username"
@@ -30,7 +56,6 @@ export const CreateTellerAccount = () => {
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <Form.Input
-                        required
                         fluid
                         type='password'
                         label='Password'
@@ -42,7 +67,6 @@ export const CreateTellerAccount = () => {
 
                 <Form.Group widths='equal'>
                     <Form.Input
-                        required
                         fluid
                         label='First Name'
                         placeholder="First Name"
@@ -50,7 +74,6 @@ export const CreateTellerAccount = () => {
                         onChange={(e) => setFirstName(e.target.value)}
                     />
                     <Form.Input
-                        required
                         fluid
                         label='Last Name'
                         placeholder="Last Name"
@@ -60,7 +83,6 @@ export const CreateTellerAccount = () => {
                 </Form.Group>
 
                 <Form.Input
-                    required
                     fluid
                     type='email'
                     label='Email'
@@ -68,23 +90,57 @@ export const CreateTellerAccount = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                
-                <Form.Input
-                    required
-                    fluid
-                    label='Full Address'
-                    placeholder="Full Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                />
 
-                <Form.Input
-                    required
-                    fluid
-                    label='Phone Number'
+                <Form.Group>
+                    <Form.Input
+                        fluid
+                        width={10}
+                        label='Street'
+                        placeholder="Street"
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
+                    />
+
+                    <Form.Input
+                        fluid
+                        width={4}
+                        label='City'
+                        placeholder="City"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                    />
+
+                    <Form.Dropdown
+                        fluid
+                        width={2}
+                        label='State'
+                        placeholder="ST"
+                        search
+                        selection
+                        options={USStates}
+                        value={state}
+                        onChange={(e, {value}) => setState(value)}
+                    />
+
+                    <Form.Input
+                        fluid
+                        width={4}
+                        label='Zip Code'
+                        placeholder="Zip Code"
+                        value={zip}
+                        onChange={(e) => setZip(e.target.value)}
+                    />
+                </Form.Group>
+
+
+                <label>Phone Number</label>
+
+                <PhoneInput
+                    id="PhoneInput"
+                    country="US"
                     placeholder="Phone Number"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={setPhone}
                 />
 
                 <Form.Button
@@ -92,7 +148,7 @@ export const CreateTellerAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { username, password, firstName, lastName, address, phone };
+                        const createRequest = { username, password, firstName, lastName, address: createAddress(street, city, state, zip), phone, email };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -127,10 +183,10 @@ export const CreateTellerAccount = () => {
                         setRequestLoading(true);
                         let content = await response.json();
                         setRequestLoading(false);
-                        
+
                         if (content.status === 'error') {
                             errorMsg = document.getElementById('Error Message').getElementsByTagName('p')
-                            errorMsg[0].textContent = content.msg
+                            errorMsg[0].textContent = content.data
                             setError(true);
                             setSuccess(false);
                         }
@@ -138,6 +194,8 @@ export const CreateTellerAccount = () => {
                             setError(false);
                             setSuccess(true);
                         }
+
+                        await upgradeAccount(username);
                     }}
                 >
                     Submit
