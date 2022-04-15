@@ -1,12 +1,31 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import "./Account.css"
 
+function historyCreate(history) {
+    var htmlList =[]
+    for (var item in history) {
+        item = history["item"];
+        htmlList.push(<p className="transactionItem">{item}</p>)
+    }
+
+    console.log(htmlList)
+
+    return htmlList;
+}
+
+
 function AccountChecking(dataParentToChild) {
+
+    const [history, setHistory] = useState([]);
 
     var account = dataParentToChild.dataParentToChild;
     console.log(account);
 
-    const history = fetch("/api/money/account/history/" + account["accountNum"] + "/5");
+    useEffect(() => {
+        fetch("/api/money/account/history/" + account["accountNum"] + "/5")
+        .then(res => res.json())
+        .then(data => setHistory(historyCreate(data["data"])))
+    }, []);
 
     return (
         <div className="AccountChecking">
@@ -25,11 +44,7 @@ function AccountChecking(dataParentToChild) {
             </ul>
             <ul>
                 Recent Transactions
-                {history[0]}
-                {history[1]}
-                {history[2]}
-                {history[3]}
-                {history[4]}
+                {history}
             </ul>
         </div>
     )

@@ -83,6 +83,23 @@ html {
     overflow-y: auto;
     min-height: 0px;
     scroll-margin-top: 100px;
+    scrollbar-color: #f0f0f0 #5f5e5e;
+}
+
+.Columns > .InfoColumn::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: #5f5e5e;
+}
+
+.Columns > .InfoColumn::-webkit-scrollbar-thumb {
+    background: #f0f0f0;
+    -webkit-border-radius: 1ex;
+    -webkit-box-shadow: 0px 1px 2px #5f5e5e;
+}
+
+.Columns > .InfoColumn::-webkit-scrollbar-corner {
+    background: #5f5e5e;
 }
 
 .Columns > .LinkColumn {

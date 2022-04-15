@@ -242,7 +242,7 @@ export const EditUserAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { address: createAddress(street, city, state, zip), phone, email };
+                        const createRequest = { firstName, lastName, address: createAddress(street, city, state, zip), phone, email };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
