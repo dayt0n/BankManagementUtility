@@ -1,12 +1,15 @@
 import React from "react";
 import "./Account.css"
 
-function AccountChecking(account) {
+function AccountChecking(dataParentToChild) {
+
+    var account = dataParentToChild.dataParentToChild;
+    console.log(account);
 
     const history = fetch("/api/money/account/history/" + account["accountNum"] + "/5");
 
     return (
-        <div>
+        <div className="AccountChecking">
             <header>
                 {account["accountName"]}
                 Routing: {account["routingNumber"]}

@@ -8,3 +8,58 @@
     color: #f0f0f0;
     height: auto;
 }
+
+.AccountChecking {
+    box-sizing: border-box;
+    border: 8px #5f5e5e solid;
+    width: 100%;
+    margin: 0% 0% 0% 0%;
+    padding: 3%;
+    background-color: #403f3f;
+    color: #f0f0f0;
+    height: auto;
+}
+
+.AccountSaving {
+    box-sizing: border-box;
+    border: 8px #5f5e5e solid;
+    width: 100%;
+    margin: 0% 0% 0% 0%;
+    padding: 3%;
+    background-color: #403f3f;
+    color: #f0f0f0;
+    height: auto;
+}
+
+.AccountMoneyMarket {
+    box-sizing: border-box;
+    border: 8px #5f5e5e solid;
+    width: 100%;
+    margin: 0% 0% 0% 0%;
+    padding: 3%;
+    background-color: #403f3f;
+    color: #f0f0f0;
+    height: auto;
+}
+
+.AccountMortgage {
+    box-sizing: border-box;
+    border: 8px #5f5e5e solid;
+    width: 100%;
+    margin: 0% 0% 0% 0%;
+    padding: 3%;
+    background-color: #403f3f;
+    color: #f0f0f0;
+    height: auto;
+}
+
+.AccountCreditCard {
+    box-sizing: border-box;
+    border: 8px #5f5e5e solid;
+    width: 100%;
+    margin: 0% 0% 0% 0%;
+    padding: 3%;
+    background-color: #403f3f;
+    color: #f0f0f0;
+    height: auto;
+}

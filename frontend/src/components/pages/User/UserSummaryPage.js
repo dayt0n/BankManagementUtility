@@ -3,7 +3,7 @@ import { userLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
 import { NoAccounts } from "../../NoAccounts";
-import { AccountChecking } from "../../AccountChecking";
+import AccountChecking from "../../AccountChecking";
 import { AccountSaving } from "../../AccountSaving";
 import { AccountCreditCard } from "../../AccountCreditCard";
 import { AccountMortgage } from "../../AccountMortgage";
@@ -19,14 +19,19 @@ function parseUserAccounts(accounts) {
         items.push(<NoAccounts key={"item" + key}/>);
     }
     else {
-        for (var account in accounts) {
+        for (var account in accounts["data"]) {
 
-            // Parse Items
+            account = accounts["data"][account];
+
+            if (account["accountType"] === "checking") {
+                items.push(<AccountChecking key={"item" + key } dataParentToChild={account}/>)
+            }
 
             key += 1;
         }
     }
 
+    console.log(items);
     return items;
 }
 
