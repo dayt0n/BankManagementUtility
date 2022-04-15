@@ -12,14 +12,16 @@ function AccountChecking(dataParentToChild) {
         <div className="AccountChecking">
             <header>
                 {account["accountName"]}
-                Routing: {account["routingNumber"]}
-                Account: {account["accountNum"]}
+                <br></br>
+                Account Number: {account["accountNum"]}
+                <br></br>
+                Routing Number: {account["routingNumber"]}
             </header>
             <ul>
-                Balance: {account["balance"]}
+                Dividend Rate: {account["dividendRate"]}
             </ul>
             <ul>
-                Dividend: {account["dividendRate"]}
+                Balance: {account["balance"]}
             </ul>
             <ul>
                 Recent Transactions
