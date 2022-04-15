@@ -46,8 +46,7 @@ export const AdminUserSearch = () => {
     useEffect(() => {
         fetch("/api/user/list")
             .then(res => res.json())
-            .then(data => { setUserList(data["data"]); console.log(data); })
-            .then(() => setUsers(SearchUsers(userList, "")))
+            .then(data => { setUserList(data["data"]); setUsers(SearchUsers(data["data"], ""));})
     }, []);
 
     return (
