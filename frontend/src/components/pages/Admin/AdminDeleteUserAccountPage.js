@@ -3,11 +3,12 @@ import { adminUserLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
 import { DeleteAccount } from "../../DeleteAccount";
+import { DeleteUserAccount } from "../../DeleteUserAccount";
 
 function AdminDeleteUserAccountPage() {
     const state = {
         'links': adminUserLinks,
-        'items': [<DeleteAccount key="item0"/>]
+        'items': [<DeleteAccount key="item0"/>, <DeleteUserAccount key="item1"/>]
     };
 
     var user = PermissionCheck("administrator");

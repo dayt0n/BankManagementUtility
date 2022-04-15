@@ -2,11 +2,12 @@ import React from "react";
 import { adminTellerLinks } from '../../LinkLists';
 import TemplatePage from '../TemplatePage';
 import PermissionCheck from "../../PermissionCheck";
+import { AdminEditTellerAccount } from "../../AdminEditTellerAccount";
 
 function AdminEditTellerAccountPage() {
     const state = {
         'links': adminTellerLinks,
-        'items': []
+        'items': [<AdminEditTellerAccount key="item0"/>]
     };
 
     var user = PermissionCheck("administrator");
