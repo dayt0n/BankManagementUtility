@@ -18,7 +18,7 @@ function createAddress(street, city, state, zip) {
 async function upgradeAccount(username) {
     const response = await fetch("/api/user/changeRole/" + username + "/teller");
 
-    if (!response.ok) {
+    if (!response.ok || response["status"] === "error") {
         console.log("Upgrading to Teller failed!");
         return;
     }
