@@ -171,7 +171,7 @@ def history(accountNum, count, token):
         if not acct:
             return error(f"Could not find account with number {accountNum}")
         history = sess.query(TransactionHistory).filter(
-            TransactionHistory.accountID == acct.id).limit(count).order_by(TransactionHistory.transactionDate.asc()).all()
+            TransactionHistory.accountID == acct.id).order_by(TransactionHistory.transactionDate.asc()).limit(count).all()
         histories = []
         for h in history:
             hDict = h._asdict()

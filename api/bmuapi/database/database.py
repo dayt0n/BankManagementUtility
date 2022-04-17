@@ -1,4 +1,6 @@
 from contextlib import contextmanager
+from contextvars import copy_context
+from copy import copy
 from os import getenv
 from typing import Iterator
 from sqlalchemy import create_engine
@@ -56,8 +58,8 @@ def add_dummy_data():
 
 def get_money_account(acct: UserAccount, session=None):
     with SessionManager(commit=False) as sess:
-        if not session:
-            session = sess
+        if session:
+            sess = session
         acctTable = None
         match acct.accountType:
             case 'checkingSaving':
@@ -68,7 +70,7 @@ def get_money_account(acct: UserAccount, session=None):
                 acctTable = Mortgage
             case 'moneyMarket':
                 acctTable = MoneyMarket
-        actualAccount = session.query(acctTable).filter(
+        actualAccount = sess.query(acctTable).filter(
             acctTable.id == acct.accountID).first()
         if not actualAccount:
             return None

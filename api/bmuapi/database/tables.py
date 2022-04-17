@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from . import Base
 import re
-import decimal
 from typing import Any
 
 
@@ -15,7 +14,7 @@ class NumericMoney(TypeDecorator):
         if value is not None:
             m = re.match(r"\$([\d.]+)", value)
             if m:
-                value = decimal.Decimal(m.group(1))
+                value = float(m.group(1))
         return value
 
 
