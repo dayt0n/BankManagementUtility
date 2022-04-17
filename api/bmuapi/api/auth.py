@@ -52,7 +52,8 @@ def register():
     name = data['firstName'].strip() + " " + data['lastName'].strip()
     address = data['address']
     phone = data['phone']
-    ssn = data['ssn']
+    ssn_string = data['ssn']
+    ssn =int(ssn_string)
     try:
         phoneParsed = phonenumbers.parse(phone, 'US')
     except phonenumbers.phonenumberutil.NumberParseException:
