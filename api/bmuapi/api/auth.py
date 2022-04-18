@@ -43,7 +43,7 @@ def login():
 def register():
     data = dict(request.get_json())
     reqKeys = ("username", "password", "firstName",
-               "lastName", "email", "address", "phone")
+               "lastName", "email", "address", "phone", "ssn") #required to make a request
     if not all(k in data for k in reqKeys):
         abort(500)
     username = data['username'].strip()
@@ -52,6 +52,8 @@ def register():
     name = data['firstName'].strip() + " " + data['lastName'].strip()
     address = data['address']
     phone = data['phone']
+    ssn_string = data['ssn']
+    ssn =int(ssn_string)
     try:
         phoneParsed = phonenumbers.parse(phone, 'US')
     except phonenumbers.phonenumberutil.NumberParseException:
@@ -71,7 +73,7 @@ def register():
             return error(f"User with email '{email}' or username '{username}' already exists.")
         # add user to db
         sess.add(User(username=username, name=name,
-                 email=email, password=hashedPW, role='customer', phone=phone, address=address))
+                 email=email, password=hashedPW, role='customer', phone=phone, address=address, ssn=ssn))
     # TODO: try to send verification email here
     return success()
 

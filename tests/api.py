@@ -32,6 +32,7 @@ def login(sess: requests.Session, user="normal"):
 def user_info(sess: requests.Session):
     login(sess, user="admin")
     r = sess.get(url+"/api/user/info/a")
+    print(r.json())
     assert r.status_code == 200
     logout(sess)
 
@@ -60,8 +61,46 @@ def create_account(sess: requests.Session):
 
 
 def list_accounts(sess: requests.Session, user):
-    login(sess, user="teller")
+    login(sess, user="admin")
     r = sess.get(url+f"/api/user/accounts/{user}")
+    print(r.text)
+    logout(sess)
+
+
+def deposit(sess: requests.Session):
+    login(sess, user="admin")
+    r = sess.post(url+"/api/money/move/deposit/123456801",
+                  json={"amount": "554.60"})
+    print(r.json())
+    logout(sess)
+
+
+def withdraw(sess: requests.Session):
+    login(sess, user='admin')
+    r = sess.post(url+'/api/money/move/withdraw/123456793',
+                  json={"amount": "554.60"})
+    print(r.json())
+    logout(sess)
+
+
+def transfer(sess: requests.Session):
+    login(sess, user='admin')
+    r = sess.post(url+'/api/money/move/transfer',
+                  json={"amount": "554.60", 'to': 123456793, 'from': 123456801})
+    print(r.json())
+    logout(sess)
+
+
+def changeRole(sess: requests.Session):
+    login(sess, user='admin')
+    r = sess.get(url+'/api/user/changeRole/a/customer')
+    print(r.text)
+    logout(sess)
+
+
+def history(sess: requests.Session, num):
+    login(sess, user='admin')
+    r = sess.get(url+f'/api/money/account/history/{num}')
     print(r.text)
     logout(sess)
 
@@ -88,8 +127,17 @@ def delete_account(sess: requests.Session, accountNum):
 
 s = requests.Session()
 
-# user_info(s)
+user_info(s)
 # list_users(s)
 # create_account(s)
 list_accounts(s, "a")
-delete_account(s, 123456792)
+deposit(s)
+list_accounts(s, "a")
+transfer(s)
+list_accounts(s, "a")
+withdraw(s)
+list_accounts(s, "a")
+history(s, 123456793)
+history(s, 123456801)
+#delete_account(s, 123456792)
+# changeRole(s)
