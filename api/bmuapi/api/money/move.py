@@ -25,9 +25,14 @@ def transfer(token):
     comment = None
     if 'comment' in data:
         comment = data['comment']
-    owner = get_account_owner(fromID)
-    if token['role'] == 'customer' and owner != token['user']:
+    fromOwner = get_account_owner(fromID)
+    if fromOwner.role != 'customer':
+        return error(f"Account type of {fromOwner.role} cannot use accounts.")
+    if token['role'] == 'customer' and fromOwner.username != token['user']:
         return error(f"User does not own the account {fromID}")
+    toOwner = get_account_owner(toID)
+    if toOwner.role != 'customer':
+        return error(f"Account type of {toOwner.role} cannot use accounts.")
     ret = transfer_op(amount, fromAccount=fromID,
                       toAccount=toID, comment=comment)
     if isinstance(ret, float) and ret == amount:
@@ -42,6 +47,9 @@ def deposit(token, accountNum):
     if 'amount' not in data:
         return error("No amount specified.")
     amount = float(data['amount'])
+    owner = get_account_owner(accountNum)
+    if owner.role != 'customer':
+        return error(f"Account type of {owner.role} cannot use accounts.")
     ret = transfer_op(amount, toAccount=int(accountNum),
                       comment="Teller Deposit")
     if isinstance(ret, float) and ret == amount:
@@ -56,6 +64,9 @@ def withdraw(token, accountNum):
     if 'amount' not in data:
         return error("No amount specified.")
     amount = float(data['amount'])
+    owner = get_account_owner(accountNum)
+    if owner.role != 'customer':
+        return error(f"Account type of {owner.role} cannot use accounts.")
     ret = transfer_op(amount, fromAccount=int(accountNum),
                       comment="Teller Withdraw")
     if isinstance(ret, float) and ret == amount:

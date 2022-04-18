@@ -4,6 +4,7 @@ from flask import request, abort
 import logging
 from bmuapi.jwt_auth.token import decode_user_auth_token, is_token_expired
 from bmuapi.database.database import SessionManager
+from bmuapi.api.api_utils import error
 import re
 
 from bmuapi.database.tables import User, UserAccount
@@ -71,14 +72,18 @@ def get_account_owner(accountNum):
         user = sess.query(User).filter(User.id == acct.userID).first()
         if not user:
             return None
-        return user.username
+        return user
 
 
 def teller_or_account_owner_only(func):
     @functools.wraps(func)
     @requires_auth
     def wrapper(accountNum, token, *args, **kwargs):
-        if token['role'] in ("teller", "administrator") or get_account_owner(accountNum) == token['user']:
+        owner = get_account_owner(accountNum)
+        if token['role'] in ("teller", "administrator") or owner.username == token['user']:
+            if owner.role != 'customer':
+                error(
+                    f"Account {accountNum} should not belong to a non-customer. Please contact an admin.")
             return func(*args, **kwargs, accountNum=accountNum, token=token)
         abort(403)
     return wrapper

@@ -25,6 +25,8 @@ def info(username, token):
             User.username == username).first()
         if not usr:
             return error(f"User '{username}' not found.")
+        if token['role'] == 'teller' and usr.role != 'customer':
+            return error(f"Teller should not access information about account of type {usr.role}.")
         usrDict = usr._asdict()
         # return everything except the password hash and ssn, no reason anyone ever needs to know that
         del usrDict['password']
@@ -35,7 +37,6 @@ def info(username, token):
 @user.route('/list', methods=["GET"])
 @admin_or_teller_only
 def list(token):
-    # TODO: sort alphabetically, but separate by role
     with SessionManager(commit=False) as sess:
         if token["role"] == "administrator":
             tellers = [usr._asdict() for usr in sess.query(
@@ -50,8 +51,8 @@ def list(token):
     return success(users)
 
 
-@ user.route('/delete/<username>', methods=["GET"])
-@ admin_only
+@user.route('/delete/<username>', methods=["GET"])
+@admin_only
 def delete(username, token):
     # TODO: individual account checks for balance == 0
     with SessionManager() as sess:
@@ -64,20 +65,29 @@ def delete(username, token):
     return success(f"deleted '{username}'")
 
 
-@ user.route('/edit/<username>', methods=["POST"])
-@ admin_or_current_user_only
+@user.route('/edit/<username>', methods=["POST"])
+@teller_or_current_user_only
 def edit(username, token):
     data = dict(request.get_json())
-    # TODO: if teller or admin, name can be changed (firstName, lastName)
     with SessionManager() as sess:
         usr = sess.query(User).filter(User.username == username).first()
+        if token['role'] == 'teller' and usr.role != 'customer':
+            return error(f"Teller does not have permission to edit account of type {usr.role}.")
         if 'email' in data:
             email = data['email'].strip()
             emailValidCheck = re.fullmatch(emailDomainRegex, email)
             if not emailValidCheck:
                 return error("Incorrect email format")
             usr.email = email
-        if 'password' in data:  # TODO: what if user provides empty password?
+        if 'password' in data:
+            if data['password'].strip() == "":
+                return error("Cannot set empty password.")
+            # allow admin to reset password without knowing old
+            if token['role'] == 'customer':
+                if 'oldPassword' not in data:
+                    return error("Please provide the old password to change the password for this account.")
+                if not sha512_crypt.verify(data['oldPassword'].strip(), usr.password):
+                    return error("Old password is not correct.")
             usr.password = sha512_crypt.hash(data['password'].strip())
         if 'phone' in data:
             try:
@@ -92,16 +102,27 @@ def edit(username, token):
             usr.address = data['address'].strip()
         if 'username' in data:
             usr.username = data['username'].strip()
+        if token['role'] != 'customer':  # allow admin/teller to change name
+            if 'firstName' in data and 'lastName' in data:
+                usr.name = data['firstName'].strip() + " " + \
+                    data['lastName'].strip()
+            elif 'firstName' in data:
+                usr.name = data['firstName'].strip() + " " + \
+                    usr.name.rsplit(' ', 1)[1]
+            elif 'lastName' in data:
+                usr.name = usr.name.rsplit(' ', 1)[0] + " " + data['lastName']
     return success(f"Updated account details for {username}")
 
 
-@ user.route('/accounts/<username>', methods=["GET"])
-@ teller_or_current_user_only
+@user.route('/accounts/<username>', methods=["GET"])
+@teller_or_current_user_only
 def accounts(username, token):
     with SessionManager(commit=False) as sess:
         usr = sess.query(User).filter(User.username == username).first()
         if not usr:
             return error(f"User {username} not found")
+        if token['role'] == 'teller' and usr.role != 'customer':
+            return error(f"Account of type {usr.role} should not have any accounts.")
         usrId = usr.id
         accounts = sess.query(UserAccount).filter(
             UserAccount.userID == usrId).all()
@@ -121,8 +142,8 @@ def accounts(username, token):
         return success(realAccounts)
 
 
-@ user.route('/changeRole/<username>/<role>')
-@ admin_only
+@user.route('/changeRole/<username>/<role>')
+@admin_only
 def change_role(username, role, token):
     if role not in ("customer", "teller", "administrator"):
         return error(f"Bad role: '{role}'.")
