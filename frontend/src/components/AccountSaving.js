@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+//import { Form } from "semantic-ui-react";
 import "./Account.css"
 
 function historyCreate(history, account) {
@@ -33,7 +34,7 @@ function historyCreate(history, account) {
     return htmlList;
 }
 
-function AccountSaving(account) {
+function AccountSaving(dataParentToChild) {
 
     const [history, setHistory] = useState([]);
 
@@ -50,7 +51,7 @@ function AccountSaving(account) {
     return (
         <div className="AccountSaving">
             <h1>
-                Saving - {account["accountName"]}
+                Savings - {account["accountName"]}
                 <hr />
             </h1>
             <table border="0">
