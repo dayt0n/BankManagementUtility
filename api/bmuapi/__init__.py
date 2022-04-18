@@ -1,6 +1,7 @@
 import logging
 from bmuapi.api.money.move import move
 from bmuapi.api.money.account import account
+from bmuapi.api.money.bills import bills
 from bmuapi.api.money import money
 from bmuapi.api.auth import auth
 from bmuapi.api.user import user
@@ -19,6 +20,7 @@ app = Flask(__name__)
 
 money.register_blueprint(account)
 money.register_blueprint(move)
+money.register_blueprint(bills)
 api.register_blueprint(auth)
 api.register_blueprint(user)
 api.register_blueprint(money)
