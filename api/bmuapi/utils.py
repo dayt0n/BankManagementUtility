@@ -63,8 +63,10 @@ def teller_or_current_user_only(func):
     return wrapper
 
 
-def get_account_owner(accountNum):
+def get_account_owner(accountNum, session=None):
     with SessionManager(commit=False) as sess:
+        if session:
+            sess = session
         acct = sess.query(UserAccount).filter(
             UserAccount.accountNum == accountNum).first()
         if not acct:

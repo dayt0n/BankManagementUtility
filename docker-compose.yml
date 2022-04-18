@@ -6,7 +6,7 @@ services:
     build:
       context: "./database"
       dockerfile: "./Dockerfile"
-    ports: 
+    ports:
       - "5432:5432"
   bmu-api:
     restart: always
@@ -14,7 +14,7 @@ services:
       context: "./api"
       dockerfile: "./Dockerfile"
     environment:
-      - ROUTING_NUMBER=123456789
+      - ROUTING_NUMBER=456546102
       - DIVIDEND_RATE=0.15
       - CC_INTEREST_RATE=20.0
       - MORTGAGE_INTEREST_RATE=4.0
@@ -31,5 +31,5 @@ services:
     build:
       context: "./nginx"
       dockerfile: "./Dockerfile"
-    ports: 
+    ports:
       - "80:80"
