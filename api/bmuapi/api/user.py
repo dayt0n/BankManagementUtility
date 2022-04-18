@@ -131,7 +131,7 @@ def accounts(username, token):
         realAccounts = []
         for account in accounts:
             # find linked accounts in other tables
-            actualAccount = get_money_account(account)
+            actualAccount = get_money_account(account, session=sess)
             if not actualAccount:
                 return error("Error looking up account. Please contact an administrator.")
             dictAccount = actualAccount._asdict()

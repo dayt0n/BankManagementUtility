@@ -128,7 +128,7 @@ def create(token):
 @teller_only
 def delete(accountNum, token):
     with SessionManager() as sess:
-        owner = get_account_owner(accountNum)
+        owner = get_account_owner(accountNum, session=sess)
         if owner.role != 'customer':
             return error(f"Cannot delete account from non-customer.")
         acct = sess.query(UserAccount).filter(
