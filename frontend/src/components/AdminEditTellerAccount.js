@@ -72,14 +72,6 @@ export const AdminEditTellerAccount = () => {
                     <Form.Input
                         fluid
                         type='password'
-                        label='Old Password'
-                        placeholder="Password"
-                        value={oldPassword}
-                        onChange={(e) => setOldPassword(e.target.value)}
-                    />
-                    <Form.Input
-                        fluid
-                        type='password'
                         label='New Password'
                         placeholder="Password"
                         value={password}
@@ -92,7 +84,7 @@ export const AdminEditTellerAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { oldPassword, password };
+                        const createRequest = { password };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {

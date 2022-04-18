@@ -19,7 +19,7 @@ function SearchItem(dataParentToChild) {
 
             <Button className="ChooseButton"
                 onClick= {() => {
-                    localStorage.setItem('User', name);
+                    localStorage.setItem('User', userName);
                     
                     if (user["role"] === "teller") {
                         navigate("/teller/user/summary");
