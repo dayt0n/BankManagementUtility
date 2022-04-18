@@ -47,13 +47,13 @@ def create(token):
     match data['type']:
         case "checking":
             acct.accountType = "checkingSaving"
-            dividendRate = float(getenv("DIVIDEND_RATE"))
+            dividendRate = float(getenv("CHECKING_DIVIDEND_RATE"))
             moneyAcct = CheckingSavings(
                 accountType="checking", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
         case "savings":
             acct.accountType = "checkingSaving"
             # TODO: maybe allow custom rates
-            dividendRate = float(getenv("DIVIDEND_RATE"))
+            dividendRate = float(getenv("SAVINGS_DIVIDEND_RATE"))
             moneyAcct = CheckingSavings(
                 accountType="savings", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
         case "creditCard":
