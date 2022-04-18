@@ -170,7 +170,7 @@ export const PayBillFromAccount = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { payee, address: createAddress(street, city, state, zip), date: date.toISOString(), account, amount };
+                        const createRequest = { payee, address: createAddress(street, city, state, zip), date: date.toISOString(), amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -185,7 +185,7 @@ export const PayBillFromAccount = () => {
                         if (quit) { return; }
 
 
-                        const response = await fetch("/api/money/bills/pay", {
+                        const response = await fetch("/api/money/bills/pay/" + account, {
                             method: "POST",
                             headers: {
                                 "Accept": "application/json",

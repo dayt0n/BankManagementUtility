@@ -21,6 +21,7 @@ export const CreateUserAccount = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [ssn, setSSN] = useState("");
 
     const [street, setStreet] = useState("");
     const [city, setCity] = useState("");
@@ -134,12 +135,20 @@ export const CreateUserAccount = () => {
                     onChange={setPhone}
                 />
 
+                <Form.Input
+                    fluid
+                    label='Social Security Number'
+                    placeholder="***-**-****"
+                    value={ssn}
+                    onChange={(e) => setSSN(e.target.value)}
+                />
+
                 <Form.Button
                     fluid
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { username, password, firstName, lastName, address: createAddress(street, city, state, zip), phone, email };
+                        const createRequest = { username, password, firstName, lastName, address: createAddress(street, city, state, zip), phone, email, ssn };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
