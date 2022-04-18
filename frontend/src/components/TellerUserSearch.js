@@ -13,7 +13,7 @@ function SearchUsers(users, search) {
     var list = []
     var htmlList = []
     for (var user in users) {
-        var userName = users[user]["username"];
+        var userName = users[user]["name"];
         if ((userName.toLowerCase()).includes(search.toLowerCase())) {
             list.push(users[user]);
             i += 1;

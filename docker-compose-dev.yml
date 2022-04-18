@@ -18,7 +18,7 @@ services:
     networks:
       - dev-network
     environment:
-      - ROUTING_NUMBER=123456789
+      - ROUTING_NUMBER=456546102
       - DIVIDEND_RATE=0.15
       - CC_INTEREST_RATE=20.0
       - MORTGAGE_INTEREST_RATE=4.0
@@ -42,7 +42,7 @@ services:
       dockerfile: "./DockerfileDev"
     networks:
       - dev-network
-    ports: 
+    ports:
       - "80:80"
 
 networks:

@@ -49,7 +49,7 @@ export const CreateTellerAccount = () => {
 
     return (
         <div className="CreateTellerAccount">
-            <h1>Create Account</h1>
+            <h1>Create Teller Account</h1>
             <hr />
             <Form inverted className="TellerAccountForm" success={success} error={error} >
                 <Form.Group widths='equal'>

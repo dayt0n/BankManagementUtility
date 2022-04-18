@@ -3,7 +3,7 @@ from flask import Blueprint, abort, request
 from bmuapi.utils import requires_auth
 from bmuapi.database.ops import transfer_op
 from bmuapi.api.api_utils import success, error
-from bmuapi.utils import get_account_owner, teller_only, teller_or_account_owner_only
+from bmuapi.utils import teller_or_account_owner_only
 
 bills = Blueprint('bills', __name__, url_prefix='/bills')
 

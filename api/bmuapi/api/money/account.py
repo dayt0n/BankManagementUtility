@@ -5,7 +5,7 @@ import arrow
 from flask import Blueprint, abort, request
 from bmuapi.database.database import SessionManager, get_money_account
 from bmuapi.database.tables import User
-from bmuapi.utils import admin_or_teller_only, teller_only, teller_or_account_owner_only, teller_or_current_user_only, random_int_of_size
+from bmuapi.utils import admin_or_teller_only, get_account_owner, teller_only, teller_or_account_owner_only, teller_or_current_user_only, random_int_of_size
 from bmuapi.api.api_utils import error, success
 from bmuapi.database.tables import UserAccount
 from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory, MoneyMarket
@@ -128,6 +128,9 @@ def create(token):
 @teller_only
 def delete(accountNum, token):
     with SessionManager() as sess:
+        owner = get_account_owner(accountNum, session=sess)
+        if owner.role != 'customer':
+            return error(f"Cannot delete account from non-customer.")
         acct = sess.query(UserAccount).filter(
             UserAccount.accountNum == accountNum).first()
         if not acct:
