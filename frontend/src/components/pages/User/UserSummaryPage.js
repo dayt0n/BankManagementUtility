@@ -10,8 +10,6 @@ import { AccountMortgage } from "../../AccountMortgage";
 import { AccountMoneyMarket } from "../../AccountMoneyMarket";
 
 function parseUserAccounts(accounts) {
-    console.log(accounts);
-
     var items = []
     var key = 0
 

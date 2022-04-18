@@ -103,7 +103,7 @@ export const WithdrawDepositFunds = () => {
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = { account, amount };
+                        const createRequest = { amount };
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
@@ -117,10 +117,12 @@ export const WithdrawDepositFunds = () => {
 
                         if (quit) { return; }
 
+                        console.log(createRequest)
+
                         var response = null;
 
                         if (type === "withdraw") {
-                            response = await fetch("/api/money/account/move/withdraw", {
+                            response = await fetch("/api/money/move/withdraw/" + account, {
                                 method: "POST",
                                 headers: {
                                     "Accept": "application/json",
@@ -130,7 +132,7 @@ export const WithdrawDepositFunds = () => {
                             });
                         }
                         else if (type === "deposit") {
-                            response = await fetch("/api/money/account/move/deposit", {
+                            response = await fetch("/api/money/move/deposit/" + account, {
                                 method: "POST",
                                 headers: {
                                     "Accept": "application/json",

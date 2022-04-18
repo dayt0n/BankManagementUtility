@@ -19,7 +19,6 @@ function AccountChecking(dataParentToChild) {
     const [history, setHistory] = useState([]);
 
     var account = dataParentToChild.dataParentToChild;
-    console.log(account);
 
     useEffect(() => {
         fetch("/api/money/account/history/" + account["accountNum"] + "/5")

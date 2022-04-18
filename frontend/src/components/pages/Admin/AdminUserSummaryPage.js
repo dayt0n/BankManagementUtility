@@ -3,30 +3,34 @@ import { adminUserLinks } from '../../LinkLists';
 import PermissionCheck from "../../PermissionCheck";
 import TemplatePage from '../TemplatePage';
 import { NoAccounts } from "../../NoAccounts";
-import { AccountChecking } from "../../AccountChecking";
+import AccountChecking from "../../AccountChecking";
 import { AccountSaving } from "../../AccountSaving";
 import { AccountCreditCard } from "../../AccountCreditCard";
 import { AccountMortgage } from "../../AccountMortgage";
 import { AccountMoneyMarket } from "../../AccountMoneyMarket";
 
 function parseUserAccounts(accounts) {
-    console.log(accounts);
-
     var items = []
     var key = 0
+
+    console.log(accounts["data"]);
 
     if (accounts["status"] === 'error') {
         items.push(<NoAccounts key={"item" + key}/>);
     }
     else {
-        for (var account in accounts) {
+        for (var account in accounts["data"]) {
 
-            // Parse Items
+            account = accounts["data"][account];
+
+            if (account["accountType"] === "checking") {
+                items.push(<AccountChecking key={"item" + key } dataParentToChild={account}/>)
+            }
 
             key += 1;
         }
     }
-
+    
     return items;
 }
 
