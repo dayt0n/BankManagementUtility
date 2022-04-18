@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, abort, request
 from bmuapi.utils import admin_or_current_user_only, admin_or_teller_only, admin_only, emailDomainRegex, teller_or_current_user_only
 from bmuapi.database.database import SessionManager, get_money_account
@@ -37,16 +38,20 @@ def list(token):
     # TODO: sort alphabetically, but separate by role
     with SessionManager(commit=False) as sess:
         if token["role"] == "administrator":
+            tellers = [usr._asdict() for usr in sess.query(
+                User.username, User.role, User.name).filter(User.role == "teller").order_by(User.name).all()]
             users = [usr._asdict() for usr in sess.query(
-                User.username, User.role).filter(User.role != "administrator").all()]
+                User.username, User.role, User.name).filter(User.role == "customer").order_by(User.name).all()]
+            users = tellers + users
         else:
             users = [usr._asdict() for usr in sess.query(
-                User.username, User.role).filter(User.role == "customer").all()]
+                User.username, User.role, User.name).filter(User.role == "customer").order_by(User.name).all()]
+        logging.debug(users)
     return success(users)
 
 
-@user.route('/delete/<username>', methods=["GET"])
-@admin_only
+@ user.route('/delete/<username>', methods=["GET"])
+@ admin_only
 def delete(username, token):
     # TODO: individual account checks for balance == 0
     with SessionManager() as sess:
@@ -59,8 +64,8 @@ def delete(username, token):
     return success(f"deleted '{username}'")
 
 
-@user.route('/edit/<username>', methods=["POST"])
-@admin_or_current_user_only
+@ user.route('/edit/<username>', methods=["POST"])
+@ admin_or_current_user_only
 def edit(username, token):
     data = dict(request.get_json())
     # TODO: if teller or admin, name can be changed (firstName, lastName)
@@ -90,8 +95,8 @@ def edit(username, token):
     return success(f"Updated account details for {username}")
 
 
-@user.route('/accounts/<username>', methods=["GET"])
-@teller_or_current_user_only
+@ user.route('/accounts/<username>', methods=["GET"])
+@ teller_or_current_user_only
 def accounts(username, token):
     with SessionManager(commit=False) as sess:
         usr = sess.query(User).filter(User.username == username).first()
@@ -116,8 +121,8 @@ def accounts(username, token):
         return success(realAccounts)
 
 
-@user.route('/changeRole/<username>/<role>')
-@admin_only
+@ user.route('/changeRole/<username>/<role>')
+@ admin_only
 def change_role(username, role, token):
     if role not in ("customer", "teller", "administrator"):
         return error(f"Bad role: '{role}'.")

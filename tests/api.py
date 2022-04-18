@@ -111,9 +111,11 @@ def list_users(sess: requests.Session):
     assert r.status_code == 403
     login(sess, user="admin")
     r = sess.get(url+"/api/user/list")
+    print(r.json())
     assert r.status_code == 200
     login(sess, user="teller")
     r = sess.get(url+"/api/user/list")
+    print(r.json())
     assert r.status_code == 200
     logout(sess)
 
@@ -127,10 +129,11 @@ def delete_account(sess: requests.Session, accountNum):
 
 s = requests.Session()
 
-user_info(s)
-# list_users(s)
+# user_info(s)
+list_users(s)
+history(s, 123456801)
 # create_account(s)
-list_accounts(s, "a")
+#list_accounts(s, "a")
 """
 deposit(s)
 list_accounts(s, "a")
@@ -139,7 +142,6 @@ list_accounts(s, "a")
 withdraw(s)
 list_accounts(s, "a")
 history(s, 123456793)
-history(s, 123456801)
 """
 #delete_account(s, 123456792)
 # changeRole(s)
