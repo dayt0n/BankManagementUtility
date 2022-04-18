@@ -15,7 +15,7 @@ services:
       dockerfile: "./Dockerfile"
     environment:
       - ROUTING_NUMBER=123456789
-      - DIVIDEND_RATE=1.9
+      - DIVIDEND_RATE=0.15
       - CC_INTEREST_RATE=20.0
       - MORTGAGE_INTEREST_RATE=4.0
       - MM_INTEREST_RATE=0.9
