@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-//import { Form } from "semantic-ui-react";
 import "./Account.css"
 
 function historyCreate(history, account) {
@@ -75,33 +74,18 @@ function AccountChecking(dataParentToChild) {
             <hr />
             {history}
             <button onClick={async () => {
-                        const response = await fetch("/api/money/account/history/" + account["accountNum"] + "/10", {
-                            method: "GET",
-                            headers: {
-                                "Accept": "application/json",
-                                "Content-Type": "application/json",
-                            },
-                        });
+            const response = await new Promise(() => {
+                fetch("/api/money/account/history/" + account["accountNum"] + "/20")
+                .then(res => res.json())
+                .then(data => setHistory(historyCreate(data["data"], account)))
+            }, []);
 
-                        if (!response.ok) {
-                            console.log("response failed!");
-                            return;
-                        }
-
-                        var res=response.json();
-                        var res2
-
-                        for(var i in res){
-                            i=res[i];
-                            if(i["data"]!=null){
-                                res2=i["data"]
-                            }
-                        }
-                        console.log(res2)
-
-                        setHistory(historyCreate(res2, account));
-                    } 
-            }>More</button>
+            if (!response.ok) {
+                console.log("response failed!");
+                return;
+            }
+        } 
+}>More</button>
         </div>
     )
 }
