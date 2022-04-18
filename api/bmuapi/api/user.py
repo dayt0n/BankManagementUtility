@@ -25,9 +25,9 @@ def info(username, token):
         if not usr:
             return error(f"User '{username}' not found.")
         usrDict = usr._asdict()
-        # return last 4 of social only
-        # return everything except the password hash, no reason anyone ever needs to know that
+        # return everything except the password hash and ssn, no reason anyone ever needs to know that
         del usrDict['password']
+        del usrDict['ssn']
         return success(usrDict)
 
 

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Type
 from sqlalchemy.dialects.postgresql import MONEY, ENUM, TIMESTAMP, BIGINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from . import Base
+from . import Base, noCommaRegex, moneyRegex
 import re
 from typing import Any
 
@@ -12,7 +12,8 @@ class NumericMoney(TypeDecorator):
 
     def process_result_value(self, value: Any, dialect: Any) -> None:
         if value is not None:
-            m = re.match(r"\$([\d.]+)", value)
+            value = re.sub(noCommaRegex, '', value)
+            m = re.match(moneyRegex, value)
             if m:
                 value = float(m.group(1))
         return value
