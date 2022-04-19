@@ -106,9 +106,9 @@ def history(sess: requests.Session, num):
 
 
 def list_users(sess: requests.Session):
-    login(sess, user="normal")
-    r = sess.get(url+"/api/user/list")
-    assert r.status_code == 403
+    #login(sess, user="normal")
+    #r = sess.get(url+"/api/user/list")
+    #assert r.status_code == 403
     login(sess, user="admin")
     r = sess.get(url+"/api/user/list")
     print(r.json())
@@ -131,9 +131,9 @@ s = requests.Session()
 
 # user_info(s)
 list_users(s)
-history(s, 123456801)
+#history(s, 123456801)
 # create_account(s)
-#list_accounts(s, "a")
+list_accounts(s, "asandler1")
 """
 deposit(s)
 list_accounts(s, "a")

@@ -111,6 +111,8 @@ class CreditCard(Base):
     interestRate = Column(Float)
     creditLimit = Column(NumericMoney)
     moneyLimit = Column(NumericMoney)
+    nextPayment = Column(TIMESTAMP(timezone=True))
+    statementBalance = Column(NumericMoney)
 
     def __repr__(self):
         return f"<CreditCard(accountName='{self.accountName}', accountID='{self.accountID}', balance='{self.balance}', routingNumber='{self.routingNumber}', interestRate='{self.interestRate}'"
@@ -129,6 +131,8 @@ class Mortgage(Base):
     monthlyPayment = Column(NumericMoney)
     paymentDueDate = Column(TIMESTAMP(timezone=True))
     startDate = Column(TIMESTAMP(timezone=True))
+    nextPayment = Column(TIMESTAMP(timezone=True))
+    totalOwed = Column(NumericMoney)
     status = Column(String)
 
     def __repr__(self):

@@ -163,7 +163,6 @@ def balance(accountNum, token):
         return error("Account does not have a balance.")
 
 
-# TODO: need to figure out permissions
 @account.route('/history/<accountNum>', defaults={"count": 20}, methods=["GET"])
 @account.route('/history/<accountNum>/<count>', methods=["GET"])
 @teller_or_account_owner_only
@@ -180,6 +179,8 @@ def history(accountNum, count, token):
             hDict = h._asdict()
             del hDict['id']  # don't need id in result
             histories.append(hDict)
+        if not histories:
+            return success(f"No transaction history for account {accountNum}.")
         return success(histories)
 
 

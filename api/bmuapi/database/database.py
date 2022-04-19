@@ -17,8 +17,11 @@ MySession = sessionmaker()
 
 # https://gist.github.com/naufalafif/bb2e238f9f80aa17a16ebd7023afb935
 @contextmanager
-def SessionManager(commit=True) -> Iterator[Session]:
-    sess: Session = MySession()
+def SessionManager(commit=True, session=None) -> Iterator[Session]:
+    if not session:
+        sess: Session = MySession()
+    else:
+        sess: Session = session
     try:
         yield sess
         if commit:
@@ -27,7 +30,8 @@ def SessionManager(commit=True) -> Iterator[Session]:
         sess.rollback()
         raise
     finally:
-        sess.close()
+        if not session:
+            sess.close()
 
 
 def init_db():
@@ -57,9 +61,7 @@ def add_dummy_data():
 
 
 def get_money_account(acct: UserAccount, session=None):
-    with SessionManager(commit=False) as sess:
-        if session:
-            sess = session
+    with SessionManager(commit=False, session=session) as sess:
         acctTable = None
         match acct.accountType:
             case 'checkingSaving':
