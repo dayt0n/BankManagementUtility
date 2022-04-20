@@ -1,4 +1,5 @@
 import logging
+from operator import and_
 from os import getenv
 from random import randint
 import arrow
@@ -40,7 +41,8 @@ def create(token):
         return error(f"User {data['username']} not found")
     if usr.role != "customer":
         return error(f"Only customers can have money accounts.")
-    now = arrow.utcnow().datetime
+    realNow = arrow.utcnow()
+    now = realNow.datetime
     acct = UserAccount(userID=usr.id, openDate=now)
     routingNumber = int(getenv("ROUTING_NUMBER"))
     moneyAcct = None
@@ -61,11 +63,15 @@ def create(token):
             acct.accountType = "creditCard"
             interestRate = float(getenv("CC_INTEREST_RATE"))
             cardNum = random_int_of_size(16)
+            if not all(k in data for k in ("moneyLimit", "creditLimit")):
+                return error("Must specify money limit when creating credit card.")
+            moneyLimit = float(data['moneyLimit'])
+            creditLimit = float(data['creditLimit'])
             cvv = randint(0, 999)  # will have to zfill when extracting
             # credit card accounts don't actually have an expiration date
             # the expiration date is something that is for the plastic card only
             moneyAcct = CreditCard(
-                accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate, cardNumber=cardNum, cvv=cvv, lastInterestCheck=now)
+                accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate, cardNumber=cardNum, cvv=cvv, lastInterestCheck=now, statementBalance=0, nextPayment=realNow.shift(months=2).datetime, moneyLimit=moneyLimit, creditLimit=creditLimit)
         case "moneyMarket":
             acct.accountType = "moneyMarket"
             interestRate = float(getenv("MM_INTEREST_RATE"))
@@ -87,12 +93,12 @@ def create(token):
             loanAmount = float(data['loanAmount'])
             acct.accountType = "mortgage"
             moneyAcct = Mortgage(accountName=data['name'], routingNumber=routingNumber, loanAmount=loanAmount, loanTerm=int(
-                data['term']), interestRate=interestRate, paymentDueDate=dueDate.datetime, startDate=startDate.datetime)
+                data['term']), interestRate=interestRate, paymentDueDate=dueDate.datetime, startDate=startDate.datetime, totalOwed=loanAmount, status="OPEN")
             # calculate currentAmountOwed, monthlyPayment
             paymentDates = getPaymentDates(startDate, dueDate)
             monthlyPayment = loanAmount / len(paymentDates)
             moneyAcct.monthlyPayment = monthlyPayment
-            if startDate <= arrow.utcnow():
+            if startDate <= realNow:
                 moneyAcct.currentAmountOwed = monthlyPayment
             else:
                 moneyAcct.currentAmountOwed = 0
@@ -196,8 +202,13 @@ def summary(accountNum, token):
         actualAccount = get_money_account(acct)
         if not actualAccount:
             return error("Error looking up account. Please contact an administrator.")
+        oneMonthAgo = arrow.utcnow().shift(months=-1).datetime
         dictAccount = actualAccount._asdict()
         dictAccount['accountNum'] = acct.accountNum
+        if acct.accountType == "moneyMarket":
+            pastMonthTransactions = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == actualAccount.id,
+                                                                               TransactionHistory.transactionDate > oneMonthAgo)).count()
+            dictAccount['pastMonthTransactions'] = pastMonthTransactions
         if 'accountType' not in dictAccount:
             dictAccount['accountType'] = acct.accountType
         # TODO: money market list transactions remaining for the month

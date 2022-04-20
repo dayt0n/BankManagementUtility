@@ -1,3 +1,4 @@
+import logging
 from typing import Iterator
 import arrow
 from flask_apscheduler import APScheduler
@@ -8,11 +9,15 @@ from bmuapi.api.money.account import getPaymentDates
 scheduler = APScheduler()
 
 
+# change to minute='*' for testing
 @scheduler.task('cron', id='do_interest_check', day='*')
 def interest_check():
-    now = arrow.utcnow().datetime
-    thirtyDaysAgo = arrow.utcnow().shift(months=-1).datetime
-    thirtyDaysFromNow = arrow.utcnow().shift(months=1).datetime
+    logging.debug("running interest check")
+    realNow = arrow.utcnow()
+    now = realNow.datetime
+    thirtyDaysAgo = realNow.shift(months=-1).datetime
+    thirtyDaysFromNow = realNow.shift(months=1).datetime
+    sixtyDaysFromNow = realNow.shift(months=2).datetime
     with SessionManager() as sess:
         # credit card interest
         ccs: Iterator[CreditCard] = sess.query(CreditCard).filter(
@@ -20,7 +25,7 @@ def interest_check():
         for cc in ccs:
             if cc.balance < 0:
                 cc.balance *= (1 + cc.interestRate)
-            cc.nextPayment = thirtyDaysFromNow
+            cc.nextPayment = sixtyDaysFromNow
         # checking/saving interest
         css: Iterator[CheckingSavings] = sess.query(CheckingSavings).filter(
             CheckingSavings.lastInterestCheck < thirtyDaysAgo).all()
