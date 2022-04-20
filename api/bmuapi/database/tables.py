@@ -80,6 +80,7 @@ class CheckingSavings(Base):
     balance = Column(NumericMoney)
     routingNumber = Column(Integer)
     dividendRate = Column(Float)
+    lastInterestCheck = Column(TIMESTAMP(timezone=True))
 
     def __repr__(self):
         return f"<CheckingSavings(accountType='{self.accountType}', accountName='{self.accountName}', balance='{self.balance}', routingNumber='{self.routingNumber}', dividendRate='{self.dividendRate}'"
@@ -93,6 +94,7 @@ class MoneyMarket(Base):
     balance = Column(NumericMoney)
     routingNumber = Column(Integer)
     interestRate = Column(Float)
+    lastInterestCheck = Column(TIMESTAMP(timezone=True))
     # get transfer count from TransactionHistory. limit to 6 every calendar month
 
     def __repr__(self):
@@ -113,6 +115,7 @@ class CreditCard(Base):
     moneyLimit = Column(NumericMoney)
     nextPayment = Column(TIMESTAMP(timezone=True))
     statementBalance = Column(NumericMoney)
+    lastInterestCheck = Column(TIMESTAMP(timezone=True))
 
     def __repr__(self):
         return f"<CreditCard(accountName='{self.accountName}', accountID='{self.accountID}', balance='{self.balance}', routingNumber='{self.routingNumber}', interestRate='{self.interestRate}'"

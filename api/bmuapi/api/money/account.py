@@ -40,7 +40,8 @@ def create(token):
         return error(f"User {data['username']} not found")
     if usr.role != "customer":
         return error(f"Only customers can have money accounts.")
-    acct = UserAccount(userID=usr.id, openDate=arrow.utcnow().datetime)
+    now = arrow.utcnow().datetime
+    acct = UserAccount(userID=usr.id, openDate=now)
     routingNumber = int(getenv("ROUTING_NUMBER"))
     moneyAcct = None
     accountNumBase = 123456789
@@ -55,7 +56,7 @@ def create(token):
             # TODO: maybe allow custom rates
             dividendRate = float(getenv("SAVINGS_DIVIDEND_RATE"))
             moneyAcct = CheckingSavings(
-                accountType="savings", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
+                accountType="savings", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate, lastInterestCheck=now)
         case "creditCard":
             acct.accountType = "creditCard"
             interestRate = float(getenv("CC_INTEREST_RATE"))
@@ -64,7 +65,7 @@ def create(token):
             # credit card accounts don't actually have an expiration date
             # the expiration date is something that is for the plastic card only
             moneyAcct = CreditCard(
-                accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate, cardNumber=cardNum, cvv=cvv)
+                accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate, cardNumber=cardNum, cvv=cvv, lastInterestCheck=now)
         case "moneyMarket":
             acct.accountType = "moneyMarket"
             interestRate = float(getenv("MM_INTEREST_RATE"))
@@ -76,7 +77,7 @@ def create(token):
             if balance < 500.0:
                 return error(f"${balance} is not enough to meet the minumum of $500 initial deposit for money market account.")
             moneyAcct = MoneyMarket(
-                accountName=data['name'], balance=balance, routingNumber=routingNumber, interestRate=interestRate)
+                accountName=data['name'], balance=balance, routingNumber=routingNumber, interestRate=interestRate, lastInterestCheck=now)
         case "mortgage":
             if not all(k in data for k in ("loanAmount", "term", "startDate")):
                 return error("Not enough information for creating a mortgage account.")
