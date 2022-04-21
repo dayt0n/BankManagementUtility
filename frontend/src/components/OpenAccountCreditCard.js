@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Form, Message } from "semantic-ui-react";
+import CurrencyInput from 'react-currency-input-field';
 
 export const OpenAccountCreditCard = () => {
     const [name, setName] = useState("");
+    const [moneyLimit, setMoneyLimit] = useState("");
+    const [creditLimit, setCreditLimit] = useState("");
     const [success, setSuccess] = useState(Boolean);
     const [error, setError] = useState(Boolean);
     const [requestLoading, setRequestLoading] = useState(Boolean);
@@ -26,12 +29,38 @@ export const OpenAccountCreditCard = () => {
                     onChange={(e) => setName(e.target.value)}
                 />
 
+                <label><b>Credit Limit (Total Credit Allowed)</b></label>
+
+                <CurrencyInput
+                    id="amount-input"
+                    name="Credit Limit (Total Credit Allowed)"
+                    placeholder="Amount"
+                    decimalsLimit={2}
+                    allowNegativeValue={false}
+                    defaultValue={0}
+                    prefix="$"
+                    onValueChange={(value, name) => setCreditLimit(value)}
+                />
+
+                <label><b>Money Limit (Limit Per Transaction)</b></label>
+
+                <CurrencyInput
+                    id="amount-input"
+                    name="Money Limit (Limit Per Transaction)"
+                    placeholder="Amount"
+                    decimalsLimit={2}
+                    allowNegativeValue={false}
+                    defaultValue={0}
+                    prefix="$"
+                    onValueChange={(value, name) => setMoneyLimit(value)}
+                />
+
                 <Form.Button
                     fluid
                     loading={requestLoading}
                     type='submit'
                     onClick={async () => {
-                        const createRequest = {username, type, name};
+                        const createRequest = {username, type, name, creditLimit, moneyLimit};
                         var quit = false;
                         for (var field in createRequest) {
                             if (createRequest[field] === "") {
