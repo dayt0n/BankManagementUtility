@@ -1,10 +1,13 @@
 import logging
+from operator import and_
 from typing import Iterator
 import arrow
 from flask_apscheduler import APScheduler
 from bmuapi.database.database import SessionManager
-from bmuapi.database.tables import UserAccount, Mortgage, CreditCard, CheckingSavings, MoneyMarket, TransactionHistory
+from bmuapi.database.tables import UserAccount, UserInterest, Mortgage, CreditCard, CheckingSavings, MoneyMarket, TransactionHistory
 from bmuapi.api.money.account import getPaymentDates
+
+from bmuapi.scheduling.interest_utils import get_interest_entry
 
 scheduler = APScheduler()
 
@@ -16,6 +19,7 @@ def interest_check():
     realNow = arrow.utcnow()
     now = realNow.datetime
     thirtyDaysAgo = realNow.shift(months=-1).datetime
+    thisYear = int(realNow.format("YYYY"))
     thirtyDaysFromNow = realNow.shift(months=1).datetime
     sixtyDaysFromNow = realNow.shift(months=2).datetime
     with SessionManager() as sess:
@@ -49,6 +53,9 @@ def interest_check():
                 if not userAcct:
                     logging.debug(f"No account with ID {cs.id} found.")
                     continue
+                interestEntry = get_interest_entry(
+                    userAcct.userID, thisYear, session=sess)
+                interestEntry.interest += paid
                 sess.add(TransactionHistory(
                     accountID=userAcct.id, recipient=f"interest for {realNow.format('MMMM, YYYY')}", transactionDate=now, amount=paid, internal=True, positive=True if paid > 0 else False))
             cs.lastInterestCheck = now
@@ -65,6 +72,9 @@ def interest_check():
                 if not userAcct:
                     logging.debug(f"No account with ID {mm.id} found.")
                     continue
+                interestEntry = get_interest_entry(
+                    userAcct.userID, thisYear, session=sess)
+                interestEntry.interest += paid
                 sess.add(TransactionHistory(
                     accountID=userAcct.id, recipient=f"interest for {realNow.format('MMMM, YYYY')}", transactionDate=now, amount=paid, internal=True, positive=True if paid > 0 else False))
             mm.lastInterestCheck = now

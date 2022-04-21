@@ -51,9 +51,22 @@ class User(Base):
     phone = Column(String)
     accounts = relationship("UserAccount", back_populates="user")
     ssn = Column(BIGINT)
+    interest = relationship("UserInterest", back_populates="user")
 
     def __repr__(self):
         return f"<User(name='{self.name}', email='{self.email}', rank='{self.rank}', address='{self.address}', phone='{self.phone}'"
+
+
+class UserInterest(Base):
+    __tablename__ = 'user_interest'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user = relationship("User", back_populates="interest")
+    userID = Column(Integer, ForeignKey("users.id"))
+    year = Column(Integer)
+    interest = Column(NumericMoney)
+
+    def __repr__(self) -> str:
+        return f"<UserInterest(userID={self.userID}, year={self.year}, interest={self.interest})>"
 
 
 class UserAccount(Base):
