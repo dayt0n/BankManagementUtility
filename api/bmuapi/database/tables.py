@@ -13,14 +13,12 @@ class NumericMoney(TypeDecorator):
     impl = MONEY
 
     def process_bind_param(self, value: Any, dialect: Any):
-        logging.debug(value)
         if not isinstance(value, str):
             value = str(float(value))
         # rounds down to nearest cent
         m = re.match(incomingMoneyRegex, value)
         if m:
             value = float(m.group(1))
-            logging.debug(value)
         return value
 
     def process_result_value(self, value: Any, dialect: Any) -> None:
@@ -164,6 +162,7 @@ class TransactionHistory(Base):
     transactionDate = Column(TIMESTAMP(timezone=True))
     amount = Column(NumericMoney)
     internal = Column(Boolean)
+    positive = Column(Boolean)
 
     def __repr__(self):
         return f"<TransactionHistory(accountID='{self.accountID}', recipient='{self.recipient}', transactionDate='{self.transactionDate}', amount='{self.amount}', internal='{self.internal}'"

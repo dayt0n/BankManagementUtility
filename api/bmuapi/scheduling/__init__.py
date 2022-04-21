@@ -3,14 +3,14 @@ from typing import Iterator
 import arrow
 from flask_apscheduler import APScheduler
 from bmuapi.database.database import SessionManager
-from bmuapi.database.tables import Mortgage, CreditCard, CheckingSavings, MoneyMarket
+from bmuapi.database.tables import UserAccount, Mortgage, CreditCard, CheckingSavings, MoneyMarket, TransactionHistory
 from bmuapi.api.money.account import getPaymentDates
 
 scheduler = APScheduler()
 
 
 # change to minute='*' for testing
-@scheduler.task('cron', id='do_interest_check', minute='*')
+@scheduler.task('cron', id='do_interest_check', day='*')
 def interest_check():
     logging.debug("running interest check")
     realNow = arrow.utcnow()
@@ -24,20 +24,49 @@ def interest_check():
             CreditCard.nextPayment < now).all()
         for cc in ccs:
             if cc.balance < 0:
-                cc.balance *= (1 + cc.interestRate)
+                # once every two months
+                ccInterest = cc.balance * (cc.interestRate/6)
+                cc.balance -= ccInterest
+                if ccInterest != 0:
+                    userAcct = sess.query(UserAccount).filter(
+                        UserAccount.accountID == cc.id).first()
+                    if not userAcct:
+                        logging.debug(f"No account with ID {cc.id} found.")
+                        continue
+                    sess.add(TransactionHistory(
+                        accountID=userAcct.id, recipient=f"interest for {realNow.format('MMMM, YYYY')}", transactionDate=now, amount=ccInterest, internal=True, positive=True if ccInterest > 0 else False))
             cc.nextPayment = sixtyDaysFromNow
         # checking/saving interest
         css: Iterator[CheckingSavings] = sess.query(CheckingSavings).filter(
-            CheckingSavings.lastInterestCheck < now).all()
+            CheckingSavings.lastInterestCheck < thirtyDaysAgo).all()
         for cs in css:
-            paid = cs.balance * cs.dividendRate
-            cs.balance += paid  # TODO: transaction history each time interest is paid
+            # once every month
+            paid = cs.balance * (cs.dividendRate / 12)
+            if paid != 0:
+                cs.balance += paid
+                userAcct = sess.query(UserAccount).filter(
+                    UserAccount.accountID == cs.id).first()
+                if not userAcct:
+                    logging.debug(f"No account with ID {cs.id} found.")
+                    continue
+                sess.add(TransactionHistory(
+                    accountID=userAcct.id, recipient=f"interest for {realNow.format('MMMM, YYYY')}", transactionDate=now, amount=paid, internal=True, positive=True if paid > 0 else False))
             cs.lastInterestCheck = now
         # money market interest
         mms: Iterator[MoneyMarket] = sess.query(MoneyMarket).filter(
             MoneyMarket.lastInterestCheck < thirtyDaysAgo).all()
         for mm in mms:
-            mm.balance *= (1 + mm.interestRate)
+            # once every month
+            paid = mm.balance * (mm.interestRate / 12)
+            if paid != 0:
+                mm.balance += paid
+                userAcct = sess.query(UserAccount).filter(
+                    UserAccount.accountID == mm.id).first()
+                if not userAcct:
+                    logging.debug(f"No account with ID {mm.id} found.")
+                    continue
+                sess.add(TransactionHistory(
+                    accountID=userAcct.id, recipient=f"interest for {realNow.format('MMMM, YYYY')}", transactionDate=now, amount=paid, internal=True, positive=True if paid > 0 else False))
             mm.lastInterestCheck = now
         # mortgages
         morts: Iterator[Mortgage] = sess.query(Mortgage).filter(
@@ -51,8 +80,18 @@ def interest_check():
             payed = acct.monthlyPayment - acct.currentAmountOwed
             acct.totalOwed -= payed
             if acct.currentAmountOwed > 0:  # did not pay in complete this cycle
-                acct.totalOwed += (acct.currentAmountOwed *
-                                   (1 + acct.interestRate))
+                # once every month
+                mortInterest = acct.currentAmountOwed * \
+                    (acct.interestRate / 12)
+                if mortInterest != 0:
+                    acct.totalOwed += mortInterest
+                    userAcct = sess.query(UserAccount).filter(
+                        UserAccount.accountID == acct.id).first()
+                    if not userAcct:
+                        logging.debug(f"No account with ID {acct.id} found.")
+                        continue
+                    sess.add(TransactionHistory(
+                        accountID=userAcct.id, recipient=f"interest for {realNow.format('MMMM, YYYY')}", transactionDate=now, amount=mortInterest, internal=True, positive=True if mortInterest > 0 else False))
             if acct.paymentDueDate < now:
                 acct.status = "PAST DUE"
                 continue  # don't update values

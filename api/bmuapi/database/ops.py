@@ -1,5 +1,3 @@
-from contextvars import copy_context
-from copy import copy
 import logging
 import arrow
 from bmuapi.database.database import SessionManager, get_money_account
@@ -64,15 +62,10 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
     with SessionManager(session=session) as sess:
         oneMonthAgo = arrow.utcnow().shift(months=-1).datetime
         if fromAccount and isinstance(fromMoney, MoneyMarket):
-            history = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == frm.id,
-                                                                 TransactionHistory.transactionDate > oneMonthAgo)).count()
+            history = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == frm.id,  # withdraws
+                                                                 TransactionHistory.transactionDate > oneMonthAgo, TransactionHistory.amount < 0)).count()
             if history >= 6:
                 return f"Transfer limit reached on Money Market account {frm.accountNum}"
-        if toAccount and isinstance(toMoney, MoneyMarket):
-            history = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == to.id,
-                                                                 TransactionHistory.transactionDate > oneMonthAgo)).count()
-            if history >= 6:
-                return f"Transfer limit reached on Money Market account {to.accountNum}."
         tdate = arrow.utcnow().datetime
         fromRecipient = toMoney.accountName + \
             f" ({to.accountNum})" if toAccount else comment
@@ -84,7 +77,7 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
             realFromMoney.balance -= amount
             fromIsInternal = True if toAccount else False
             fromTH = TransactionHistory(accountID=frm.id, recipient=fromRecipient,
-                                        transactionDate=tdate, amount=amount, internal=fromIsInternal)
+                                        transactionDate=tdate, amount=amount, internal=fromIsInternal, positive=False)
             sess.add(fromTH)
         if toAccount:
             realToMoney = get_money_account(to, session=sess)
@@ -94,6 +87,6 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
                 realToMoney.balance += amount
             toIsInternal = True if fromAccount else False
             toTH = TransactionHistory(accountID=to.id, recipient=fromRecipient,
-                                      transactionDate=tdate, amount=amount, internal=toIsInternal)
+                                      transactionDate=tdate, amount=amount, internal=toIsInternal, positive=True)
             sess.add(toTH)
     return amount
