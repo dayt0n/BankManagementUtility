@@ -21,9 +21,9 @@ services:
       - ROUTING_NUMBER=456546102
       - CHECKING_DIVIDEND_RATE=0.03
       - SAVINGS_DIVIDEND_RATE=0.06
-      - CC_INTEREST_RATE=0.2
-      - MORTGAGE_INTEREST_RATE=0.04
-      - MM_INTEREST_RATE=0.09
+      - CC_INTEREST_RATE=20
+      - MORTGAGE_INTEREST_RATE=5
+      - MM_INTEREST_RATE=0.9
   bmu-frontend-dev:
     restart: always
     build:

@@ -13,20 +13,29 @@ class NumericMoney(TypeDecorator):
     impl = MONEY
 
     def process_bind_param(self, value: Any, dialect: Any):
+        isNegative = False
         if not isinstance(value, str):
             value = str(float(value))
+        if "-" in value:
+            isNegative = True
         # rounds down to nearest cent
         m = re.match(incomingMoneyRegex, value)
         if m:
             value = float(m.group(1))
+            value = (-1 * value) if isNegative else value
         return value
 
     def process_result_value(self, value: Any, dialect: Any) -> None:
+        isNegative = False
         if value is not None:
             value = re.sub(noCommaRegex, '', value)
+            if value.startswith("-"):
+                isNegative = True
+                value = value[1:]
             m = re.match(moneyRegex, value)
             if m:
                 value = float(m.group(1))
+                value = (-1 * value) if isNegative else value
         return value
 
 

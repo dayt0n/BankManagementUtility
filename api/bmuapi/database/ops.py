@@ -2,7 +2,7 @@ import logging
 import arrow
 from bmuapi.database.database import SessionManager, get_money_account
 from bmuapi.utils import get_account_owner
-from bmuapi.database.tables import UserAccount, Mortgage, MoneyMarket, TransactionHistory
+from bmuapi.database.tables import UserAccount, Mortgage, MoneyMarket, TransactionHistory, CreditCard
 from sqlalchemy import and_
 
 
@@ -63,15 +63,20 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
         oneMonthAgo = arrow.utcnow().shift(months=-1).datetime
         if fromAccount and isinstance(fromMoney, MoneyMarket):
             history = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == frm.id,  # withdraws
-                                                                 TransactionHistory.transactionDate > oneMonthAgo, TransactionHistory.amount < 0)).count()
+                                                                 TransactionHistory.transactionDate > oneMonthAgo, not TransactionHistory.positive)).count()
             if history >= 6:
                 return f"Transfer limit reached on Money Market account {frm.accountNum}"
         tdate = arrow.utcnow().datetime
         fromRecipient = toMoney.accountName + \
             f" ({to.accountNum})" if toAccount else comment
         if fromAccount:
-            # TODO: add if credit card, because CreditCards can have negative balance, only if a limit is not yet reached
-            if fromMoney.balance < amount:
+            if isinstance(fromMoney, CreditCard):
+                if (fromMoney.balance - amount) < (-1 * fromMoney.creditLimit):
+                    return f"Stopping transfer that goes over the credit limit of {fromMoney.creditLimit}."
+                    # ignore mortgages from money limit
+                if (amount > fromMoney.moneyLimit) and toAccount and not isinstance(toMoney, Mortgage):
+                    return f"Stopping transfer that goes over the money limit of {fromMoney.moneyLimit}."
+            elif fromMoney.balance < amount:
                 return f"Insufficient funds in {frm.accountNum}."
             realFromMoney = get_money_account(frm, session=sess)
             realFromMoney.balance -= amount

@@ -50,18 +50,18 @@ def create(token):
     match data['type']:
         case "checking":
             acct.accountType = "checkingSaving"
-            dividendRate = float(getenv("CHECKING_DIVIDEND_RATE"))
+            dividendRate = float(getenv("CHECKING_DIVIDEND_RATE")) / 100
             moneyAcct = CheckingSavings(
                 accountType="checking", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate, lastInterestCheck=now)
         case "savings":
             acct.accountType = "checkingSaving"
             # TODO: maybe allow custom rates
-            dividendRate = float(getenv("SAVINGS_DIVIDEND_RATE"))
+            dividendRate = float(getenv("SAVINGS_DIVIDEND_RATE")) / 100
             moneyAcct = CheckingSavings(
                 accountType="savings", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate, lastInterestCheck=now)
         case "creditCard":
             acct.accountType = "creditCard"
-            interestRate = float(getenv("CC_INTEREST_RATE"))
+            interestRate = float(getenv("CC_INTEREST_RATE")) / 100
             cardNum = random_int_of_size(16)
             if not all(k in data for k in ("moneyLimit", "creditLimit")):
                 return error("Must specify money limit when creating credit card.")
@@ -74,7 +74,7 @@ def create(token):
                 accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate, cardNumber=cardNum, cvv=cvv, lastInterestCheck=now, statementBalance=0, nextPayment=realNow.shift(months=2).datetime, moneyLimit=moneyLimit, creditLimit=creditLimit)
         case "moneyMarket":
             acct.accountType = "moneyMarket"
-            interestRate = float(getenv("MM_INTEREST_RATE"))
+            interestRate = float(getenv("MM_INTEREST_RATE")) / 100
             if not all(k in data for k in ("balanceFrom", "balance")):
                 return error("Initial balance parameters not specified.")
             balanceFrom = int(data['balanceFrom'])
@@ -83,17 +83,17 @@ def create(token):
             if balance < 500.0:
                 return error(f"${balance} is not enough to meet the minumum of $500 initial deposit for money market account.")
             moneyAcct = MoneyMarket(
-                accountName=data['name'], balance=balance, routingNumber=routingNumber, interestRate=interestRate, lastInterestCheck=now)
+                accountName=data['name'], balance=0, routingNumber=routingNumber, interestRate=interestRate, lastInterestCheck=now)
         case "mortgage":
             if not all(k in data for k in ("loanAmount", "term", "startDate")):
                 return error("Not enough information for creating a mortgage account.")
-            interestRate = float(getenv("MORTGAGE_INTEREST_RATE"))
+            interestRate = float(getenv("MORTGAGE_INTEREST_RATE")) / 100
             startDate = arrow.get(data['startDate'])
             dueDate = startDate.shift(years=int(data['term']))
             loanAmount = float(data['loanAmount'])
             acct.accountType = "mortgage"
             moneyAcct = Mortgage(accountName=data['name'], routingNumber=routingNumber, loanAmount=loanAmount, loanTerm=int(
-                data['term']), interestRate=interestRate, paymentDueDate=dueDate.datetime, startDate=startDate.datetime, totalOwed=loanAmount, status="OPEN")
+                data['term']), interestRate=interestRate, paymentDueDate=dueDate.datetime, startDate=startDate.datetime, totalOwed=loanAmount, status="OPEN", nextPayment=startDate.shift(months=1).datetime)
             # calculate currentAmountOwed, monthlyPayment
             paymentDates = getPaymentDates(startDate, dueDate)
             monthlyPayment = loanAmount / len(paymentDates)
@@ -120,8 +120,8 @@ def create(token):
                 acct.mmAcctID = moneyAcct.id
                 sess.flush()
                 # complete a transaction on the balanceFrom, reducing the balance in balanceFrom
-                res = transfer_op(balanceFrom, acct.accountNum,
-                                  balance, session=sess)
+                res = transfer_op(balance, balanceFrom, acct.accountNum,
+                                  session=sess)
                 if res != balance:  # transfer failed, possibly insufficient funds
                     sess.delete(moneyAcct)
                     sess.delete(acct)
@@ -192,8 +192,8 @@ def summary(accountNum, token):
         oneMonthAgo = arrow.utcnow().shift(months=-1).datetime
         dictAccount = actualAccount._asdict()
         dictAccount['accountNum'] = acct.accountNum
-        if acct.accountType == "moneyMarket":
-            pastMonthTransactions = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == actualAccount.id,
+        if isinstance(actualAccount, MoneyMarket):
+            pastMonthTransactions = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == acct.id,
                                                                                TransactionHistory.transactionDate > oneMonthAgo)).count()
             dictAccount['pastMonthTransactions'] = pastMonthTransactions
         if 'accountType' not in dictAccount:
