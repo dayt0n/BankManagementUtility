@@ -15,21 +15,21 @@ export function listUserAccounts(accounts, accountTypes) {
         var len = accountNum.length;
         if (accountTypes.includes(accountType)) {
             if (accountType === "checking" || accountType === "savings" || accountType === "moneyMarket") {
-                var balance = account["balance"].toString();
+                var balance = "$" + account["balance"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 });
                 options.push({key: account["accountName"], 
                         text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1) + " - Balance: " + balance, 
                         value: account["accountNum"]})
             }
             else if (accountType === "creditCard") {
-                var balance = account["balance"].toString();
-                var owed = account["statementBalance"].toString();
+                var balance = "$" + account["balance"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 });
+                var owed = "$" + account["statementBalance"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 });
                 options.push({key: account["accountName"], 
                         text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1) + " - Balance: " + balance + " - Next Bill: " + owed, 
                         value: account["accountNum"]})
             }
             else if (accountType === "mortgage") {
-                var owed = account["currentAmountOwed"].toString();
-                var totalOwed = account["totalOwed"].toString();
+                var owed = "$" + account["currentAmountOwed"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 });
+                var totalOwed = "$" + account["totalOwed"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 });
                 options.push({key: account["accountName"], 
                            text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1) + " - Next Bill: " + owed + " - Total Owed: " + totalOwed, 
                            value: account["accountNum"]})
