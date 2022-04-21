@@ -4,30 +4,9 @@ import { USStates } from "./arrays";
 import decode from "jwt-decode";
 import CurrencyInput from 'react-currency-input-field';
 import DatePicker from 'react-datepicker';
+import { listUserAccounts } from './listUserAccounts';
 import "./PayBillFromAccount.css"
 import "react-datepicker/dist/react-datepicker.css";
-
-function parseUserAccounts(accounts) {
-
-    if (accounts["status"] === 'error') {
-        return [];
-    }
-
-    var from = []
-
-    for (var account in accounts) {
-        account = accounts[account];
-        if (account["accountType"] === "checking" || account["accountType"] === "savings") {
-            var accountNum = account["accountNum"].toString();
-            var len = accountNum.length;
-            from.push({key: account["accountName"], 
-                       text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
-                       value: account["accountNum"]})
-        }
-    }
-
-    return from;
-}
 
 function createAddress(street, city, state, zip) {
     var address = "";
@@ -73,7 +52,7 @@ export const PayBillFromAccount = () => {
             .then(res => res.json())
             .then(data => {
                 if (data["status"] === "success") {
-                    setAccountOptions(parseUserAccounts(data["data"]))
+                    setAccountOptions(listUserAccounts(data["data"], ["checking", "savings", "moneyMarket", "creditCard"]))
                 }
             })
             .then(() => setAccountsLoading(false))

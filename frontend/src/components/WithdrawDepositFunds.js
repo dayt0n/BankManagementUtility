@@ -2,23 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
 import decode from "jwt-decode";
 import CurrencyInput from 'react-currency-input-field';
+import { listUserAccounts } from './listUserAccounts';
 import "./WithdrawDepositFunds.css"
-
-function parseUserAccounts(accounts) {
-    var accountOpt = []
-
-    for (var account in accounts) {
-        account = accounts[account];
-        var accountNum = account["accountNum"].toString();
-        var len = accountNum.length;
-        accountOpt.push({key: account["accountName"], 
-                         text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
-                         value: account["accountNum"]})
-    }
-
-    return accountOpt;
-}
-
 
 export const WithdrawDepositFunds = () => {
     const [account, setAccount] = useState("");
@@ -45,7 +30,7 @@ export const WithdrawDepositFunds = () => {
             .then(res => res.json())
             .then(data => {
                 if (data["status"] === "success") {
-                    setAccountOptions(parseUserAccounts(data["data"]))
+                    setAccountOptions(listUserAccounts(data["data"], ["checking", "savings", "moneyMarket", "mortgage", "creditCard"]))
                 }
             })
             .then(() => setAccountsLoading(false))

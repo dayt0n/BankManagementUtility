@@ -2,36 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form, Message } from "semantic-ui-react";
 import decode from "jwt-decode";
 import CurrencyInput from 'react-currency-input-field';
+import { listUserAccounts } from './listUserAccounts';
 import "./TransferAccountToAccount.css";
-
-
-function parseUserAccounts(accounts) {
-
-    if (accounts["status"] === 'error') {
-        return [];
-    }
-
-    var from = []
-    var to = []
-
-    for (var account in accounts) {
-        account = accounts[account];
-        var accountNum = account["accountNum"].toString();
-        var len = accountNum.length;
-        if (account["accountType"] === "checking" || account["accountType"] === "savings") {
-            from.push({key: account["accountName"], 
-                       text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
-                       value: account["accountNum"]})
-        }
-        to.push({key: account["accountName"], 
-                 text: account["accountName"] + " - *" + accountNum.substr(len-4, len-1), 
-                 value: account["accountNum"]})
-    }
-
-    var options = [from, to];
-
-    return options;
-}
 
 export const TransferAccountToAccount = () => {
     const [from, setFromAccount] = useState("");
@@ -60,7 +32,10 @@ export const TransferAccountToAccount = () => {
             .then(res => res.json())
             .then(data => {
                 if (data["status"] === "success") {
-                    setOptions(parseUserAccounts(data["data"]))
+                    setOptions([
+                        listUserAccounts(data["data"], ["checking", "savings", "moneyMarket", "creditCard"]),
+                        listUserAccounts(data["data"], ["checking", "savings", "moneyMarket", "mortgage", "creditCard"])
+                    ])
                 }
             })
             .then(() => setAccountsLoading(false))
