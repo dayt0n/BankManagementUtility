@@ -3,8 +3,32 @@ from copy import copy
 import logging
 import arrow
 from bmuapi.database.database import SessionManager, get_money_account
+from bmuapi.utils import get_account_owner
 from bmuapi.database.tables import UserAccount, Mortgage, MoneyMarket, TransactionHistory
 from sqlalchemy import and_
+
+
+def delete_op(accountNum, session=None):
+    with SessionManager(session=session) as sess:
+        owner = get_account_owner(accountNum, session=sess)
+        if owner.role != 'customer':
+            return f"Cannot delete account from non-customer."
+        acct = sess.query(UserAccount).filter(
+            UserAccount.accountNum == accountNum).first()
+        if not acct:
+            return f"Could not find account with number {accountNum}"
+        moneyAcct = get_money_account(acct, session=sess)
+        if isinstance(moneyAcct, Mortgage):
+            if moneyAcct.status != "paid":
+                return f"Mortgage account {accountNum} has not been paid off yet. Not going to delete."
+        else:
+            if moneyAcct.balance != 0.0:
+                return f"Account {accountNum} is not empty. Not going to delete."
+        sess.delete(moneyAcct)
+        sess.delete(acct)
+        sess.query(TransactionHistory).filter(
+            TransactionHistory.accountID == acct.id).delete(synchronize_session=False)
+        return "success"
 
 
 def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment="withdraw"):

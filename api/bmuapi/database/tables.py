@@ -1,14 +1,27 @@
+import logging
+import math
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, TypeDecorator
 from sqlalchemy.dialects.postgresql import MONEY, ENUM, TIMESTAMP, BIGINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from . import Base, noCommaRegex, moneyRegex
+from . import Base, noCommaRegex, moneyRegex, incomingMoneyRegex
 import re
 from typing import Any
 
 
 class NumericMoney(TypeDecorator):
     impl = MONEY
+
+    def process_bind_param(self, value: Any, dialect: Any):
+        logging.debug(value)
+        if not isinstance(value, str):
+            value = str(float(value))
+        # rounds down to nearest cent
+        m = re.match(incomingMoneyRegex, value)
+        if m:
+            value = float(m.group(1))
+            logging.debug(value)
+        return value
 
     def process_result_value(self, value: Any, dialect: Any) -> None:
         if value is not None:

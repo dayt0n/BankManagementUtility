@@ -11,3 +11,4 @@ class Base(object):
 
 noCommaRegex = re.compile(r",")
 moneyRegex = re.compile(r"\$([\d.]+)")
+incomingMoneyRegex = re.compile(r"\$*([\d]+.\d{1,2})")

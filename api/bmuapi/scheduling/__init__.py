@@ -10,7 +10,7 @@ scheduler = APScheduler()
 
 
 # change to minute='*' for testing
-@scheduler.task('cron', id='do_interest_check', day='*')
+@scheduler.task('cron', id='do_interest_check', minute='*')
 def interest_check():
     logging.debug("running interest check")
     realNow = arrow.utcnow()
@@ -28,9 +28,10 @@ def interest_check():
             cc.nextPayment = sixtyDaysFromNow
         # checking/saving interest
         css: Iterator[CheckingSavings] = sess.query(CheckingSavings).filter(
-            CheckingSavings.lastInterestCheck < thirtyDaysAgo).all()
+            CheckingSavings.lastInterestCheck < now).all()
         for cs in css:
-            cs.balance *= (1 + cs.dividendRate)
+            paid = cs.balance * cs.dividendRate
+            cs.balance += paid  # TODO: transaction history each time interest is paid
             cs.lastInterestCheck = now
         # money market interest
         mms: Iterator[MoneyMarket] = sess.query(MoneyMarket).filter(

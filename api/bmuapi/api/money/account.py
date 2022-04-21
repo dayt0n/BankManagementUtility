@@ -10,7 +10,7 @@ from bmuapi.utils import admin_or_teller_only, get_account_owner, teller_only, t
 from bmuapi.api.api_utils import error, success
 from bmuapi.database.tables import UserAccount
 from bmuapi.database.tables import CheckingSavings, CreditCard, Mortgage, TransactionHistory, MoneyMarket
-from bmuapi.database.ops import transfer_op
+from bmuapi.database.ops import transfer_op, delete_op
 from dateutil.rrule import rrule, MONTHLY
 
 account = Blueprint('account', __name__, url_prefix='/account')
@@ -52,7 +52,7 @@ def create(token):
             acct.accountType = "checkingSaving"
             dividendRate = float(getenv("CHECKING_DIVIDEND_RATE"))
             moneyAcct = CheckingSavings(
-                accountType="checking", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate)
+                accountType="checking", balance=0, accountName=data['name'], routingNumber=routingNumber, dividendRate=dividendRate, lastInterestCheck=now)
         case "savings":
             acct.accountType = "checkingSaving"
             # TODO: maybe allow custom rates
@@ -134,22 +134,9 @@ def create(token):
 @account.route('/delete/<accountNum>', methods=["GET"])
 @teller_only
 def delete(accountNum, token):
-    with SessionManager() as sess:
-        owner = get_account_owner(accountNum, session=sess)
-        if owner.role != 'customer':
-            return error(f"Cannot delete account from non-customer.")
-        acct = sess.query(UserAccount).filter(
-            UserAccount.accountNum == accountNum).first()
-        if not acct:
-            return error(f"Could not find account with number {accountNum}")
-        moneyAcct = get_money_account(acct)
-        if isinstance(moneyAcct, Mortgage):
-            if moneyAcct.status != "paid":
-                return error(f"Mortgage account {accountNum} has not been paid off yet. Not going to delete.")
-        else:
-            if moneyAcct.balance != 0.0:
-                return error(f"Account {accountNum} is not empty. Not going to delete.")
-        sess.delete(acct)
+    ret = delete_op(accountNum)
+    if ret != "success":
+        return error(ret)
     return success(f"Deleted account {accountNum}")
 
 
@@ -161,7 +148,7 @@ def balance(accountNum, token):
             UserAccount.accountNum == accountNum).first()
         if not acct:
             return error(f"Could not find account with number {accountNum}")
-        actualAccount = get_money_account(acct)
+        actualAccount = get_money_account(acct, session=sess)
         if not actualAccount:
             return error("Error looking up account. Please contact an administrator.")
         if hasattr(actualAccount, 'balance'):
@@ -199,7 +186,7 @@ def summary(accountNum, token):
             UserAccount.accountNum == accountNum).first()
         if not acct:
             return error(f"Could not find account with number {accountNum}")
-        actualAccount = get_money_account(acct)
+        actualAccount = get_money_account(acct, session=sess)
         if not actualAccount:
             return error("Error looking up account. Please contact an administrator.")
         oneMonthAgo = arrow.utcnow().shift(months=-1).datetime

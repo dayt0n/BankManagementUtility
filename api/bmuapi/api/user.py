@@ -47,7 +47,6 @@ def list(token):
         else:
             users = [usr._asdict() for usr in sess.query(
                 User.username, User.role, User.name).filter(User.role == "customer").order_by(User.name).all()]
-        logging.debug(users)
     return success(users)
 
 
