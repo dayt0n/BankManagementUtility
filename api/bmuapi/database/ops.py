@@ -15,9 +15,7 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
     if fromAccount:
         frm: UserAccount = fromAccount
         if isinstance(fromAccount, int):
-            with SessionManager(commit=False) as sess:
-                if session:
-                    sess = session
+            with SessionManager(commit=False, session=session) as sess:
                 frm = sess.query(UserAccount).filter(
                     UserAccount.accountNum == fromAccount).first()
             if not frm:
@@ -25,9 +23,7 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
     if toAccount:
         to: UserAccount = toAccount
         if isinstance(toAccount, int):
-            with SessionManager(commit=False) as sess:
-                if session:
-                    sess = session
+            with SessionManager(commit=False, session=session) as sess:
                 to = sess.query(UserAccount).filter(
                     UserAccount.accountNum == toAccount).first()
                 if not to:
@@ -41,9 +37,7 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
     # cannot transfer money FROM a mortgage account
     if fromAccount and isinstance(fromMoney, Mortgage):
         return "Cannot transfer money from a mortgage account."
-    with SessionManager() as sess:
-        if session:
-            sess = session
+    with SessionManager(session=session) as sess:
         oneMonthAgo = arrow.utcnow().shift(months=-1).datetime
         if fromAccount and isinstance(fromMoney, MoneyMarket):
             history = sess.query(TransactionHistory).filter(and_(TransactionHistory.accountID == frm.id,

@@ -8,7 +8,6 @@ from bmuapi.api.user import user
 from bmuapi.api import api
 from dotenv import load_dotenv
 from flask import Flask, abort
-from flask_apscheduler import APScheduler
 from bmuapi.database.database import init_db
 
 
@@ -32,10 +31,6 @@ api.register_blueprint(auth)
 api.register_blueprint(user)
 api.register_blueprint(money)
 app.register_blueprint(api)
-
-scheduler = APScheduler()
-scheduler.init_app(app)
-scheduler.start()
 
 
 @app.route('/')

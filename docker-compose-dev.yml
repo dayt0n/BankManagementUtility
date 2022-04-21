@@ -19,10 +19,11 @@ services:
       - dev-network
     environment:
       - ROUTING_NUMBER=456546102
-      - DIVIDEND_RATE=0.15
-      - CC_INTEREST_RATE=20.0
-      - MORTGAGE_INTEREST_RATE=4.0
-      - MM_INTEREST_RATE=0.9
+      - CHECKING_DIVIDEND_RATE=0.03
+      - SAVINGS_DIVIDEND_RATE=0.06
+      - CC_INTEREST_RATE=0.2
+      - MORTGAGE_INTEREST_RATE=0.04
+      - MM_INTEREST_RATE=0.09
   bmu-frontend-dev:
     restart: always
     build:
