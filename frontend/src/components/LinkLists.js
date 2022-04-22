@@ -13,6 +13,7 @@ export const tellerUserLinks = ['Back to Search', '/teller/overview',
                                 'Transfer Funds', '/teller/user/transfer',
                                 'Pay A Bill', '/teller/user/pay-bill',
                                 'Withdraw/Deposit Funds', '/teller/user/withdraw',
+                                '1099-INT Form Info', '/teller/user/interest',
                                 'Delete Account', '/teller/user/delete-account'];
 
 export const adminSearchLinks = ['Back to Search', '/admin/overview',
@@ -30,4 +31,5 @@ export const adminUserLinks = ['Back to Search', '/admin/overview',
                                'Transfer User Funds', '/admin/user/transfer',
                                'Pay A Bill', '/admin/user/pay-bill',
                                'Withdraw/Deposit Funds', '/admin/user/withdraw',
+                               '1099-INT Form Info', '/admin/user/interest',
                                'Delete User Account', '/admin/user/delete-account',];
