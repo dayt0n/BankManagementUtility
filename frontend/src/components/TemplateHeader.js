@@ -11,7 +11,13 @@ function TemplateHeader() {
     
     if (document.cookie) {
         var user = decode(document.cookie);
-        hiString = "Hi, " + user["user"] + "!";
+        var name = localStorage.getItem("User");
+        if (name) {
+            hiString = `Hi ${user["user"]}! Checking out ${name}.`;
+        }
+        else {
+            hiString = "Hi, " + user["user"] + "!";
+        }
         logOutButton = 
             <div className="LogOut">
                 <h2>{hiString}</h2>
