@@ -3,15 +3,13 @@ import os
 import random
 import shutil
 import string
-import arrow
 import requests
 from fillpdf import fillpdfs
 from bmuapi.database.tables import User, UserInterest
 from bmuapi.database.database import SessionManager
 
+
 # https://www.askpython.com/python/examples/generate-random-strings-in-python
-
-
 def random_string(size):
     return ''.join(random.choice(string.ascii_letters) for x in range(size))
 
@@ -28,22 +26,37 @@ def get_1099_pdf():
     return download_file('https://www.irs.gov/pub/irs-pdf/f1099int.pdf')
 
 
+def fill_address(file, usr: User):
+    # PAYER'S name, street address, city or town, state or province, country, ZIP or foreign postal code, and telephone no.
+    temp1 = file.split('.')[0] + '_temp1.pdf'
+    temp2 = file.split('.')[0] + '_temp2.pdf'
+    shutil.copyfile(file, temp1)
+    shutil.copyfile(file, temp2)
+    fillpdfs.place_text(os.getenv("BANK_NAME"), 60, 75, temp1, temp2,
+                        page_number=3, font_size=8)
+    fillpdfs.place_text(os.getenv("BANK_STREET"), 60, 85, temp2, temp1,
+                        page_number=3, font_size=8)
+    fillpdfs.place_text(', '.join((os.getenv("BANK_CITY"), os.getenv("BANK_STATE"), os.getenv("BANK_COUNTRY"), os.getenv("BANK_ZIP"))), 60, 95, temp1, temp2,
+                        page_number=3, font_size=8)
+    fillpdfs.place_text(os.getenv("BANK_PHONE"), 60, 105, temp2, temp1,
+                        page_number=3, font_size=8)
+    os.remove(temp2)
+    os.rename(temp1, file)
+
+
 def fill_out_1099(usr: User, year, session=None):
     file = get_1099_pdf()
     if len(year) != 4:
         return None
+    fill_address(file, usr)
     fields = fillpdfs.get_form_fields(file, page_number=3)
-    now = arrow.utcnow()
     # fillpdfs.print_form_fields(file, page_number=3)
     # for calendar year
     fields['FEFF00430061006C0065006E00640061007200590065006100720032005F0031005B0030005D'] = year[-2:]
     # i think these are the checkboxes, but we don't do anything with this
-    # fields['FEFF00630032005F0031005B0030005D'] = 'Yes'
-    # fields['FEFF00630032005F0031005B0031005D'] = 'Yes'
+    # fields['FEFF00630032005F0031005B0030005D'] = 'On'
+    # fields['FEFF00630032005F0031005B0031005D'] = 'On'
     # PAYER'S name, street address, city or town, state or province, country, ZIP or foreign postal code, and telephone no.
-    payerAddr = ', '.join((os.getenv("BANK_NAME"), os.getenv("BANK_STREET"), ', '.join((os.getenv("BANK_CITY"), os.getenv(
-        "BANK_STATE"), os.getenv("BANK_COUNTRY"), os.getenv("BANK_ZIP"))), os.getenv("BANK_PHONE")))
-    fields['FEFF00660032005F0031005B0030005D'] = payerAddr
     # PAYER'S TIN
     fields['FEFF00660032005F0032005B0030005D'] = os.getenv("BANK_TIN")
     # Recipient's TIN
