@@ -33,13 +33,13 @@ def fill_address(file, usr: User):
     shutil.copyfile(file, temp1)
     shutil.copyfile(file, temp2)
     fillpdfs.place_text(os.getenv("BANK_NAME"), 60, 75, temp1, temp2,
-                        page_number=3, font_size=8)
+                        page_number=3, font_size=8, color=(0, 0, .545))
     fillpdfs.place_text(os.getenv("BANK_STREET"), 60, 85, temp2, temp1,
-                        page_number=3, font_size=8)
+                        page_number=3, font_size=8, color=(0, 0, .545))
     fillpdfs.place_text(', '.join((os.getenv("BANK_CITY"), os.getenv("BANK_STATE"), os.getenv("BANK_COUNTRY"), os.getenv("BANK_ZIP"))), 60, 95, temp1, temp2,
-                        page_number=3, font_size=8)
+                        page_number=3, font_size=8, color=(0, 0, .545))
     fillpdfs.place_text(os.getenv("BANK_PHONE"), 60, 105, temp2, temp1,
-                        page_number=3, font_size=8)
+                        page_number=3, font_size=8, color=(0, 0, .545),)
     os.remove(temp2)
     os.rename(temp1, file)
 
@@ -70,8 +70,8 @@ def fill_out_1099(usr: User, year, session=None):
     fields['FEFF00660032005F0036005B0030005D'] = f"{addrSplit[1]}, {addrSplit[2]}, {os.getenv('BANK_COUNTRY')}, {addrSplit[-1]}"
     # FATCA filing requirement (I think)
     # fields['FEFF00630032005F0032005B0030005D'] = 'Off'
-    # Account number (see instructions)
-    fields['FEFF00660032005F0037005B0030005D'] = usr.id
+    # Account number (see instructions) - we don't need since we are giving 1099-INTs for everyone
+    # fields['FEFF00660032005F0037005B0030005D'] = usr.id
     # Payer's RTN (optional, basically routing number)
     fields['FEFF00660032005F0038005B0030005D'] = os.getenv("ROUTING_NUMBER")
     with SessionManager(commit=False, session=session) as sess:

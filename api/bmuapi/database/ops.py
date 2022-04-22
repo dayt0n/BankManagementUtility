@@ -54,6 +54,9 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
         fromMoney = get_money_account(frm, session=session)
     if toAccount:
         toMoney = get_money_account(to, session=session)
+    if toAccount and fromAccount:
+        if toAccount.accountNum == fromAccount.accountNum:
+            return "Transfer to same account not allowed."
     if (toAccount and not toMoney) or (fromAccount and not fromMoney):
         return "Could not locate money accounts to complete transfer."
     # cannot transfer money FROM a mortgage account

@@ -1,15 +1,25 @@
+import glob
 import logging
-from operator import and_
+import os
 from typing import Iterator
 import arrow
 from flask_apscheduler import APScheduler
 from bmuapi.database.database import SessionManager
-from bmuapi.database.tables import UserAccount, UserInterest, Mortgage, CreditCard, CheckingSavings, MoneyMarket, TransactionHistory
+from bmuapi.database.tables import UserAccount, Mortgage, CreditCard, CheckingSavings, MoneyMarket, TransactionHistory
 from bmuapi.api.money.account import getPaymentDates
 
 from bmuapi.scheduling.interest_utils import get_interest_entry
 
 scheduler = APScheduler()
+
+
+@scheduler.task('cron', id='clean_forms', minute='*')
+def clean_pdfs():
+    fiveMinutesAgo = arrow.utcnow().shift(minutes=-5)
+    pdfs = glob.glob(r"/tmp/*.pdf")
+    for pdf in pdfs:
+        if arrow.get(os.stat(pdf).st_ctime) < fiveMinutesAgo:
+            os.remove(pdf)
 
 
 # change to minute='*' for testing
