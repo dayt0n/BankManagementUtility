@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-//import { Form } from "semantic-ui-react";
+import { Button } from "react-bootstrap";
 import "./Account.css"
+
+var amountToShow = 5;
 
 function historyCreate(history, account) {
 
@@ -35,6 +37,7 @@ function historyCreate(history, account) {
     return htmlList;
 }
 
+
 function AccountSaving(dataParentToChild) {
 
     const [history, setHistory] = useState([]);
@@ -44,7 +47,7 @@ function AccountSaving(dataParentToChild) {
     var accBal = '$' + account["balance"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 });
 
     useEffect(() => {
-        fetch("/api/money/account/history/" + account["accountNum"] + "/5")
+        fetch("/api/money/account/history/" + account["accountNum"] + "/" + amountToShow)
             .then(res => res.json())
             .then(data => setHistory(historyCreate(data["data"], account)))
     }, []);
@@ -52,7 +55,7 @@ function AccountSaving(dataParentToChild) {
     return (
         <div className="AccountSaving">
             <h1>
-                Savings - {account["accountName"]}
+                Saving - {account["accountName"]}
                 <hr />
             </h1>
             <table border="0">
@@ -74,9 +77,14 @@ function AccountSaving(dataParentToChild) {
             </table>
             <hr />
             {history}
-            <button onClick={async () => {
+            <Button className="MoreLessButtons" onClick={async () => {
+                amountToShow=amountToShow+5;
+                console.log(history.length + "bleh");
+                if(history.length<amountToShow-5){
+                    amountToShow-=5;
+                }
                 const response = await new Promise(() => {
-                    fetch("/api/money/account/history/" + account["accountNum"] + "/20")
+                    fetch("/api/money/account/history/" + account["accountNum"] + "/" + amountToShow)
                         .then(res => res.json())
                         .then(data => setHistory(historyCreate(data["data"], account)))
                 }, []);
@@ -85,8 +93,29 @@ function AccountSaving(dataParentToChild) {
                     console.log("response failed!");
                     return;
                 }
+
+
             }
-            }>More</button>
+            }>More</Button>
+
+            <Button className="MoreLessButtons" onClick={async () => {
+                if(amountToShow>5){
+                    amountToShow-=5;
+                }
+                const response = await new Promise(() => {
+                    fetch("/api/money/account/history/" + account["accountNum"] + "/" + amountToShow)
+                        .then(res => res.json())
+                        .then(data => setHistory(historyCreate(data["data"], account)))
+                }, []);
+
+                if (!response.ok) {
+                    console.log("response failed!");
+                    return;
+                }
+
+                console.log(amountToShow);
+            }
+            }>Less</Button>
         </div>
     )
 }
