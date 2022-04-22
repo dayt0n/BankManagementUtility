@@ -37,6 +37,13 @@ def user_info(sess: requests.Session):
     logout(sess)
 
 
+def user_interest(sess: requests.Session):
+    login(sess, user='admin')
+    r = sess.get(url+'/api/user/interest/asandler1')
+    print(r.json())
+    logout(sess)
+
+
 def create_account(sess: requests.Session):
     login(sess, user="teller")
     # r = sess.post(url+"/api/money/account/create",
@@ -130,10 +137,11 @@ def delete_account(sess: requests.Session, accountNum):
 s = requests.Session()
 
 # user_info(s)
-list_users(s)
+# list_users(s)
+user_interest(s)
 #history(s, 123456801)
 # create_account(s)
-list_accounts(s, "asandler1")
+#list_accounts(s, "asandler1")
 """
 deposit(s)
 list_accounts(s, "a")

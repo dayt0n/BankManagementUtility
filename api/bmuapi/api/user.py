@@ -1,8 +1,10 @@
 import logging
+from operator import and_
+import arrow
 from flask import Blueprint, abort, request
-from bmuapi.utils import admin_or_current_user_only, admin_or_teller_only, admin_only, emailDomainRegex, teller_or_current_user_only
+from bmuapi.utils import admin_or_current_user_only, teller_only, admin_or_teller_only, admin_only, emailDomainRegex, teller_or_current_user_only
 from bmuapi.database.database import SessionManager, get_money_account
-from bmuapi.database.tables import User, UserAccount, CheckingSavings, CreditCard, Mortgage
+from bmuapi.database.tables import User, UserAccount, CheckingSavings, CreditCard, Mortgage, UserInterest
 from bmuapi.api.api_utils import success, error
 import re
 from passlib.hash import sha512_crypt
@@ -156,3 +158,33 @@ def change_role(username, role, token):
         oldRole = usr.role
         usr.role = role
     return success(f"Changed {username}'s role from {oldRole} to {role}")
+
+
+@user.route('/interest/<username>', defaults={"year": None}, methods=["GET"])
+@user.route('/interest/<username>/<year>', methods=["GET"])
+@teller_only
+def interest(username, year, token):
+    with SessionManager() as sess:
+        usr = sess.query(User).filter(User.username == username).first()
+        if not usr:
+            return error(f"User {username} not found")
+        if year:
+            userInterest = sess.query(UserInterest).filter(
+                and_(UserInterest.userID == usr.id, UserInterest.year == int(year))).first()
+        else:
+            userInterest = sess.query(UserInterest).filter(
+                UserInterest.userID == usr.id).order_by(UserInterest.year.desc()).all()
+        if not userInterest:
+            return error(f"User {username} does not have any interest recorded for the year {year}")
+        if year:
+            ret = userInterest._asdict()
+            del ret['id']
+            del ret['userID']
+        else:
+            ret = []
+            for interest in userInterest:
+                userInterestDict = interest._asdict()
+                del userInterestDict['id']
+                del userInterestDict['userID']
+                ret.append(userInterestDict)
+        return success(ret)
