@@ -65,7 +65,7 @@ function AccountCreditCard(dataParentToChild) {
                     <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%' }}>Account Number: {account["accountNum"]}</td>
                         <td style={{ width: '40%' }}>Routing Number: {account["routingNumber"]}</td>
-                        <td style={{ width: '40%' }}>Interest Rate: {account["interestRate"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}%</td>
+                        <td style={{ width: '40%' }}>Interest Rate: {account["interestRate"].toLocaleString("en", { 'minimumFractionDigits': 3, 'maximumFractionDigits': 3 })}%</td>
                     </tr>
                     <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%'}}>Card Number: {account["cardNumber"]}</td>

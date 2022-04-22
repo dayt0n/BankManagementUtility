@@ -63,7 +63,7 @@ function AccountSaving(dataParentToChild) {
                     <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%' }}>Account Number: {account["accountNum"]}</td>
                         <td style={{ width: '40%' }}>Routing Number: {account["routingNumber"]}</td>
-                        <td style={{ width: '40%' }}>Dividend Rate: {account["dividendRate"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}%</td>
+                        <td style={{ width: '40%' }}>Dividend Rate: {account["dividendRate"].toLocaleString("en", { 'minimumFractionDigits': 3, 'maximumFractionDigits': 3 })}%</td>
                     </tr>
                     <tr style={{ height: '10px' }}></tr>
                     <tr className="AccountBalance">
