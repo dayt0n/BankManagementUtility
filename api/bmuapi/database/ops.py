@@ -55,7 +55,7 @@ def transfer_op(amount, fromAccount=None, toAccount=None, session=None, comment=
     if toAccount:
         toMoney = get_money_account(to, session=session)
     if toAccount and fromAccount:
-        if toAccount.accountNum == fromAccount.accountNum:
+        if to.accountNum == frm.accountNum:
             return "Transfer to same account not allowed."
     if (toAccount and not toMoney) or (fromAccount and not fromMoney):
         return "Could not locate money accounts to complete transfer."
