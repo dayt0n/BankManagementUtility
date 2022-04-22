@@ -14,11 +14,11 @@ function createTable(history, name) {
                         <td>{"$" + item["interest"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}</td>
                         <td>
                         <Form.Button
-                            className="LoginButton"
+                            className="FormDownloadButton"
                             fluid
                             type='submit'
                             onClick={async () => {
-                                await fetch("/api/user/", {
+                                await fetch("/api/user/get1099/" + name + "/" + year, {
                                     method: "GET",
                                     headers: {
                                         "Accept": "application/json",
