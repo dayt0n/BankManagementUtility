@@ -7,7 +7,7 @@ setuptools.setup(
     url="https://github.com/dayt0n/BankManagementUtility",
     packages=setuptools.find_packages(),
     install_requires=['click', 'flask', 'arrow', 'pyjwt[crypto]',
-                      'python-dotenv', 'psycopg2', 'sqlalchemy', 'passlib', 'phonenumbers', 'Flask-APScheduler'],
+                      'python-dotenv', 'psycopg2', 'sqlalchemy', 'passlib', 'phonenumbers', 'Flask-APScheduler', 'fillpdf', 'requests'],
     entry_points={
         'console_scripts': [
             'bmuapi = bmuapi.cli:serve'
