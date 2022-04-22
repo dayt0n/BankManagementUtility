@@ -69,7 +69,7 @@ function AccountMortgage(dataParentToChild) {
                     <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%' }}>Account Number: {account["accountNum"]}</td>
                         <td style={{ width: '40%' }}>Routing Number: {account["routingNumber"]}</td>
-                        <td style={{ width: '40%' }}>Interest Rate: {account["interestRate"]}%</td>
+                        <td style={{ width: '40%' }}>Interest Rate: {account["interestRate"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}%</td>
                     </tr>
                     <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%' }}>Loan Start: {startDate.toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: 'short', timeStyle: 'short' })}</td>
@@ -99,7 +99,6 @@ function AccountMortgage(dataParentToChild) {
             {history}
             <Button className="MoreLessButtons" onClick={async () => {
                 amountToShow=amountToShow+5;
-                console.log(history.length + "bleh");
                 if(history.length<amountToShow-5){
                     amountToShow-=5;
                 }

@@ -63,7 +63,7 @@ function AccountMoneyMarket(dataParentToChild) {
                     <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%' }}>Account Number: {account["accountNum"]}</td>
                         <td style={{ width: '40%' }}>Routing Number: {account["routingNumber"]}</td>
-                        <td style={{ width: '40%' }}>Interest Rate: {account["interestRate"]}%</td>
+                        <td style={{ width: '40%' }}>Interest Rate: {account["interestRate"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}%</td>
                     </tr>
                     <tr style={{ height: '10px' }}></tr>
                     <tr className="AccountBalance">
@@ -79,7 +79,6 @@ function AccountMoneyMarket(dataParentToChild) {
             {history}
             <Button className="MoreLessButtons" onClick={async () => {
                 amountToShow=amountToShow+5;
-                console.log(history.length + "bleh");
                 if(history.length<amountToShow-5){
                     amountToShow-=5;
                 }
