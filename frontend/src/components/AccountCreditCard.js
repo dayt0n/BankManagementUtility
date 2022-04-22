@@ -74,7 +74,7 @@ function AccountCreditCard(dataParentToChild) {
                     </tr>
                     <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%'}}>Next Payment Due: {paymentDue.toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: 'short', timeStyle: 'short' })}</td>
-                        <td style={{ width: '40%'}}></td>
+                        <td style={{ width: '40%'}}>Withdraw Limit: ${account["moneyLimit"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}</td>
                     </tr>
                     <tr style={{ height: '10px' }}></tr>
                     <tr className="AccountBalance">
