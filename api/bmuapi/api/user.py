@@ -1,7 +1,9 @@
 import logging
 from operator import and_
+import os
+from time import sleep
 import arrow
-from flask import Blueprint, abort, request
+from flask import Blueprint, abort, after_this_request, request, send_file
 from bmuapi.utils import admin_or_current_user_only, teller_only, admin_or_teller_only, admin_only, emailDomainRegex, teller_or_current_user_only
 from bmuapi.database.database import SessionManager, get_money_account
 from bmuapi.database.tables import User, UserAccount, CheckingSavings, CreditCard, Mortgage, UserInterest
@@ -9,6 +11,7 @@ from bmuapi.api.api_utils import success, error
 import re
 from passlib.hash import sha512_crypt
 import phonenumbers
+from bmuapi.pdf_utils import fill_out_1099
 
 
 user = Blueprint('user', __name__, url_prefix='/user')
@@ -188,3 +191,17 @@ def interest(username, year, token):
                 del userInterestDict['userID']
                 ret.append(userInterestDict)
         return success(ret)
+
+
+@user.route('/get1099/<username>/<year>')
+@teller_only
+def get_user_1099(username, year, token):
+    with SessionManager() as sess:
+        usr = sess.query(User).filter(User.username == username).first()
+        if not usr:
+            return error(f"User {username} not found")
+        completedForm = fill_out_1099(usr, year, sess)
+        if not completedForm:
+            return error(f"Could not create 1099-INT for {year}.")
+        # TODO: should probably have something that runs periodically to clean out any file created before a certain timestamp
+        return send_file(completedForm, download_name=f'{usr.name} - 1099-INT Form for {year}.pdf')

@@ -24,6 +24,15 @@ services:
       - CC_INTEREST_RATE=20
       - MORTGAGE_INTEREST_RATE=5
       - MM_INTEREST_RATE=0.9
+      - BANK_NAME=The Bank
+      - BANK_STREET=301 Sparkman Drive NW
+      - BANK_CITY=Huntsville
+      - BANK_STATE=AL
+      - BANK_COUNTRY=United States of America
+      - BANK_ZIP=35805
+      - BANK_PHONE=256-867-5309
+      - BANK_TIN=832-23-0684
+      - BANK_STATE_ID_NO=531-232-5069
   bmu-frontend-dev:
     restart: always
     build:
