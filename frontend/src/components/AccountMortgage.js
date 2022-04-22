@@ -50,6 +50,8 @@ function AccountMortgage(dataParentToChild) {
 
     var endDate = new Date(Date.parse(account["paymentDueDate"]));
 
+    var nextPayDate = new Date(Date.parse(account["nextPayment"]));
+
     useEffect(() => {
         fetch("/api/money/account/history/" + account["accountNum"] + "/" + amountToShow)
             .then(res => res.json())
@@ -70,18 +72,22 @@ function AccountMortgage(dataParentToChild) {
                         <td style={{ width: '40%' }}>Interest Rate: {account["interestRate"]}%</td>
                     </tr>
                     <tr style={{ width: '150%' }}>
-                        <td style={{ width: '40%' }}>Loan Term: {account["loanTerm"]}</td>
-                        <td style={{ width: '40%' }}>Monthly Payment: ${account["monthlyPayment"]}</td>
-                        <td style={{ width: '40%' }}></td>
-                    </tr>
-                    <tr style={{ width: '150%' }}>
                         <td style={{ width: '40%' }}>Loan Start: {startDate.toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: 'short', timeStyle: 'short' })}</td>
                         <td style={{ width: '40%' }}>Loan Finish: {endDate.toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: 'short', timeStyle: 'short' })}</td>
-                        <td style={{ width: '40%' }}></td>
+                        <td style={{ width: '40%' }}>Loan Amount: ${account["loanAmount"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}</td>
+                    </tr>
+                    <tr style={{ width: '150%' }}>
+                        <td style={{ width: '40%' }}>Loan Term: {account["loanTerm"]}</td>
+                        <td style={{ width: '40%' }}>Monthly Payment: ${account["monthlyPayment"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}</td>
+                        <td style={{ width: '40%' }}>Next Payment Due: {nextPayDate.toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: 'short', timeStyle: 'short' })}</td>
                     </tr>
                     <tr style={{ height: '10px' }}></tr>
                     <tr className="AccountBalance">
-                        <td colSpan={3}>Current Amount Owed: {accBal}</td>
+                        <td colSpan={3}>Amount Owed This Term: {accBal}</td>
+                    </tr>
+                    <tr style={{ height: '10px' }}></tr>
+                    <tr className="AccountBalance">
+                        <td colSpan={3}>Total Amount Owed: ${account["totalOwed"].toLocaleString("en", { 'minimumFractionDigits': 2, 'maximumFractionDigits': 2 })}</td>
                     </tr>
                     <tr style={{ height: '10px' }}></tr>
                     <tr>
